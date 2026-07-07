@@ -13,7 +13,7 @@ setup: ## Install deps, download font sources, npm install
 iosevka: ## Build the custom Iosevka base (Latin/ASCII/ligatures)
 	@bash scripts/build_iosevka.sh
 
-merge: ## Merge Iosevka + BIZ UDGothic + Nerd Fonts -> dist/
+merge: ## Merge Iosevka + LINE Seed JP + Nerd Fonts -> dist/
 	@bash scripts/merge_all.sh
 
 build: iosevka merge ## Full build of one variant: Iosevka, then merge (local dev)

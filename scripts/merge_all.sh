@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Merge Iosevka + BIZ UDGothic (+ Nerd) into one variant's TTFs, one per style.
+# Merge Iosevka + LINE Seed JP (+ Nerd) into one variant's TTFs, one per style.
 # The variant is selected by NERD_FONTS / LIGATURES in the environment (config.sh
 # turns those into FAMILY / FONT_BASENAME / VARIANT_DIR).
 set -euo pipefail

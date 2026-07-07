@@ -12,7 +12,7 @@ set -a  # auto-export every variable defined below (so child processes inherit)
 
 # --- Identity -------------------------------------------------------------
 FAMILY_BASE="Kusunoki Mono"
-VERSION="0.3.0"
+VERSION="0.4.0"
 BUILD_PLAN="KusunokiMono"          # Iosevka plan name in private-build-plans.toml (one base build)
 
 # --- Variant axes (override via env; both default on) ----------------------
@@ -35,7 +35,7 @@ WIDTH_EM="${WIDTH_EM:-0.6}"
 
 # --- Em unit --------------------------------------------------------------
 # Kept at 1000 so Iosevka is used verbatim (native UPM): outlines, hinting and
-# ligature GSUB pass through untouched. Only BIZ UDGothic + Nerd are rescaled.
+# ligature GSUB pass through untouched. Only LINE Seed JP + Nerd are normalized.
 TARGET_EM="1000"
 
 # --- Italic ---------------------------------------------------------------

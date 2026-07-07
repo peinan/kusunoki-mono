@@ -98,13 +98,13 @@ exportGlyphNames = true   # required for ligature display in Kitty (doc/custom-b
     micro-sign = "tailed-serifless"
 
 [buildPlans.KusunokiMono.weights.Regular]
-shape = 400
-menu = 400
+shape = 500   # heavier geometry than the 400 default (paired with LINE Seed JP Regular)
+menu = 400    # still selected/named as "Regular" (OS/2 weight class 400)
 css = 400
 
 [buildPlans.KusunokiMono.weights.Bold]
-shape = 700
-menu = 700
+shape = 800   # heavier than the 700 default (paired with LINE Seed JP Bold)
+menu = 700    # still selected/named as "Bold" (OS/2 weight class 700)
 css = 700
 
 [buildPlans.KusunokiMono.widths.Condensed]

@@ -14,7 +14,7 @@ Maintainer notes. For install & usage, see the [README](../README.md).
    `ss14` + `cv` overrides, ligatures on, `exportGlyphNames`, and `noCvSs` to drop
    unused alternate glyphs so the merged font stays under TrueType's 65535-glyph
    limit). This is the Latin / ASCII / symbol / box-drawing / ligature base.
-2. **BIZ UDGothic** and **Nerd Fonts** are transformed in FontForge
+2. **LINE Seed JP** and **Nerd Fonts** are transformed in FontForge
    (`scripts/merge.py`): rescaled to 1000 UPM, width-normalized so a full-width
    CJK glyph spans exactly two Latin cells, and (for italics) faux-slanted about
    each glyph's own centre.
@@ -39,7 +39,7 @@ fonts, and runs `npm install` in the Iosevka checkout.
 
 | Command         | What                                                          |
 | --------------- | ------------------------------------------------------------ |
-| `make setup`    | Install deps, download BIZ UDGothic + Nerd Fonts, npm install |
+| `make setup`    | Install deps, download LINE Seed JP + Nerd Fonts, npm install |
 | `make iosevka`  | Build the Iosevka base (shared by all variants)              |
 | `make build`    | One variant (iosevka + merge) — local iteration             |
 | `make variants` | All four variants (run `make iosevka` first)                |

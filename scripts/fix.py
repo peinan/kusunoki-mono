@@ -40,7 +40,7 @@ SUBFAMILY = {
 
 COPYRIGHT = (
     "Kusunoki Mono is built from Iosevka (© Belleve Invis, OFL-1.1), "
-    "BIZ UDGothic (© Morisawa Inc. / Type Bank, OFL-1.1), "
+    "LINE Seed JP (© 2020-2022 LY Corporation, OFL-1.1), "
     "and Nerd Fonts (© Ryan L McIntyre, MIT)."
 )
 LICENSE_DESC = "This Font Software is licensed under the SIL Open Font License, Version 1.1."

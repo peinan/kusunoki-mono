@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Transform BIZ UDGothic (+ Nerd Fonts symbols) geometry for one style.
+"""Transform LINE Seed JP (+ Nerd Fonts symbols) geometry for one style.
 
 Run under FontForge:
 
     fontforge -quiet -script merge.py <style> <out_jp_ttf>
 
 Reads configuration from the environment (exported by config.sh) and writes the
-"jp half": BIZ UDGothic rescaled to TARGET_EM, width-normalized to the HALF/FULL
+"jp half": LINE Seed JP rescaled to TARGET_EM, width-normalized to the HALF/FULL
 cell, optionally skewed for italic, with Nerd symbols merged in. Deduplication
 against Iosevka and the final union happen later in fix.py (fontTools) — this
 stage only touches BIZ and Nerd so that Iosevka passes through untouched.
@@ -42,9 +42,9 @@ out_jp = sys.argv[2]
 is_italic = "Italic" in style
 is_bold = "Bold" in style
 
-biz_src = os.path.join(
-    SOURCES, "biz-udgothic",
-    "BIZUDGothic-Bold.ttf" if is_bold else "BIZUDGothic-Regular.ttf",
+jp_src = os.path.join(
+    SOURCES, "lineseed-jp",
+    "LINESeedJP-Bold.ttf" if is_bold else "LINESeedJP-Regular.ttf",
 )
 
 
@@ -61,17 +61,17 @@ def set_width_centered(glyph, target):
 
 print(f"[merge.py] style={style} HALF={HALF} FULL={FULL} em={TARGET_EM}")
 
-jp = fontforge.open(biz_src)
+jp = fontforge.open(jp_src)
 rescale_em(jp, TARGET_EM)
 
-# --- vertical harmony (BIZ only; tune via config.sh after inspecting specimen) ---
+# --- vertical harmony (CJK only; tune via config.sh after inspecting specimen) ---
 if CJK_Y_SCALE != 1.0 or CJK_Y_SHIFT != 0:
     vt = psMat.compose(psMat.scale(1.0, CJK_Y_SCALE), psMat.translate(0, CJK_Y_SHIFT))
     for g in jp.glyphs():
         if g.isWorthOutputting():
             g.transform(vt)
 
-# --- italic: skew each glyph about its OWN vertical center (BIZ only; icons stay
+# --- italic: skew each glyph about its OWN vertical center (CJK only; icons stay
 #     upright since they are merged afterwards). Centering per glyph keeps every
 #     kana/kanji horizontally centered in its cell, regardless of its height. ---
 if is_italic:

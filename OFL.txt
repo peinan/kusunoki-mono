@@ -3,9 +3,8 @@ Copyright 2026 The Kusunoki Mono Project Authors (https://github.com/peinan/kusu
 Kusunoki Mono is a derivative work built from:
   * Iosevka       — Copyright 2015-2026 Belleve Invis, SIL OFL 1.1
                     https://github.com/be5invis/Iosevka
-  * BIZ UDGothic  — Copyright 2022 The BIZ UDGothic Project Authors
-                    (Morisawa Inc. / Type Bank), SIL OFL 1.1
-                    https://github.com/googlefonts/morisawa-biz-ud-gothic
+  * LINE Seed JP  — Copyright 2020-2022 LY Corporation, SIL OFL 1.1
+                    https://seed.line.me/
   * Nerd Fonts    — Copyright Ryan L McIntyre, MIT License (icon glyphs)
                     https://github.com/ryanoasis/nerd-fonts
 

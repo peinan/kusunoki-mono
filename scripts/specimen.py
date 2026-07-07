@@ -158,7 +158,7 @@ def build_html(results):
         return f"<section><h2>{esc(title)}</h2><pre style='{style_css}'>{esc(content)}</pre></section>"
 
     body = [
-        f"<header><h1>{FAMILY}</h1><p>v{VERSION} · width {WIDTH_EM}em (half={HALF}, full={FULL}) · Iosevka + BIZ UDGothic + Nerd Fonts</p></header>",
+        f"<header><h1>{FAMILY}</h1><p>v{VERSION} · width {WIDTH_EM}em (half={HALF}, full={FULL}) · Iosevka + LINE Seed JP + Nerd Fonts</p></header>",
         f"<section><h2>Metric verification</h2>{table}</section>",
         block("Alignment (full-width must equal 2 half-width)", ALIGN_SAMPLE),
         block("Ligatures & operators — Regular", CODE_SAMPLE),

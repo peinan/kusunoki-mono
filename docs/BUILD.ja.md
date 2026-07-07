@@ -12,7 +12,7 @@
 ## 全体の流れ
 
 1. **Iosevka** を `private-build-plans.toml` から一度だけビルドします（peinan の設計：`ss14` と `cv` の上書き、リガチャ有効、`exportGlyphNames`、そして TrueType の 65535 グリフ上限に収めるための `noCvSs`）。これが Latin / ASCII / 記号 / 罫線 / リガチャの土台になります。
-2. **BIZ UDGothic** と **Nerd Fonts** を FontForge（`scripts/merge.py`）で変換します。1000 UPM に再スケールし、全角 CJK が Latin セルちょうど 2 つ分になるよう字幅を正規化し、斜体はグリフごとの中心を軸に擬似斜体化します。
+2. **LINE Seed JP** と **Nerd Fonts** を FontForge（`scripts/merge.py`）で変換します。1000 UPM に再スケールし、全角 CJK が Latin セルちょうど 2 つ分になるよう字幅を正規化し、斜体はグリフごとの中心を軸に擬似斜体化します。
 3. **fontTools**（`scripts/fix.py`）で、Iosevka が既に持つコードポイントを除き、Iosevka を先頭にしてマージし（Iosevka のリガチャ GSUB をそのまま保持）、`name` / `OS/2`（CP932、USE_TYPO_METRICS）/ `post`（isFixedPitch）/ 縦メトリクスの各テーブルを整えます。
 4. `scripts/specimen.py` がメトリクスを検査し、specimen HTML を書き出します。
 
@@ -31,7 +31,7 @@ Iosevka のビルドは常に一度だけです。
 
 | コマンド        | 内容                                                              |
 | --------------- | ----------------------------------------------------------------- |
-| `make setup`    | 依存の導入、BIZ UDGothic と Nerd Fonts のダウンロード、npm install |
+| `make setup`    | 依存の導入、LINE Seed JP と Nerd Fonts のダウンロード、npm install |
 | `make iosevka`  | Iosevka の土台をビルド（全バリアント共通）                        |
 | `make build`    | バリアントを 1 つ（iosevka + merge）。ローカル反復用              |
 | `make variants` | 4 バリアントすべて（先に `make iosevka`）                         |

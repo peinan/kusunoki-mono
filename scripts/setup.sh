@@ -22,12 +22,12 @@ command -v uv >/dev/null 2>&1 || { echo "ERROR: uv not found — install uv firs
 echo "    ok: uv $(uv --version)"
 
 echo "==> Font sources into $SOURCES_DIR"
-mkdir -p "$SOURCES_DIR/biz-udgothic" "$SOURCES_DIR/nerd"
+mkdir -p "$SOURCES_DIR/lineseed-jp" "$SOURCES_DIR/nerd"
 
-biz_base="https://raw.githubusercontent.com/googlefonts/morisawa-biz-ud-gothic/main"
-for f in fonts/ttf/BIZUDGothic-Regular.ttf fonts/ttf/BIZUDGothic-Bold.ttf OFL.txt; do
-  dest="$SOURCES_DIR/biz-udgothic/$(basename "$f")"
-  [ -s "$dest" ] || { echo "    fetching $(basename "$f")"; curl -fsSL "$biz_base/$f" -o "$dest"; }
+lsjp_base="https://raw.githubusercontent.com/google/fonts/main/ofl/lineseedjp"
+for f in LINESeedJP-Regular.ttf LINESeedJP-Bold.ttf OFL.txt; do
+  dest="$SOURCES_DIR/lineseed-jp/$f"
+  [ -s "$dest" ] || { echo "    fetching $f"; curl -fsSL "$lsjp_base/$f" -o "$dest"; }
 done
 
 if [ "${NERD_FONTS}" = "1" ]; then

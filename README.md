@@ -9,7 +9,7 @@ English | [日本語](README.ja.md)
 [![License: OFL 1.1](https://img.shields.io/badge/license-OFL--1.1-blue.svg)](OFL.txt)
 
 A monospace font for coding with Japanese. It merges [Iosevka][iosevka] for
-Latin / ASCII / symbols / ligatures, [BIZ UDGothic][biz] for Japanese kana and
+Latin / ASCII / symbols / ligatures, [LINE Seed JP][lineseed] for Japanese kana and
 kanji, and [Nerd Fonts][nerd] for terminal icons — with the CJK glyphs sized to
 exactly two Latin columns so text stays aligned.
 
@@ -60,7 +60,7 @@ Requirements: macOS + [Homebrew][brew], [`uv`][uv], Node.js ≥ 18, and an
 [Iosevka][iosevka] checkout next to this repo at `../Iosevka` (or set `IOSEVKA_DIR`).
 
 ```sh
-make setup   # one-time: install tools, download BIZ UDGothic + Nerd Fonts
+make setup   # one-time: install tools, download LINE Seed JP + Nerd Fonts
 make build   # build one variant → dist/<Family>/
 make verify  # open dist/<Family>/specimen.html to eyeball the result
 ```
@@ -79,7 +79,7 @@ Full build pipeline, the variant matrix, and the release/CI setup are in
 ## Built from
 
 - [Iosevka][iosevka] — Latin, ASCII, symbols, box drawing, ligatures (OFL 1.1)
-- [BIZ UDGothic][biz] — Japanese kana & kanji (OFL 1.1)
+- [LINE Seed JP][lineseed] — Japanese kana & kanji (OFL 1.1)
 - [Nerd Fonts][nerd] — icon glyphs (MIT + upstream glyph licenses)
 
 ## License
@@ -88,7 +88,7 @@ Full build pipeline, the variant matrix, and the release/CI setup are in
 reserved name of any of the source fonts.
 
 [iosevka]: https://github.com/be5invis/Iosevka
-[biz]: https://github.com/googlefonts/morisawa-biz-ud-gothic
+[lineseed]: https://seed.line.me/
 [nerd]: https://www.nerdfonts.com/
 [releases]: https://github.com/peinan/kusunoki/releases
 [brew]: https://brew.sh/
