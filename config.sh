@@ -11,7 +11,7 @@ set -a  # auto-export every variable defined below (so child processes inherit)
 
 # --- Identity -------------------------------------------------------------
 FAMILY="Kusunoki Mono"
-VERSION="0.1.0"
+VERSION="0.2.0"
 BUILD_PLAN="KusunokiMono"          # [buildPlans.KusunokiMono] in private-build-plans.toml
 
 # --- Cell width / density (the main knob) ---------------------------------
