@@ -6,9 +6,22 @@
 
 # Kusunoki Mono
 
+[![License: OFL 1.1](https://img.shields.io/badge/license-OFL--1.1-blue.svg)](OFL.txt)
+
 日本語まじりのコードを書くための等幅フォントです。
 Latin / ASCII / 記号 / リガチャに [Iosevka][iosevka]、日本語のかなと漢字に [BIZ UDGothic][biz]、ターミナルのアイコンに [Nerd Fonts][nerd] を合成しています。
 全角の CJK グリフは Latin 2 桁ぶんの幅にそろえてあるので、表示が崩れません。
+
+![Kusunoki Mono スペシメン](docs/images/specimen.png)
+
+## 特徴
+
+- **桁がそろう**：全角の CJK グリフが半角ラテンちょうど 2 つ分で、日本語まじりのコードでも桁が崩れません。
+- **判別しやすい字形**：スラッシュ付きゼロと Iosevka の `ss14` 設計で、`0 O` や `1 l I` を見分けやすくしています。
+- **リガチャ**：`=> != >= <= |> ->` などの合字（`LG` / `NFLG` バリアント。合字グループごとに調整できます）。
+- **Nerd Font アイコン**：Powerline やターミナル用のアイコン（`NF` / `NFLG` バリアント）。
+- **全角スペースの可視化**：U+3000 を薄い枠で表示します。
+- **4 スタイル**：Regular / Bold / Italic / Bold Italic。斜体は和文もラテンの傾きに合わせます。
 
 ## どれをダウンロードするか
 

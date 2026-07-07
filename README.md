@@ -6,10 +6,23 @@ English | [日本語](README.ja.md)
 
 # Kusunoki Mono
 
+[![License: OFL 1.1](https://img.shields.io/badge/license-OFL--1.1-blue.svg)](OFL.txt)
+
 A monospace font for coding with Japanese. It merges [Iosevka][iosevka] for
 Latin / ASCII / symbols / ligatures, [BIZ UDGothic][biz] for Japanese kana and
 kanji, and [Nerd Fonts][nerd] for terminal icons — with the CJK glyphs sized to
 exactly two Latin columns so text stays aligned.
+
+![Kusunoki Mono specimen](docs/images/specimen.png)
+
+## Features
+
+- **Aligned** — a full-width CJK glyph is exactly two Latin columns, so mixed Japanese and code stay on the grid.
+- **Legible glyphs** — a slashed zero and Iosevka's `ss14` design keep `0 O` and `1 l I` distinct.
+- **Ligatures** — `=> != >= <= |> ->` and friends (the `LG` / `NFLG` variants; each ligature group is configurable).
+- **Nerd Font icons** — Powerline and terminal glyphs (the `NF` / `NFLG` variants).
+- **Visible ideographic space** — U+3000 is drawn as a faint box.
+- **Four styles** — Regular / Bold / Italic / Bold Italic, with the CJK slanted to match the Latin italic.
 
 ## Which one to download
 
