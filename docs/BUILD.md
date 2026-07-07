@@ -1,3 +1,9 @@
+<div align="center">
+
+English | [日本語](BUILD.ja.md)
+
+</div>
+
 # Building & releasing Kusunoki Mono
 
 Maintainer notes. For install & usage, see the [README](../README.md).

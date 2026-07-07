@@ -1,3 +1,9 @@
+<div align="center">
+
+English | [日本語](README.ja.md)
+
+</div>
+
 # Kusunoki Mono
 
 A monospace font for coding with Japanese. It merges [Iosevka][iosevka] for
