@@ -1,0 +1,11 @@
+# Downloaded font sources (BIZ UDGothic, Nerd Fonts) — fetched by scripts/setup.sh
+/sources/
+# Build artifacts
+/build/
+/dist/
+# Python / uv
+/.venv/
+__pycache__/
+*.pyc
+# macOS
+.DS_Store
