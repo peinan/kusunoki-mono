@@ -1,0 +1,130 @@
+# Kusunoki Mono — Iosevka build plan (source of truth for the Latin / ASCII side).
+# Based on peinan's gist config, with two changes for this project:
+#   * ligatures enabled  ([buildPlans.KusunokiMono.ligations] inherits = "default-calt")
+#   * exportGlyphNames = true  (required for ligature display in Kitty)
+# Ligature tuning knob: edit the [ligations] table below, then run `make`.
+
+[buildPlans.KusunokiMono]
+family = "Kusunoki Mono"
+spacing = "normal"
+serifs = "sans"
+noCvSs = true             # drop cv##/ss## features + their ~39k alternate glyphs.
+                          # Your chosen DEFAULT look (variants below) and ligatures
+                          # (calt) are unaffected; this only removes the ability to
+                          # switch to *other* variants at runtime — required so the
+                          # merged CJK + Nerd font fits TrueType's 65535-glyph limit.
+exportGlyphNames = true   # required for ligature display in Kitty (doc/custom-build.md:92)
+
+  [buildPlans.KusunokiMono.ligations]
+  inherits = "default-calt"   # knob: use `enables` / `disables` to cherry-pick ligation groups
+  # enables  = []             # e.g. add specific groups
+  # disables = []             # e.g. ["hash-hash", "kern-bars", "center-ops"] to calm things down
+
+  [buildPlans.KusunokiMono.variants]
+  inherits = "ss14"
+
+    [buildPlans.KusunokiMono.variants.design]
+    three = "two-arcs"
+    four = "semi-open-serifless"
+    five = "upright-arched-serifless"
+    seven = "straight-serifless"
+    zero = "oval-tall-slashed"
+    capital-g = "toothless-rounded-serifless-hooked"
+    capital-q = "crossing"
+    capital-w = "straight-serifless"
+    a = "double-storey-serifless"
+    b = "toothed-serifless"
+    f = "flat-hook-serifless-crossbar-at-x-height"
+    g = "double-storey"
+    j = "serifed"
+    l = "serifed-flat-tailed"
+    t = "flat-hook-short-neck"
+    w = "straight-serifless"
+    y = "straight-turn-serifless"
+    lower-alpha = "crossing"
+    punctuation-dot = "round"
+    paren = "normal"
+    at = "threefold"
+    dollar = "slanted-through"
+    cent = "slanted-through"
+    bar = "natural-slope"
+    question = "smooth"
+
+    [buildPlans.KusunokiMono.variants.italic]
+    four = "semi-open-serifless"
+    five = "upright-arched-serifless"
+    seven = "straight-serifless"
+    zero = "oval-tall-slashed"
+    capital-q = "curly-tailed"
+    a = "single-storey-tailed"
+    b = "toothed-serifless"
+    c = "serifless"
+    d = "tailed-serifless"
+    f = "narrow-tailed-crossbar-at-half-ascender-height"
+    g = "single-storey-top-cut"
+    h = "straight-motion-serifed"
+    i = "tailed-serifed"
+    j = "serifed"
+    k = "symmetric-connected-bottom-right-serifed"
+    l = "serifed-flat-tailed"
+    m = "tailed-top-left-serifed"
+    n = "straight-motion-serifed"
+    p = "eared-motion-serifed"
+    q = "top-cut-diagonal-tailed-serifless"
+    r = "top-serifed"
+    s = "unilateral-inward-serifed"
+    t = "bent-hook"
+    u = "tailed-motion-serifed"
+    v = "straight-motion-serifed"
+    w = "cursive-serifed"
+    x = "semi-chancery-straight-serifless"
+    y = "cursive-flat-hook-serifless"
+    z = "curly-serifless-with-horizontal-crossbar"
+    lower-alpha = "crossing"
+    lower-gamma = "casual-serifed"
+    lower-theta = "oval"
+    lower-xi = "flat-top"
+    lower-pi = "diagonal-tailed"
+    lower-psi = "flat-top-serifed"
+    partial-derivative = "curly-bar"
+    punctuation-dot = "round"
+    paren = "normal"
+    at = "threefold"
+    dollar = "slanted-interrupted"
+    cent = "slanted-through"
+    percent = "rings-continuous-slash-also-connected"
+    bar = "natural-slope"
+    question = "smooth"
+    micro-sign = "tailed-serifless"
+
+[buildPlans.KusunokiMono.weights.Regular]
+shape = 400
+menu = 400
+css = 400
+
+[buildPlans.KusunokiMono.weights.Bold]
+shape = 700
+menu = 700
+css = 700
+
+[buildPlans.KusunokiMono.widths.Condensed]
+shape = 500
+menu = 3
+css = "condensed"
+
+[buildPlans.KusunokiMono.widths.Normal]
+shape = 600
+menu = 5
+css = "normal"
+
+[buildPlans.KusunokiMono.slopes.Upright]
+angle = 0
+shape = "upright"
+menu = "upright"
+css = "normal"
+
+[buildPlans.KusunokiMono.slopes.Italic]
+angle = 9.4
+shape = "italic"
+menu = "italic"
+css = "italic"
