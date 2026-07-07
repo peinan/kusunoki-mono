@@ -15,8 +15,9 @@ with **BIZ UDGothic** (Japanese kana & kanji) and **Nerd Fonts** (icon glyphs).
 
 ```sh
 make setup     # install deps + download BIZ UDGothic / Nerd Fonts + npm install
-make build     # build custom Iosevka, then merge → dist/
-make verify    # metric assertions + specimen (HTML / PNG)
+make build     # build one variant (Iosevka + merge) for local iteration → dist/<Variant>/
+make verify    # metric assertions + specimen.html for the current variant
+make dist-all  # build the base + all 4 release variants + zip them → dist/release-assets/
 ```
 
 ## Configuration
@@ -39,6 +40,30 @@ make && make verify
 
 Edit `[buildPlans.KusunokiMono.ligations]` in `private-build-plans.toml`
 (`inherits` / `enables` / `disables`), then `make && make verify`.
+
+## Variants
+
+Four variants are produced (each in Regular / Bold / Italic / Bold Italic),
+distinguished by family name so they install side by side:
+
+| Family name         | Nerd Fonts | Ligatures |
+| ------------------- | :--------: | :-------: |
+| Kusunoki Mono       |     –      |     ✓     |
+| Kusunoki Mono NF    |     ✓      |     ✓     |
+| Kusunoki Mono NL    |     –      |     –     |
+| Kusunoki Mono NF NL |     ✓      |     –     |
+
+The axes are `NERD_FONTS` (1/0) and `LIGATURES` (1/0). No-ligature variants reuse
+the same Iosevka build — the default `calt` feature is unhooked at merge time, so
+Iosevka is only built once.
+
+## Releases (CI)
+
+`.github/workflows/release.yml` runs on every push/merge to `main`: it builds all
+four variants and publishes them to a GitHub Release tagged `v<VERSION>` (from
+`config.sh`), replacing the assets. Bump `VERSION` to cut a new release; pushes
+without a bump refresh the current version's assets. Docs-only (`**.md`) pushes
+are skipped, and the workflow can be triggered manually (workflow_dispatch).
 
 ## License
 

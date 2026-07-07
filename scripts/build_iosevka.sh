@@ -9,7 +9,9 @@ echo "==> Placing private-build-plans.toml into $IOSEVKA_DIR"
 cp ./private-build-plans.toml "$IOSEVKA_DIR/private-build-plans.toml"
 
 echo "==> Building Iosevka plan '$BUILD_PLAN' (this takes a while)"
-( cd "$IOSEVKA_DIR" && npm run build -- "ttf::$BUILD_PLAN" )
+jcmd_arg=""
+[ -n "${IOSEVKA_JCMD:-}" ] && jcmd_arg="--jCmd=$IOSEVKA_JCMD"   # cap parallelism (CI memory)
+( cd "$IOSEVKA_DIR" && npm run build -- "ttf::$BUILD_PLAN" $jcmd_arg )
 
 ttf_dir="$IOSEVKA_DIR/dist/$BUILD_PLAN/TTF"
 [ -d "$ttf_dir" ] || { echo "ERROR: $ttf_dir not found after build" >&2; exit 1; }

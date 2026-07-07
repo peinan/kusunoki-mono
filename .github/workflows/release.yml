@@ -1,0 +1,78 @@
+name: build-and-release
+
+# Build the four Kusunoki Mono variants on every push/merge to main and publish
+# them to a GitHub Release tagged with the version from config.sh.
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "**.md"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      IOSEVKA_DIR: ${{ github.workspace }}/iosevka-src
+      IOSEVKA_JCMD: "2" # cap Iosevka build parallelism (runner memory)
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y fontforge python3-fontforge ttfautohint zip unzip
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Clone Iosevka v34.7.0
+        run: git clone --depth 1 --branch v34.7.0 https://github.com/be5invis/Iosevka.git "$IOSEVKA_DIR"
+
+      - name: Setup (font sources + npm install)
+        run: make setup
+
+      - name: Build Iosevka base (shared by all variants)
+        run: make iosevka
+
+      - name: Build all four variants
+        run: make variants
+
+      - name: Package release assets
+        run: make package
+
+      - name: Read font version
+        id: ver
+        run: echo "version=$(bash -c 'source ./config.sh; echo "$VERSION"')" >> "$GITHUB_OUTPUT"
+
+      - name: Publish / update release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="v${{ steps.ver.outputs.version }}"
+          NOTES="Automated build from ${GITHUB_SHA::7}.
+
+          Variants (Regular / Bold / Italic / BoldItalic each):
+          - Kusunoki Mono        — ligatures, no icons
+          - Kusunoki Mono NF     — ligatures + Nerd Fonts
+          - Kusunoki Mono NL     — no ligatures
+          - Kusunoki Mono NF NL  — Nerd Fonts, no ligatures"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Updating existing release $TAG"
+            gh release upload "$TAG" dist/release-assets/*.zip --clobber
+          else
+            echo "Creating release $TAG"
+            gh release create "$TAG" dist/release-assets/*.zip \
+              --title "Kusunoki Mono $TAG" \
+              --notes "$NOTES" \
+              --target "$GITHUB_SHA"
+          fi

@@ -5,14 +5,18 @@ cd "$(dirname "$0")/.."
 source ./config.sh
 
 echo "==> System tools (fontforge, ttfautohint)"
-for tool in fontforge ttfautohint; do
-  if command -v "$tool" >/dev/null 2>&1; then
-    echo "    ok: $(command -v "$tool")"
-  else
-    echo "    installing $tool via brew..."
-    brew install "$tool"
-  fi
-done
+missing=()
+for t in fontforge ttfautohint; do command -v "$t" >/dev/null 2>&1 || missing+=("$t"); done
+if [ ${#missing[@]} -eq 0 ]; then
+  echo "    ok: fontforge, ttfautohint present"
+elif command -v brew >/dev/null 2>&1; then
+  brew install "${missing[@]}"
+elif command -v apt-get >/dev/null 2>&1; then
+  sudo apt-get update -qq
+  sudo apt-get install -y fontforge python3-fontforge ttfautohint unzip zip
+else
+  echo "ERROR: need Homebrew or apt-get to install: ${missing[*]}" >&2; exit 1
+fi
 
 command -v uv >/dev/null 2>&1 || { echo "ERROR: uv not found — install uv first" >&2; exit 1; }
 echo "    ok: uv $(uv --version)"
