@@ -1,12 +1,11 @@
 name: build-and-release
 
-# Build the four Kusunoki Mono variants on every push/merge to main and publish
-# them to a GitHub Release tagged with the version from config.sh.
+# Build the four Kusunoki Mono variants and publish them to a GitHub Release.
+# Triggers on a v* tag push (the tag names the release) or a manual dispatch
+# (which releases v<VERSION> from config.sh). Plain pushes to main do nothing.
 on:
   push:
-    branches: [main]
-    paths-ignore:
-      - "**.md"
+    tags: ["v*"]
   workflow_dispatch:
 
 permissions:
@@ -49,16 +48,21 @@ jobs:
       - name: Package release assets
         run: make package
 
-      - name: Read font version
-        id: ver
-        run: echo "version=$(bash -c 'source ./config.sh; echo "$VERSION"')" >> "$GITHUB_OUTPUT"
+      - name: Determine release tag
+        id: tag
+        run: |
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            echo "tag=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=v$(bash -c 'source ./config.sh; echo "$VERSION"')" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Publish / update release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          TAG="v${{ steps.ver.outputs.version }}"
+          TAG="${{ steps.tag.outputs.tag }}"
           NOTES="Automated build from ${GITHUB_SHA::7}.
 
           Variants (Regular / Bold / Italic / BoldItalic each):
@@ -69,10 +73,10 @@ jobs:
           if gh release view "$TAG" >/dev/null 2>&1; then
             echo "Updating existing release $TAG"
             gh release upload "$TAG" dist/release-assets/*.zip --clobber
+          elif [ "${{ github.ref_type }}" = "tag" ]; then
+            echo "Creating release $TAG (from pushed tag)"
+            gh release create "$TAG" dist/release-assets/*.zip --title "Kusunoki Mono $TAG" --notes "$NOTES"
           else
-            echo "Creating release $TAG"
-            gh release create "$TAG" dist/release-assets/*.zip \
-              --title "Kusunoki Mono $TAG" \
-              --notes "$NOTES" \
-              --target "$GITHUB_SHA"
+            echo "Creating release $TAG (manual dispatch)"
+            gh release create "$TAG" dist/release-assets/*.zip --title "Kusunoki Mono $TAG" --notes "$NOTES" --target "$GITHUB_SHA"
           fi

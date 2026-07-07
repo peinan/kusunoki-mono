@@ -77,10 +77,15 @@ ligatures:
 
 ## Releases (CI)
 
-`.github/workflows/release.yml` runs on every push/merge to `main` (docs-only
-`**.md` pushes are skipped; it can also be run manually via *workflow_dispatch*).
-It builds all four variants and publishes them to a GitHub Release tagged
-`v<VERSION>` (from `config.sh`), replacing the assets.
+`.github/workflows/release.yml` builds all four variants and publishes them to a
+GitHub Release. It triggers on a **`v*` tag push** (the tag names the release) or
+a manual **workflow_dispatch** run (which releases `v<VERSION>` from `config.sh`).
+Plain pushes to `main` do not release, so work-in-progress can land freely.
 
-**To cut a release:** bump `VERSION` in `config.sh` and push to `main`. Pushing
-without a bump refreshes the current version's assets in place.
+**To cut a release:** bump `VERSION` in `config.sh`, commit, then push a matching
+tag:
+
+```sh
+git tag v0.4.0
+git push origin v0.4.0
+```

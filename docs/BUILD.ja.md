@@ -63,8 +63,13 @@ Iosevka のビルドは常に一度だけです。
 
 ## リリース（CI）
 
-`.github/workflows/release.yml` が `main` への push と merge のたびに走ります（`**.md` だけの push はスキップします。workflow_dispatch で手動実行もできます）。
-4 バリアントをビルドし、`config.sh` の `v<VERSION>` タグを付けた GitHub Release に公開して、資産を差し替えます。
+`.github/workflows/release.yml` は 4 バリアントをビルドして GitHub Release に公開します。
+トリガーは **`v*` タグの push**（タグ名がリリース名になる）、または手動の **workflow_dispatch**（`config.sh` の `v<VERSION>` で公開）です。
+`main` への通常の push ではリリースしないので、作業途中でも自由に push できます。
 
-**リリースを切るには**：`config.sh` の `VERSION` を上げて `main` に push します。
-バージョンを上げずに push すると、現在のバージョンの資産をその場で更新します。
+**リリースを切るには**：`config.sh` の `VERSION` を上げてコミットし、対応するタグを push します。
+
+```sh
+git tag v0.4.0
+git push origin v0.4.0
+```
