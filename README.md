@@ -46,16 +46,17 @@ Edit `[buildPlans.KusunokiMono.ligations]` in `private-build-plans.toml`
 Four variants are produced (each in Regular / Bold / Italic / Bold Italic),
 distinguished by family name so they install side by side:
 
-| Family name         | Nerd Fonts | Ligatures |
-| ------------------- | :--------: | :-------: |
-| Kusunoki Mono       |     –      |     ✓     |
-| Kusunoki Mono NF    |     ✓      |     ✓     |
-| Kusunoki Mono NL    |     –      |     –     |
-| Kusunoki Mono NF NL |     ✓      |     –     |
+| Family name        | Nerd Fonts | Ligatures |
+| ------------------ | :--------: | :-------: |
+| Kusunoki Mono      |     –      |     –     |
+| Kusunoki Mono NF   |     ✓      |     –     |
+| Kusunoki Mono LG   |     –      |     ✓     |
+| Kusunoki Mono NFLG |     ✓      |     ✓     |
 
-The axes are `NERD_FONTS` (1/0) and `LIGATURES` (1/0). No-ligature variants reuse
-the same Iosevka build — the default `calt` feature is unhooked at merge time, so
-Iosevka is only built once.
+The axes are `NERD_FONTS` (1/0) and `LIGATURES` (1/0): the base has neither, `NF`
+adds Nerd Fonts, `LG` adds ligatures. The no-ligature variants reuse the same
+Iosevka build — the default `calt` feature is unhooked at merge time, so Iosevka
+is only built once.
 
 ## Releases (CI)
 

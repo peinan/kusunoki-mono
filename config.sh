@@ -12,20 +12,21 @@ set -a  # auto-export every variable defined below (so child processes inherit)
 
 # --- Identity -------------------------------------------------------------
 FAMILY_BASE="Kusunoki Mono"
-VERSION="0.2.0"
+VERSION="0.3.0"
 BUILD_PLAN="KusunokiMono"          # Iosevka plan name in private-build-plans.toml (one base build)
 
 # --- Variant axes (override via env; both default on) ----------------------
 NERD_FONTS="${NERD_FONTS:-1}"      # 1 = merge Nerd Fonts icon glyphs
 LIGATURES="${LIGATURES:-1}"        # 1 = keep Iosevka's default (calt) ligatures
 
-# --- Derived family + basename (additive suffixes: " NF" adds Nerd, " NL"
-#     removes ligatures). Four variants install side by side. ---------------
-_variant_suffix=""
-[ "$NERD_FONTS" = "1" ] && _variant_suffix="${_variant_suffix} NF"
-[ "$LIGATURES" = "0" ] && _variant_suffix="${_variant_suffix} NL"
-FAMILY="${FAMILY_BASE}${_variant_suffix}"
-FONT_BASENAME="${FAMILY// /}"      # e.g. KusunokiMono / KusunokiMonoNF / KusunokiMonoNFNL
+# --- Derived family + basename. Additive tokens on a bare base: the base has
+#     neither feature; "NF" adds Nerd Fonts, "LG" adds ligatures, both -> "NFLG".
+#     Four variants install side by side. -----------------------------------
+_token=""
+[ "$NERD_FONTS" = "1" ] && _token="${_token}NF"
+[ "$LIGATURES" = "1" ] && _token="${_token}LG"
+if [ -n "$_token" ]; then FAMILY="${FAMILY_BASE} ${_token}"; else FAMILY="$FAMILY_BASE"; fi
+FONT_BASENAME="${FAMILY// /}"      # KusunokiMono / KusunokiMonoNF / KusunokiMonoLG / KusunokiMonoNFLG
 
 # --- Cell width / density (the main knob) ---------------------------------
 # 0.6 : respect the gist's Normal(600). Full-width CJK advance = 1.2em.

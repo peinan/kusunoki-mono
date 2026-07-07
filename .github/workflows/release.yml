@@ -62,10 +62,10 @@ jobs:
           NOTES="Automated build from ${GITHUB_SHA::7}.
 
           Variants (Regular / Bold / Italic / BoldItalic each):
-          - Kusunoki Mono        — ligatures, no icons
-          - Kusunoki Mono NF     — ligatures + Nerd Fonts
-          - Kusunoki Mono NL     — no ligatures
-          - Kusunoki Mono NF NL  — Nerd Fonts, no ligatures"
+          - Kusunoki Mono      — plain (no ligatures, no icons)
+          - Kusunoki Mono NF   — Nerd Fonts
+          - Kusunoki Mono LG   — ligatures
+          - Kusunoki Mono NFLG — Nerd Fonts + ligatures"
           if gh release view "$TAG" >/dev/null 2>&1; then
             echo "Updating existing release $TAG"
             gh release upload "$TAG" dist/release-assets/*.zip --clobber
