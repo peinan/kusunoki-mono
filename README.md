@@ -1,72 +1,76 @@
 # Kusunoki Mono
 
-A programming monospace font that merges **Iosevka** (Latin / ASCII / symbols / ligatures)
-with **BIZ UDGothic** (Japanese kana & kanji) and **Nerd Fonts** (icon glyphs).
+A monospace font for coding with Japanese. It merges [Iosevka][iosevka] for
+Latin / ASCII / symbols / ligatures, [BIZ UDGothic][biz] for Japanese kana and
+kanji, and [Nerd Fonts][nerd] for terminal icons — with the CJK glyphs sized to
+exactly two Latin columns so text stays aligned.
 
-> Status: in development.
+## Which one to download
 
-## Requirements
+Four variants, each in **Regular / Bold / Italic / Bold Italic**. They use
+different family names, so you can install several side by side and choose per app.
 
-- macOS with [Homebrew](https://brew.sh/) (for `fontforge`, `ttfautohint`)
-- [`uv`](https://docs.astral.sh/uv/) (Python tooling — `fonttools` etc.)
-- Node.js ≥ 18 and an Iosevka checkout at `../Iosevka` (override via `IOSEVKA_DIR`)
+| Font family            | Ligatures | Nerd Font icons | Good for                              |
+| ---------------------- | :-------: | :-------------: | ------------------------------------- |
+| **Kusunoki Mono**      |     –     |        –        | Plain, maximally compatible           |
+| **Kusunoki Mono NF**   |     –     |        ✓        | Terminals with icons, no ligatures    |
+| **Kusunoki Mono LG**   |     ✓     |        –        | Editors, with ligatures               |
+| **Kusunoki Mono NFLG** |     ✓     |        ✓        | Everything — ligatures **and** icons  |
 
-## Build
+Not sure? Pick **NFLG** for a terminal/editor that shows icons and ligatures, or
+plain **Kusunoki Mono** if you want neither.
+
+## Install
+
+1. Download a variant's zip from the [Releases page][releases].
+2. Install the `.ttf` files:
+   - **macOS** — open them and click *Install*, or copy to `~/Library/Fonts/`.
+   - **Windows** — select them, right-click → *Install*.
+   - **Linux** — copy to `~/.local/share/fonts/`, then `fc-cache -f`.
+3. Set your editor/terminal font to the family name, e.g. `Kusunoki Mono NFLG`.
+
+Ligatures (the `LG` / `NFLG` variants) usually need turning on in your app too —
+e.g. VS Code `"editor.fontLigatures": true`. The plain / `NF` variants have no
+ligatures at all, which some people prefer in a terminal.
+
+## Tweak it yourself
+
+You only need this to change something — the released fonts work as-is.
+
+Requirements: macOS + [Homebrew][brew], [`uv`][uv], Node.js ≥ 18, and an
+[Iosevka][iosevka] checkout next to this repo at `../Iosevka` (or set `IOSEVKA_DIR`).
 
 ```sh
-make setup     # install deps + download BIZ UDGothic / Nerd Fonts + npm install
-make build     # build one variant (Iosevka + merge) for local iteration → dist/<Variant>/
-make verify    # metric assertions + specimen.html for the current variant
-make dist-all  # build the base + all 4 release variants + zip them → dist/release-assets/
+make setup   # one-time: install tools, download BIZ UDGothic + Nerd Fonts
+make build   # build one variant → dist/<Family>/
+make verify  # open dist/<Family>/specimen.html to eyeball the result
 ```
 
-## Configuration
+Two knobs cover most tastes:
 
-- **Merge knobs** — cell width, styles, toggles: `config.sh`
-- **Iosevka design** — variants, cv##, ligatures: `private-build-plans.toml`
+- **Density** — `WIDTH_EM` in `config.sh`: `0.6` (roomier, default) or `0.5`
+  (tighter; full-width CJK = exactly 1em). Then `make && make verify`.
+- **Ligatures** — which ligatures fire is the `[buildPlans.KusunokiMono.ligations]`
+  table in `private-build-plans.toml` (`inherits` / `enables` / `disables`). Then
+  `make && make verify`.
 
-### Change the cell width (density)
+Full build pipeline, the variant matrix, and the release/CI setup are in
+[docs/BUILD.md](docs/BUILD.md).
 
-Edit `WIDTH_EM` in `config.sh` (`0.6` ↔ `0.5`), then:
+## Built from
 
-```sh
-make && make verify
-```
-
-`0.6` keeps the wider Latin cell from the gist (full-width CJK advance = 1.2em).
-`0.5` is the conventional dense layout (full-width CJK = 1.0em exactly).
-
-### Change ligatures
-
-Edit `[buildPlans.KusunokiMono.ligations]` in `private-build-plans.toml`
-(`inherits` / `enables` / `disables`), then `make && make verify`.
-
-## Variants
-
-Four variants are produced (each in Regular / Bold / Italic / Bold Italic),
-distinguished by family name so they install side by side:
-
-| Family name        | Nerd Fonts | Ligatures |
-| ------------------ | :--------: | :-------: |
-| Kusunoki Mono      |     –      |     –     |
-| Kusunoki Mono NF   |     ✓      |     –     |
-| Kusunoki Mono LG   |     –      |     ✓     |
-| Kusunoki Mono NFLG |     ✓      |     ✓     |
-
-The axes are `NERD_FONTS` (1/0) and `LIGATURES` (1/0): the base has neither, `NF`
-adds Nerd Fonts, `LG` adds ligatures. The no-ligature variants reuse the same
-Iosevka build — the default `calt` feature is unhooked at merge time, so Iosevka
-is only built once.
-
-## Releases (CI)
-
-`.github/workflows/release.yml` runs on every push/merge to `main`: it builds all
-four variants and publishes them to a GitHub Release tagged `v<VERSION>` (from
-`config.sh`), replacing the assets. Bump `VERSION` to cut a new release; pushes
-without a bump refresh the current version's assets. Docs-only (`**.md`) pushes
-are skipped, and the workflow can be triggered manually (workflow_dispatch).
+- [Iosevka][iosevka] — Latin, ASCII, symbols, box drawing, ligatures (OFL 1.1)
+- [BIZ UDGothic][biz] — Japanese kana & kanji (OFL 1.1)
+- [Nerd Fonts][nerd] — icon glyphs (MIT + upstream glyph licenses)
 
 ## License
 
-SIL Open Font License 1.1. Built from Iosevka (OFL), BIZ UDGothic (OFL), and
-Nerd Fonts (MIT + upstream glyph licenses). See `OFL.txt`.
+[SIL Open Font License 1.1](OFL.txt). "Kusunoki Mono" is a new name and is not a
+reserved name of any of the source fonts.
+
+[iosevka]: https://github.com/be5invis/Iosevka
+[biz]: https://github.com/googlefonts/morisawa-biz-ud-gothic
+[nerd]: https://www.nerdfonts.com/
+[releases]: https://github.com/peinan/kusunoki/releases
+[brew]: https://brew.sh/
+[uv]: https://docs.astral.sh/uv/
