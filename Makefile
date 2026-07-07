@@ -2,7 +2,7 @@
 # Config knobs live in config.sh; Iosevka design in private-build-plans.toml.
 
 .DEFAULT_GOAL := build
-.PHONY: setup iosevka merge build verify clean distclean help
+.PHONY: setup iosevka merge build variants package dist-all verify clean distclean help
 
 help: ## Show this help
 	@grep -E '^[a-z].*:.*##' $(MAKEFILE_LIST) | sed 's/:.*##/\t/' | sort
@@ -16,9 +16,17 @@ iosevka: ## Build the custom Iosevka base (Latin/ASCII/ligatures)
 merge: ## Merge Iosevka + BIZ UDGothic + Nerd Fonts -> dist/
 	@bash scripts/merge_all.sh
 
-build: iosevka merge ## Full build: Iosevka, then merge
+build: iosevka merge ## Full build of one variant: Iosevka, then merge (local dev)
 
-verify: ## Metric assertions + specimen (HTML/PNG)
+variants: ## Build all 4 release variants (NF x ligatures); run after `make iosevka`
+	@bash scripts/build_variants.sh
+
+package: ## Zip each built variant into dist/release-assets/
+	@bash scripts/package.sh
+
+dist-all: iosevka variants package ## Full release build: base + 4 variants + zips
+
+verify: ## Metric assertions + specimen (HTML) for the current variant
 	@bash scripts/verify.sh
 
 clean: ## Remove build/ and dist/

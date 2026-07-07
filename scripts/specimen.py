@@ -18,7 +18,8 @@ import sys
 
 from fontTools.ttLib import TTFont
 
-DIST = os.environ.get("DIST_DIR", "dist")
+DIST = os.environ.get("VARIANT_DIR", os.environ.get("DIST_DIR", "dist"))
+FONT_BASENAME = os.environ.get("FONT_BASENAME", "KusunokiMono")
 FAMILY = os.environ.get("FAMILY", "Kusunoki Mono")
 VERSION = os.environ.get("VERSION", "0.0.0")
 WIDTH_EM = float(os.environ.get("WIDTH_EM", "0.6"))
@@ -48,7 +49,7 @@ def gsub_features(font):
 
 def verify(style):
     """Return (ok, rows) where rows is a list of (name, ok, detail)."""
-    path = os.path.join(DIST, f"KusunokiMono-{style}.ttf")
+    path = os.path.join(DIST, f"{FONT_BASENAME}-{style}.ttf")
     if not os.path.exists(path):
         return False, [("file exists", False, path)]
     f = TTFont(path)
@@ -131,7 +132,7 @@ def build_html(results):
     fam = {"Regular": (400, "normal"), "Bold": (700, "normal"),
            "Italic": (400, "italic"), "BoldItalic": (700, "italic")}
     for style in STYLES:
-        path = os.path.join(DIST, f"KusunokiMono-{style}.ttf")
+        path = os.path.join(DIST, f"{FONT_BASENAME}-{style}.ttf")
         if not os.path.exists(path):
             continue
         weight, slant = fam[style]

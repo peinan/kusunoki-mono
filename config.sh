@@ -5,25 +5,36 @@
 # in private-build-plans.toml. This file holds everything the *merge* stage needs.
 #
 # Sourced by scripts/*.sh; the Python scripts (merge.py / fix.py / specimen.py)
-# read these values as environment variables.
+# read these values as environment variables. NERD_FONTS and LIGATURES may be
+# overridden from the environment to build the four release variants.
 
 set -a  # auto-export every variable defined below (so child processes inherit)
 
 # --- Identity -------------------------------------------------------------
-FAMILY="Kusunoki Mono"
+FAMILY_BASE="Kusunoki Mono"
 VERSION="0.2.0"
-BUILD_PLAN="KusunokiMono"          # [buildPlans.KusunokiMono] in private-build-plans.toml
+BUILD_PLAN="KusunokiMono"          # Iosevka plan name in private-build-plans.toml (one base build)
+
+# --- Variant axes (override via env; both default on) ----------------------
+NERD_FONTS="${NERD_FONTS:-1}"      # 1 = merge Nerd Fonts icon glyphs
+LIGATURES="${LIGATURES:-1}"        # 1 = keep Iosevka's default (calt) ligatures
+
+# --- Derived family + basename (additive suffixes: " NF" adds Nerd, " NL"
+#     removes ligatures). Four variants install side by side. ---------------
+_variant_suffix=""
+[ "$NERD_FONTS" = "1" ] && _variant_suffix="${_variant_suffix} NF"
+[ "$LIGATURES" = "0" ] && _variant_suffix="${_variant_suffix} NL"
+FAMILY="${FAMILY_BASE}${_variant_suffix}"
+FONT_BASENAME="${FAMILY// /}"      # e.g. KusunokiMono / KusunokiMonoNF / KusunokiMonoNFNL
 
 # --- Cell width / density (the main knob) ---------------------------------
 # 0.6 : respect the gist's Normal(600). Full-width CJK advance = 1.2em.
-#       (works in terminals/editors; advance > em is legal but unconventional)
-# 0.5 : conventional / dense. Full-width CJK = 1.0em exactly; uses Iosevka Condensed(500).
-WIDTH_EM="0.6"
+# 0.5 : conventional / dense. Full-width CJK = 1.0em exactly; uses Condensed(500).
+WIDTH_EM="${WIDTH_EM:-0.6}"
 
 # --- Em unit --------------------------------------------------------------
-# Kept at 1000 so Iosevka is used verbatim (its native UPM): outlines, hinting and
-# ligature GSUB pass through untouched. Only BIZ UDGothic + Nerd are rescaled to
-# this em in FontForge. Change only if you understand the consequences.
+# Kept at 1000 so Iosevka is used verbatim (native UPM): outlines, hinting and
+# ligature GSUB pass through untouched. Only BIZ UDGothic + Nerd are rescaled.
 TARGET_EM="1000"
 
 # --- Italic ---------------------------------------------------------------
@@ -34,7 +45,6 @@ STYLES="${STYLES:-Regular Bold Italic BoldItalic}"
 
 # --- Toggles --------------------------------------------------------------
 VISUALIZE_ZENKAKU_SPACE="1"        # draw a visible glyph for the ideographic space U+3000
-NERD_FONTS="1"                     # merge Nerd Fonts icon glyphs
 
 # --- Vertical harmony tuning (inspect the specimen; tweak if CJK sits high/low)
 CJK_Y_SCALE="1.0"                  # extra vertical scale applied to BIZ glyphs
@@ -53,7 +63,8 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 IOSEVKA_DIR="${IOSEVKA_DIR:-$ROOT_DIR/../Iosevka}"
 SOURCES_DIR="$ROOT_DIR/sources"
 BUILD_DIR="$ROOT_DIR/build"        # intermediate per-style TTFs
-DIST_DIR="$ROOT_DIR/dist"          # final Kusunoki Mono TTFs
+DIST_DIR="$ROOT_DIR/dist"          # final output root
+VARIANT_DIR="$DIST_DIR/$FONT_BASENAME"   # this variant's TTFs + specimen
 
 set +a
 

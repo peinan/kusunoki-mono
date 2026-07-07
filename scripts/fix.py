@@ -26,6 +26,7 @@ HALF = round(WIDTH_EM * TARGET_EM)
 FAMILY = os.environ["FAMILY"]
 VERSION = os.environ["VERSION"]
 ITALIC_ANGLE = float(os.environ["ITALIC_ANGLE"])
+LIGATURES = os.environ.get("LIGATURES", "1")
 
 is_italic = "Italic" in style
 is_bold = "Bold" in style
@@ -165,6 +166,25 @@ merged["head"].macStyle = mac
 # --- post -------------------------------------------------------------------
 merged["post"].isFixedPitch = 1
 merged["post"].italicAngle = -ITALIC_ANGLE if is_italic else 0.0
+
+# --- no-ligature variant: unhook Iosevka's default (calt) ligatures ---------
+# Iosevka's programming ligatures fire via the default-on `calt` feature. We
+# don't rebuild Iosevka; instead we drop calt from every LangSys so it never
+# applies. The (now orphaned) feature record is harmless. dlig etc. stay off by
+# default as usual, so this yields a clean no-ligature font.
+if LIGATURES == "0" and "GSUB" in merged:
+    gsub = merged["GSUB"].table
+    calt_idx = {i for i, fr in enumerate(gsub.FeatureList.FeatureRecord)
+                if fr.FeatureTag == "calt"}
+    if calt_idx and gsub.ScriptList:
+        for srec in gsub.ScriptList.ScriptRecord:
+            langsys = []
+            if srec.Script.DefaultLangSys is not None:
+                langsys.append(srec.Script.DefaultLangSys)
+            langsys += [lr.LangSys for lr in srec.Script.LangSysRecord]
+            for ls in langsys:
+                ls.FeatureIndex = [i for i in ls.FeatureIndex if i not in calt_idx]
+                ls.FeatureCount = len(ls.FeatureIndex)
 
 merged.save(out_path)
 os.remove(jp_sub)
