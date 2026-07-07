@@ -111,6 +111,11 @@ JP_SAMPLE = """\
 和文と欧文 (Latin) の混植 mixed テスト 123 — 全角／半角。
 プログラミング用等幅フォント「Kusunoki Mono」楠。日本語表示テスト。"""
 
+ITALIC_MIX = """\
+const 名前 = 関数(引数);        // 日本語コメント => 実装 (mixed italic)
+斜体テスト: あいうえお 日本語と英語 mixed ABCabc 123 => >= != ->
+漢字とかなの斜体が欧文斜体と同じ傾きに見えるか確認する。"""
+
 ALIGN_SAMPLE = """\
 |--------|--------|   half cells vs full cells
 |ABCDEFGH|IJKLMNOP|   8 half-width columns
@@ -160,6 +165,8 @@ def build_html(results):
         block("Ligatures & operators — Italic", CODE_SAMPLE, "font-style:italic"),
         block("Japanese & mixed", JP_SAMPLE),
         block("Japanese — Bold", JP_SAMPLE, "font-weight:700"),
+        block("Japanese — Italic (CJK slant should match the Latin italic)", JP_SAMPLE, "font-style:italic"),
+        block("Mixed italic — code + Japanese", ITALIC_MIX, "font-style:italic"),
         block("Nerd Fonts icons", NERD_SAMPLE),
         block("Box drawing & blocks", BOX_SAMPLE),
         "<section><h2>Ideographic space U+3000</h2><pre>[　　] two visualized full-width spaces between the brackets</pre></section>",

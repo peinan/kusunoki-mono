@@ -71,17 +71,21 @@ if CJK_Y_SCALE != 1.0 or CJK_Y_SHIFT != 0:
         if g.isWorthOutputting():
             g.transform(vt)
 
-# --- italic: skew + recenter (BIZ only; icons stay upright, merged afterwards) ---
+# --- italic: skew each glyph about its OWN vertical center (BIZ only; icons stay
+#     upright since they are merged afterwards). Centering per glyph keeps every
+#     kana/kanji horizontally centered in its cell, regardless of its height. ---
 if is_italic:
     rad = math.radians(ITALIC_ANGLE)
-    center_y = TARGET_EM * 0.30  # approx body midline; tunable
-    skew = psMat.compose(psMat.skew(rad), psMat.translate(-math.tan(rad) * center_y, 0))
+    tan = math.tan(rad)
     jp.italicangle = -ITALIC_ANGLE
     for g in jp.glyphs():
-        if g.isWorthOutputting():
-            w = g.width
-            g.transform(skew)
-            g.width = w
+        if not g.isWorthOutputting():
+            continue
+        w = g.width
+        xmin, ymin, xmax, ymax = g.boundingBox()
+        cy = (ymin + ymax) / 2.0
+        g.transform(psMat.compose(psMat.skew(rad), psMat.translate(-tan * cy, 0)))
+        g.width = w
 
 # --- merge Nerd Fonts symbols (single-width, forced to HALF) ---
 if NERD:
