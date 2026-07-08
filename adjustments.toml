@@ -1,0 +1,25 @@
+# Per-glyph adjustments — the single place to tweak individual glyphs.
+#
+# Applied after the merge by scripts/fix.py, to every variant and style. The
+# advance width is preserved (so columns stay aligned) unless you set `width`.
+#
+# Each [[adjust]] entry:
+#   codepoints = "2190-2199, 21d2"  # hex: single values, comma lists, and A-B ranges
+#   scale      = 0.75               # uniform scale (default 1.0)
+#   scale_x / scale_y              # per-axis scale, overrides `scale` for that axis
+#   dx / dy    = 0                  # shift right / up, in font units at 1000 UPM (default 0)
+#   width      = 600                # override advance width (default: keep it)
+#
+# An adjusted glyph is horizontally centred in its cell (dx shifts it left/right,
+# dy up/down). The advance width is kept — so columns stay aligned — unless you
+# set `width`. Add entries freely; re-run `make variants` (Iosevka rebuild not needed).
+#
+# Example — nudge only the rightwards arrow 40 units to the right:
+#   [[adjust]]
+#   codepoints = "2192"
+#   dx = 40
+
+[[adjust]]
+# basic + diagonal arrows:  ← ↑ → ↓ ↔ ↕ ↖ ↗ ↘ ↙
+codepoints = "2190-2199"
+scale = 0.75

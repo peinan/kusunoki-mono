@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.10"
+# requires-python = ">=3.11"
 # dependencies = ["fonttools>=4.50"]
 # ///
 """Merge Iosevka (untouched) with the transformed BIZ/Nerd 'jp' half, fix tables.
@@ -53,6 +53,71 @@ def cmap_unicodes(font):
         if t.isUnicode():
             cps.update(t.cmap.keys())
     return cps
+
+
+def apply_glyph_adjustments(font, toml_path):
+    """Apply per-glyph transforms (scale / shift / width) from adjustments.toml.
+
+    Runs on the merged font, so it covers a glyph whatever source it came from.
+    The advance width is preserved unless `width` is given, keeping columns aligned.
+    """
+    if not os.path.exists(toml_path):
+        return
+    import tomllib
+    from fontTools.misc.transform import Transform
+    from fontTools.pens.boundsPen import BoundsPen
+    from fontTools.pens.recordingPen import DecomposingRecordingPen
+    from fontTools.pens.ttGlyphPen import TTGlyphPen
+    from fontTools.pens.transformPen import TransformPen
+
+    with open(toml_path, "rb") as fh:
+        entries = tomllib.load(fh).get("adjust", [])
+    if not entries:
+        return
+
+    def expand(spec):
+        cps = set()
+        for tok in str(spec).replace(" ", "").split(","):
+            if not tok:
+                continue
+            if "-" in tok:
+                a, b = tok.split("-")
+                cps.update(range(int(a, 16), int(b, 16) + 1))
+            else:
+                cps.add(int(tok, 16))
+        return cps
+
+    cmap = font.getBestCmap()
+    glyf, hmtx, gs = font["glyf"], font["hmtx"], font.getGlyphSet()
+    for e in entries:
+        sx = float(e.get("scale_x", e.get("scale", 1.0)))
+        sy = float(e.get("scale_y", e.get("scale", 1.0)))
+        dx, dy = float(e.get("dx", 0)), float(e.get("dy", 0))
+        width = e.get("width")
+        for cp in expand(e["codepoints"]):
+            name = cmap.get(cp)
+            if not name or name not in glyf:
+                continue
+            adv0 = hmtx[name][0]
+            target_adv = int(width) if width is not None else adv0
+            bp = BoundsPen(gs)
+            gs[name].draw(bp)
+            if bp.bounds is not None:
+                xmin, ymin, xmax, ymax = bp.bounds
+                ink_cx, ink_cy = (xmin + xmax) / 2.0, (ymin + ymax) / 2.0
+                # Horizontally centre the scaled ink in the cell, then offset by dx.
+                # Vertically keep the ink where it sits, then offset by dy.
+                t = Transform(sx, 0, 0, sy,
+                              target_adv / 2.0 + dx - sx * ink_cx,
+                              ink_cy * (1 - sy) + dy)
+                rec = DecomposingRecordingPen(gs)
+                gs[name].draw(rec)
+                pen = TTGlyphPen(None)
+                rec.replay(TransformPen(pen, t))
+                glyf[name] = pen.glyph()
+                glyf[name].recalcBounds(glyf)
+            new_lsb = glyf[name].xMin if hasattr(glyf[name], "xMin") else hmtx[name][1]
+            hmtx[name] = (target_adv, new_lsb)
 
 
 # --- gather codepoints, then dedup the jp half against Iosevka --------------
@@ -185,6 +250,8 @@ if LIGATURES == "0" and "GSUB" in merged:
             for ls in langsys:
                 ls.FeatureIndex = [i for i in ls.FeatureIndex if i not in calt_idx]
                 ls.FeatureCount = len(ls.FeatureIndex)
+
+apply_glyph_adjustments(merged, os.path.join(os.environ.get("ROOT_DIR", "."), "adjustments.toml"))
 
 merged.save(out_path)
 os.remove(jp_sub)
