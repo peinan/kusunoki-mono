@@ -2,7 +2,7 @@
 # Kusunoki Mono — merge-side build configuration (single source of truth).
 #
 # The Iosevka-side design (variants / cv## / ligations / exportGlyphNames) lives
-# in private-build-plans.toml. This file holds everything the *merge* stage needs.
+# in iosevka-config.toml. This file holds everything the *merge* stage needs.
 #
 # Sourced by scripts/*.sh; the Python scripts (merge.py / fix.py / specimen.py)
 # read these values as environment variables. NERD_FONTS and LIGATURES may be
@@ -12,8 +12,8 @@ set -a  # auto-export every variable defined below (so child processes inherit)
 
 # --- Identity -------------------------------------------------------------
 FAMILY_BASE="Kusunoki Mono"
-VERSION="0.4.0"
-BUILD_PLAN="KusunokiMono"          # Iosevka plan name in private-build-plans.toml (one base build)
+VERSION="0.5.0"
+BUILD_PLAN="KusunokiMono"          # Iosevka plan name in iosevka-config.toml (one base build)
 
 # --- Variant axes (override via env; both default on) ----------------------
 NERD_FONTS="${NERD_FONTS:-1}"      # 1 = merge Nerd Fonts icon glyphs
@@ -47,8 +47,17 @@ STYLES="${STYLES:-Regular Bold Italic BoldItalic}"
 # --- Toggles --------------------------------------------------------------
 VISUALIZE_ZENKAKU_SPACE="1"        # draw a visible glyph for the ideographic space U+3000
 
+# --- Digits: source 0-9 from Google Sans Code (instanced per weight) -------
+# Google Sans Code ships only as a variable font; fix.py instances it and
+# overwrites just the digit outlines on the merged font (advance kept = HALF).
+DIGITS_SOURCE="${DIGITS_SOURCE:-1}"          # 1 = use Google Sans Code digits (0 = keep Iosevka)
+DIGIT_WGHT_REGULAR="${DIGIT_WGHT_REGULAR:-300}"  # GSC wght for Regular/Italic (matches Iosevka letter stems)
+DIGIT_WGHT_BOLD="${DIGIT_WGHT_BOLD:-600}"    # GSC wght for Bold/BoldItalic (matches Iosevka Bold stems)
+DIGIT_SCALE="${DIGIT_SCALE:-0.99}"            # uniform size tweak for digits (inspect the specimen)
+DIGIT_DY="${DIGIT_DY:-0}"                    # vertical nudge, in font units at TARGET_EM
+
 # --- Vertical harmony tuning (inspect the specimen; tweak if CJK sits high/low)
-CJK_Y_SCALE="1.0"                  # extra vertical scale applied to BIZ glyphs
+CJK_Y_SCALE="1.0"                  # extra vertical scale applied to the JP glyphs
 CJK_Y_SHIFT="0"                    # vertical shift, in font units at TARGET_EM
 
 # --- Derived: which Iosevka width variant feeds the chosen WIDTH_EM --------

@@ -1,4 +1,4 @@
-# Downloaded font sources (BIZ UDGothic, Nerd Fonts) — fetched by scripts/setup.sh
+# Downloaded font sources (IBM Plex Sans JP, Google Sans Code, Nerd Fonts) — fetched by scripts/setup.sh
 /sources/
 # Build artifacts
 /build/

@@ -11,9 +11,9 @@
 
 ## 全体の流れ
 
-1. **Iosevka** を `private-build-plans.toml` から一度だけビルドします（peinan の設計：`ss14` と `cv` の上書き、リガチャ有効、`exportGlyphNames`、そして TrueType の 65535 グリフ上限に収めるための `noCvSs`）。これが Latin / ASCII / 記号 / 罫線 / リガチャの土台になります。
-2. **LINE Seed JP** と **Nerd Fonts** を FontForge（`scripts/merge.py`）で変換します。1000 UPM に再スケールし、全角 CJK が Latin セルちょうど 2 つ分になるよう字幅を正規化し、斜体はグリフごとの中心を軸に擬似斜体化します。
-3. **fontTools**（`scripts/fix.py`）で、Iosevka が既に持つコードポイントを除き、Iosevka を先頭にしてマージし（Iosevka のリガチャ GSUB をそのまま保持）、`name` / `OS/2`（CP932、USE_TYPO_METRICS）/ `post`（isFixedPitch）/ 縦メトリクスの各テーブルを整えます。
+1. **Iosevka** を `iosevka-config.toml` から一度だけビルドします（peinan の設計：`ss14` と `cv` の上書き、リガチャ有効、`exportGlyphNames`、そして TrueType の 65535 グリフ上限に収めるための `noCvSs`）。これが Latin / ASCII / 記号 / 罫線 / リガチャの土台になります。
+2. **IBM Plex Sans JP** と **Nerd Fonts** を FontForge（`scripts/merge.py`）で変換します。1000 UPM に再スケールし、全角 CJK が Latin セルちょうど 2 つ分になるよう字幅を正規化し、斜体はグリフごとの中心を軸に擬似斜体化します。
+3. **fontTools**（`scripts/fix.py`）で、Iosevka が既に持つコードポイントを除き、Iosevka を先頭にしてマージし（Iosevka のリガチャ GSUB をそのまま保持）、`name` / `OS/2`（CP932、USE_TYPO_METRICS）/ `post`（isFixedPitch）/ 縦メトリクスの各テーブルを整えます。その後、数字 0–9 を Google Sans Code（weight ごとにインスタンス化）で上書きし、`adjustments.toml` のグリフ単位の調整を適用します。
 4. `scripts/specimen.py` がメトリクスを検査し、specimen HTML を書き出します。
 
 Iosevka のビルドは常に一度だけです。
@@ -31,7 +31,7 @@ Iosevka のビルドは常に一度だけです。
 
 | コマンド        | 内容                                                              |
 | --------------- | ----------------------------------------------------------------- |
-| `make setup`    | 依存の導入、LINE Seed JP と Nerd Fonts のダウンロード、npm install |
+| `make setup`    | 依存の導入、構成元フォントのダウンロード、npm install |
 | `make iosevka`  | Iosevka の土台をビルド（全バリアント共通）                        |
 | `make build`    | バリアントを 1 つ（iosevka + merge）。ローカル反復用              |
 | `make variants` | 4 バリアントすべて（先に `make iosevka`）                         |
@@ -58,8 +58,8 @@ Iosevka のビルドは常に一度だけです。
 
 ## 設定
 
-- `config.sh`：マージ側のノブ。`VERSION`、`WIDTH_EM`（`0.6`/`0.5`）、`TARGET_EM`、`ITALIC_ANGLE`、`STYLES`、`NERD_FONTS`、`LIGATURES`、縦位置の微調整（`CJK_Y_SCALE` / `CJK_Y_SHIFT`）。
-- `private-build-plans.toml`：Iosevka の設計（variants、`ligations`、`exportGlyphNames`、weights、widths、slopes）。
+- `config.sh`：マージ側のノブ。`VERSION`、`WIDTH_EM`（`0.6`/`0.5`）、`TARGET_EM`、`ITALIC_ANGLE`、`STYLES`、`NERD_FONTS`、`LIGATURES`、Google Sans Code の数字ソース（`DIGITS_SOURCE` / `DIGIT_WGHT_REGULAR` / `DIGIT_WGHT_BOLD` / `DIGIT_SCALE` / `DIGIT_DY`）、縦位置の微調整（`CJK_Y_SCALE` / `CJK_Y_SHIFT`）。
+- `iosevka-config.toml`：Iosevka の設計（variants、`ligations`、`exportGlyphNames`、weights、widths、slopes）。
 
 ## リリース（CI）
 
@@ -70,6 +70,6 @@ Iosevka のビルドは常に一度だけです。
 **リリースを切るには**：`config.sh` の `VERSION` を上げてコミットし、対応するタグを push します。
 
 ```sh
-git tag v0.4.0
-git push origin v0.4.0
+git tag v0.5.0
+git push origin v0.5.0
 ```

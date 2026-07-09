@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-"""Transform LINE Seed JP (+ Nerd Fonts symbols) geometry for one style.
+"""Transform IBM Plex Sans JP (+ Nerd Fonts symbols) geometry for one style.
 
 Run under FontForge:
 
     fontforge -quiet -script merge.py <style> <out_jp_ttf>
 
 Reads configuration from the environment (exported by config.sh) and writes the
-"jp half": LINE Seed JP rescaled to TARGET_EM, width-normalized to the HALF/FULL
+"jp half": IBM Plex Sans JP rescaled to TARGET_EM, width-normalized to the HALF/FULL
 cell, optionally skewed for italic, with Nerd symbols merged in. Deduplication
 against Iosevka and the final union happen later in fix.py (fontTools) — this
-stage only touches BIZ and Nerd so that Iosevka passes through untouched.
+stage only touches the JP face and Nerd so that Iosevka passes through untouched.
 """
 import sys
 import os
@@ -43,8 +43,8 @@ is_italic = "Italic" in style
 is_bold = "Bold" in style
 
 jp_src = os.path.join(
-    SOURCES, "lineseed-jp",
-    "LINESeedJP-Bold.ttf" if is_bold else "LINESeedJP-Regular.ttf",
+    SOURCES, "ibm-plex-sans-jp",
+    "IBMPlexSansJP-Bold.ttf" if is_bold else "IBMPlexSansJP-Regular.ttf",
 )
 
 

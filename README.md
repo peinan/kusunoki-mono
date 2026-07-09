@@ -9,16 +9,16 @@ English | [日本語](README.ja.md)
 [![License: OFL 1.1](https://img.shields.io/badge/license-OFL--1.1-blue.svg)](OFL.txt)
 
 A monospace font for coding with Japanese. It merges [Iosevka][iosevka] for
-Latin / ASCII / symbols / ligatures, [LINE Seed JP][lineseed] for Japanese kana and
-kanji, and [Nerd Fonts][nerd] for terminal icons — with the CJK glyphs sized to
-exactly two Latin columns so text stays aligned.
+Latin / ASCII / symbols / ligatures, [IBM Plex Sans JP][plex] for Japanese kana and
+kanji, [Google Sans Code][gsc] for the digits, and [Nerd Fonts][nerd] for terminal
+icons — with the CJK glyphs sized to exactly two Latin columns so text stays aligned.
 
 ![Kusunoki Mono specimen](docs/images/specimen.png)
 
 ## Features
 
 - **Aligned** — a full-width CJK glyph is exactly two Latin columns, so mixed Japanese and code stay on the grid.
-- **Legible glyphs** — a slashed zero and Iosevka's `ss14` design keep `0 O` and `1 l I` distinct.
+- **Legible glyphs** — Google Sans Code digits and Iosevka's `ss14` design keep `0 O` and `1 l I` distinct.
 - **Ligatures** — `=> != >= <= |> ->` and friends (the `LG` / `NFLG` variants; each ligature group is configurable).
 - **Nerd Font icons** — Powerline and terminal glyphs (the `NF` / `NFLG` variants).
 - **Visible ideographic space** — U+3000 is drawn as a faint box.
@@ -60,7 +60,7 @@ Requirements: macOS + [Homebrew][brew], [`uv`][uv], Node.js ≥ 18, and an
 [Iosevka][iosevka] checkout next to this repo at `../Iosevka` (or set `IOSEVKA_DIR`).
 
 ```sh
-make setup   # one-time: install tools, download LINE Seed JP + Nerd Fonts
+make setup   # one-time: install tools, download the source fonts
 make build   # build one variant → dist/<Family>/
 make verify  # open dist/<Family>/specimen.html to eyeball the result
 ```
@@ -70,7 +70,7 @@ Two knobs cover most tastes:
 - **Density** — `WIDTH_EM` in `config.sh`: `0.6` (roomier, default) or `0.5`
   (tighter; full-width CJK = exactly 1em). Then `make && make verify`.
 - **Ligatures** — which ligatures fire is the `[buildPlans.KusunokiMono.ligations]`
-  table in `private-build-plans.toml` (`inherits` / `enables` / `disables`). Then
+  table in `iosevka-config.toml` (`inherits` / `enables` / `disables`). Then
   `make && make verify`.
 
 Full build pipeline, the variant matrix, and the release/CI setup are in
@@ -79,7 +79,8 @@ Full build pipeline, the variant matrix, and the release/CI setup are in
 ## Built from
 
 - [Iosevka][iosevka] — Latin, ASCII, symbols, box drawing, ligatures (OFL 1.1)
-- [LINE Seed JP][lineseed] — Japanese kana & kanji (OFL 1.1)
+- [IBM Plex Sans JP][plex] — Japanese kana & kanji (OFL 1.1)
+- [Google Sans Code][gsc] — digits 0–9 (OFL 1.1)
 - [Nerd Fonts][nerd] — icon glyphs (MIT + upstream glyph licenses)
 
 ## License
@@ -88,7 +89,8 @@ Full build pipeline, the variant matrix, and the release/CI setup are in
 reserved name of any of the source fonts.
 
 [iosevka]: https://github.com/be5invis/Iosevka
-[lineseed]: https://seed.line.me/
+[plex]: https://github.com/IBM/plex
+[gsc]: https://github.com/googlefonts/googlesans-code
 [nerd]: https://www.nerdfonts.com/
 [releases]: https://github.com/peinan/kusunoki/releases
 [brew]: https://brew.sh/
