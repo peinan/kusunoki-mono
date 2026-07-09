@@ -10,18 +10,19 @@ Maintainer notes. For install & usage, see the [README](../README.md).
 
 ## How it fits together
 
-1. **Iosevka** is built once from `private-build-plans.toml` (peinan's design:
+1. **Iosevka** is built once from `iosevka-config.toml` (peinan's design:
    `ss14` + `cv` overrides, ligatures on, `exportGlyphNames`, and `noCvSs` to drop
    unused alternate glyphs so the merged font stays under TrueType's 65535-glyph
    limit). This is the Latin / ASCII / symbol / box-drawing / ligature base.
-2. **LINE Seed JP** and **Nerd Fonts** are transformed in FontForge
+2. **IBM Plex Sans JP** and **Nerd Fonts** are transformed in FontForge
    (`scripts/merge.py`): rescaled to 1000 UPM, width-normalized so a full-width
    CJK glyph spans exactly two Latin cells, and (for italics) faux-slanted about
    each glyph's own centre.
 3. **fontTools** (`scripts/fix.py`) drops anything Iosevka already covers, merges
    with Iosevka first — so Iosevka's ligature GSUB is preserved verbatim — and
    fixes the `name` / `OS/2` (CP932, USE_TYPO_METRICS) / `post` (isFixedPitch) /
-   vertical-metric tables.
+   vertical-metric tables. It then overwrites the digits 0–9 with Google Sans Code
+   (instanced per weight) and applies the per-glyph tweaks from `adjustments.toml`.
 4. `scripts/specimen.py` asserts the metrics and writes a specimen HTML.
 
 Iosevka is only ever built once; the four variants differ solely in the merge stage.
@@ -39,7 +40,7 @@ fonts, and runs `npm install` in the Iosevka checkout.
 
 | Command         | What                                                          |
 | --------------- | ------------------------------------------------------------ |
-| `make setup`    | Install deps, download LINE Seed JP + Nerd Fonts, npm install |
+| `make setup`    | Install deps, download the source fonts, npm install          |
 | `make iosevka`  | Build the Iosevka base (shared by all variants)              |
 | `make build`    | One variant (iosevka + merge) — local iteration             |
 | `make variants` | All four variants (run `make iosevka` first)                |
@@ -70,9 +71,10 @@ ligatures:
 ## Configuration
 
 - `config.sh` — merge-side knobs: `VERSION`, `WIDTH_EM` (`0.6`/`0.5`), `TARGET_EM`,
-  `ITALIC_ANGLE`, `STYLES`, `NERD_FONTS`, `LIGATURES`, and vertical-harmony tuning
-  (`CJK_Y_SCALE` / `CJK_Y_SHIFT`).
-- `private-build-plans.toml` — the Iosevka design (variants, `ligations`,
+  `ITALIC_ANGLE`, `STYLES`, `NERD_FONTS`, `LIGATURES`, the Google Sans Code digit
+  source (`DIGITS_SOURCE` / `DIGIT_WGHT_REGULAR` / `DIGIT_WGHT_BOLD` / `DIGIT_SCALE`
+  / `DIGIT_DY`), and vertical-harmony tuning (`CJK_Y_SCALE` / `CJK_Y_SHIFT`).
+- `iosevka-config.toml` — the Iosevka design (variants, `ligations`,
   `exportGlyphNames`, weights, widths, slopes).
 
 ## Releases (CI)
@@ -86,6 +88,6 @@ Plain pushes to `main` do not release, so work-in-progress can land freely.
 tag:
 
 ```sh
-git tag v0.4.0
-git push origin v0.4.0
+git tag v0.5.0
+git push origin v0.5.0
 ```

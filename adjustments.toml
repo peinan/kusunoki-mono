@@ -23,3 +23,35 @@
 # basic + diagonal arrows:  ← ↑ → ↓ ↔ ↕ ↖ ↗ ↘ ↙
 codepoints = "2190-2199"
 scale = 0.75
+
+[[adjust]]
+# Latin capitals — widen the aspect ratio (advance kept, so columns stay aligned).
+# Partitioned so every letter is scaled exactly once. The bulk get 1.08; rounder
+# or busier letters a bit less; bare-stem-ish letters least (scale_x thickens stems).
+#   bulk: A B C D F G K M P R T W X Y
+codepoints = "41-44, 46-47, 4b, 4d, 50, 52, 54, 57-59"
+scale_x = 1.08
+
+[[adjust]]
+# H L N O Q S U V Z
+codepoints = "48, 4c, 4e-4f, 51, 53, 55-56, 5a"
+scale_x = 1.05
+
+[[adjust]]
+# E I J — least
+codepoints = "45, 49-4a"
+scale_x = 1.02
+
+[[adjust]]
+# Lowercase a e g n s t — a touch narrower
+codepoints = "61, 65, 67, 6e, 73-74"
+scale_x = 0.97
+
+[[adjust]]
+# Digits (after the Google Sans Code swap; advance stays HALF). 0 narrower than 1.
+codepoints = "30"
+scale_x = 0.95
+
+[[adjust]]
+codepoints = "31"
+scale_x = 0.99

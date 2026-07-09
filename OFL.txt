@@ -1,12 +1,14 @@
 Copyright 2026 The Kusunoki Mono Project Authors (https://github.com/peinan/kusunoki)
 
 Kusunoki Mono is a derivative work built from:
-  * Iosevka       — Copyright 2015-2026 Belleve Invis, SIL OFL 1.1
-                    https://github.com/be5invis/Iosevka
-  * LINE Seed JP  — Copyright 2020-2022 LY Corporation, SIL OFL 1.1
-                    https://seed.line.me/
-  * Nerd Fonts    — Copyright Ryan L McIntyre, MIT License (icon glyphs)
-                    https://github.com/ryanoasis/nerd-fonts
+  * Iosevka           — Copyright 2015-2026 Belleve Invis, SIL OFL 1.1
+                        https://github.com/be5invis/Iosevka
+  * IBM Plex Sans JP  — Copyright 2017 IBM Corp., SIL OFL 1.1
+                        https://github.com/IBM/plex
+  * Google Sans Code  — Copyright 2025 The Google Sans Code Project Authors, SIL OFL 1.1
+                        https://github.com/googlefonts/googlesans-code
+  * Nerd Fonts        — Copyright Ryan L McIntyre, MIT License (icon glyphs)
+                        https://github.com/ryanoasis/nerd-fonts
 
 None of the above declare a Reserved Font Name; "Kusunoki Mono" is a new name
 distinct from all source fonts.

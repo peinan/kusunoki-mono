@@ -1,5 +1,5 @@
 # Kusunoki Mono build orchestration.
-# Config knobs live in config.sh; Iosevka design in private-build-plans.toml.
+# Config knobs live in config.sh; Iosevka design in iosevka-config.toml.
 
 .DEFAULT_GOAL := build
 .PHONY: setup iosevka merge build variants package dist-all verify clean distclean help
@@ -13,7 +13,7 @@ setup: ## Install deps, download font sources, npm install
 iosevka: ## Build the custom Iosevka base (Latin/ASCII/ligatures)
 	@bash scripts/build_iosevka.sh
 
-merge: ## Merge Iosevka + LINE Seed JP + Nerd Fonts -> dist/
+merge: ## Merge Iosevka + IBM Plex Sans JP + Nerd Fonts -> dist/
 	@bash scripts/merge_all.sh
 
 build: iosevka merge ## Full build of one variant: Iosevka, then merge (local dev)

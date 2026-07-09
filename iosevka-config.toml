@@ -41,9 +41,9 @@ exportGlyphNames = true   # required for ligature display in Kitty (doc/custom-b
     g = "double-storey"
     j = "flat-hook-serifed"
     l = "serifed-flat-tailed"
-    r = "serifless"
+    r = "serifed"
     t = "flat-hook-short-neck"
-    w = "straight-serifless"
+    w = "straight-flat-top-serifless"
     y = "straight-turn-serifless"
     lower-alpha = "crossing"
     punctuation-dot = "round"
@@ -108,12 +108,12 @@ exportGlyphNames = true   # required for ligature display in Kitty (doc/custom-b
     micro-sign = "tailed-serifless"
 
 [buildPlans.KusunokiMono.weights.Regular]
-shape = 500   # heavier geometry than the 400 default (paired with LINE Seed JP Regular)
+shape = 350   # a touch lighter than the 400 default (paired with IBM Plex Sans JP Regular)
 menu = 400    # still selected/named as "Regular" (OS/2 weight class 400)
 css = 400
 
 [buildPlans.KusunokiMono.weights.Bold]
-shape = 800   # heavier than the 700 default (paired with LINE Seed JP Bold)
+shape = 800   # heavier than the 700 default (paired with IBM Plex Sans JP Bold)
 menu = 700    # still selected/named as "Bold" (OS/2 weight class 700)
 css = 700
 

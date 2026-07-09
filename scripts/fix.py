@@ -2,7 +2,7 @@
 # requires-python = ">=3.11"
 # dependencies = ["fonttools>=4.50"]
 # ///
-"""Merge Iosevka (untouched) with the transformed BIZ/Nerd 'jp' half, fix tables.
+"""Merge Iosevka (untouched) with the transformed JP/Nerd 'jp' half, fix tables.
 
     uv run fix.py <iosevka_ttf> <jp_ttf> <out_ttf> <style>
 
@@ -27,6 +27,12 @@ FAMILY = os.environ["FAMILY"]
 VERSION = os.environ["VERSION"]
 ITALIC_ANGLE = float(os.environ["ITALIC_ANGLE"])
 LIGATURES = os.environ.get("LIGATURES", "1")
+DIGITS_SOURCE = os.environ.get("DIGITS_SOURCE", "1") == "1"
+DIGIT_WGHT_REGULAR = float(os.environ.get("DIGIT_WGHT_REGULAR", "500"))
+DIGIT_WGHT_BOLD = float(os.environ.get("DIGIT_WGHT_BOLD", "700"))
+DIGIT_SCALE = float(os.environ.get("DIGIT_SCALE", "1.0"))
+DIGIT_DY = float(os.environ.get("DIGIT_DY", "0"))
+SOURCES_DIR = os.environ["SOURCES_DIR"]
 
 is_italic = "Italic" in style
 is_bold = "Bold" in style
@@ -40,7 +46,8 @@ SUBFAMILY = {
 
 COPYRIGHT = (
     "Kusunoki Mono is built from Iosevka (© Belleve Invis, OFL-1.1), "
-    "LINE Seed JP (© 2020-2022 LY Corporation, OFL-1.1), "
+    "IBM Plex Sans JP (© 2017 IBM Corp., OFL-1.1), "
+    "Google Sans Code (© 2025 The Google Sans Code Project Authors, OFL-1.1), "
     "and Nerd Fonts (© Ryan L McIntyre, MIT)."
 )
 LICENSE_DESC = "This Font Software is licensed under the SIL Open Font License, Version 1.1."
@@ -120,6 +127,61 @@ def apply_glyph_adjustments(font, toml_path):
             hmtx[name] = (target_adv, new_lsb)
 
 
+def apply_digit_source(font, gsc_vf_path, wght, half, is_italic, italic_angle, scale, dy):
+    """Replace the digits 0-9 with Google Sans Code, fitted to the half cell.
+
+    Runs on the merged font (after Iosevka has already won the merge), replacing
+    only the digit *outlines* while keeping their glyph names / GIDs and a HALF
+    advance — so any layout that references digits stays valid and columns stay
+    aligned (monospace). Google Sans Code ships only as a variable font, so it is
+    instanced at `wght` first. For italic styles each digit is faux-slanted about
+    its own centre by `italic_angle`, matching the JP faux-italic (merge.py) and
+    Iosevka's built-in slant.
+    """
+    import math
+    from fontTools.misc.transform import Transform
+    from fontTools.pens.boundsPen import BoundsPen
+    from fontTools.pens.recordingPen import DecomposingRecordingPen
+    from fontTools.pens.ttGlyphPen import TTGlyphPen
+    from fontTools.pens.transformPen import TransformPen
+    from fontTools.varLib import instancer
+
+    gsc = TTFont(gsc_vf_path)
+    instancer.instantiateVariableFont(gsc, {"wght": wght}, inplace=True)
+    s = (font["head"].unitsPerEm / gsc["head"].unitsPerEm) * scale
+    ang = math.radians(italic_angle) if is_italic else 0.0
+    tan = math.tan(ang)
+
+    gsc_cmap, gsc_gs = gsc.getBestCmap(), gsc.getGlyphSet()
+    cmap, glyf, hmtx = font.getBestCmap(), font["glyf"], font["hmtx"]
+    for cp in range(0x30, 0x3A):                       # '0'..'9'
+        src, dst = gsc_cmap.get(cp), cmap.get(cp)
+        if not src or not dst or dst not in glyf:
+            continue
+        bp = BoundsPen(gsc_gs)
+        gsc_gs[src].draw(bp)
+        if bp.bounds is None:
+            continue
+        xmin, ymin, xmax, ymax = [v * s for v in bp.bounds]
+        ink_cx, ink_cy = (xmin + xmax) / 2.0, (ymin + ymax) / 2.0
+        # Applied to source coords innermost-first: scale -> skew(about origin)
+        # -> translate. The translate re-centres the (skewed) ink in the cell
+        # and applies the vertical dy nudge.
+        t = (Transform()
+             .translate(half / 2.0 - (ink_cx + tan * ink_cy), dy)
+             .skew(ang, 0.0)
+             .scale(s, s))
+        rec = DecomposingRecordingPen(gsc_gs)
+        gsc_gs[src].draw(rec)
+        pen = TTGlyphPen(None)
+        rec.replay(TransformPen(pen, t))
+        glyf[dst] = pen.glyph()
+        glyf[dst].recalcBounds(glyf)
+        new_lsb = glyf[dst].xMin if hasattr(glyf[dst], "xMin") else 0
+        hmtx[dst] = (int(half), new_lsb)
+    gsc.close()
+
+
 # --- gather codepoints, then dedup the jp half against Iosevka --------------
 iose = TTFont(iose_path)
 jp = TTFont(jp_path)
@@ -135,14 +197,14 @@ if not keep:
 #    present in only one font -> breaks fontTools' table merger.
 #  - FFTM/DSIG/meta: FontForge / signature cruft.
 #  - all OpenType layout is dropped below via layout_features=[]: Iosevka provides
-#    every feature (including ligatures), so keeping BIZ's layout only invites
-#    conflicts. We keep the CJK glyphs, not BIZ's GSUB/GPOS.
+#    every feature (including ligatures), so keeping the JP layout only invites
+#    conflicts. We keep the CJK glyphs, not the JP face's GSUB/GPOS.
 for tag in ("vhea", "vmtx", "VORG", "FFTM", "DSIG", "meta"):
     if tag in jp:
         del jp[tag]
 
 ss = subset.Subsetter()
-ss.options.layout_features = []          # drop BIZ layout; Iosevka owns all layout
+ss.options.layout_features = []          # drop JP layout; Iosevka owns all layout
 ss.options.name_IDs = ["*"]
 ss.options.name_legacy = True
 ss.options.name_languages = ["*"]
@@ -250,6 +312,11 @@ if LIGATURES == "0" and "GSUB" in merged:
             for ls in langsys:
                 ls.FeatureIndex = [i for i in ls.FeatureIndex if i not in calt_idx]
                 ls.FeatureCount = len(ls.FeatureIndex)
+
+if DIGITS_SOURCE:
+    gsc_path = os.path.join(SOURCES_DIR, "google-sans-code", "GoogleSansCode[wght].ttf")
+    digit_wght = DIGIT_WGHT_BOLD if is_bold else DIGIT_WGHT_REGULAR
+    apply_digit_source(merged, gsc_path, digit_wght, HALF, is_italic, ITALIC_ANGLE, DIGIT_SCALE, DIGIT_DY)
 
 apply_glyph_adjustments(merged, os.path.join(os.environ.get("ROOT_DIR", "."), "adjustments.toml"))
 

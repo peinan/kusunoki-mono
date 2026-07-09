@@ -22,12 +22,21 @@ command -v uv >/dev/null 2>&1 || { echo "ERROR: uv not found — install uv firs
 echo "    ok: uv $(uv --version)"
 
 echo "==> Font sources into $SOURCES_DIR"
-mkdir -p "$SOURCES_DIR/lineseed-jp" "$SOURCES_DIR/nerd"
+mkdir -p "$SOURCES_DIR/ibm-plex-sans-jp" "$SOURCES_DIR/google-sans-code" "$SOURCES_DIR/nerd"
 
-lsjp_base="https://raw.githubusercontent.com/google/fonts/main/ofl/lineseedjp"
-for f in LINESeedJP-Regular.ttf LINESeedJP-Bold.ttf OFL.txt; do
-  dest="$SOURCES_DIR/lineseed-jp/$f"
-  [ -s "$dest" ] || { echo "    fetching $f"; curl -fsSL "$lsjp_base/$f" -o "$dest"; }
+# Japanese face: IBM Plex Sans JP (Regular=400 for Regular, Bold=700 for Bold)
+plex_base="https://raw.githubusercontent.com/google/fonts/main/ofl/ibmplexsansjp"
+for f in IBMPlexSansJP-Regular.ttf IBMPlexSansJP-Bold.ttf OFL.txt; do
+  dest="$SOURCES_DIR/ibm-plex-sans-jp/$f"
+  [ -s "$dest" ] || { echo "    fetching $f"; curl -fsSL "$plex_base/$f" -o "$dest"; }
+done
+
+# Digits: Google Sans Code (variable font; instanced per weight in fix.py).
+# -g keeps the literal [wght] in the filename (curl would otherwise glob it).
+gsc_base="https://raw.githubusercontent.com/google/fonts/main/ofl/googlesanscode"
+for f in "GoogleSansCode[wght].ttf" OFL.txt; do
+  dest="$SOURCES_DIR/google-sans-code/$f"
+  [ -s "$dest" ] || { echo "    fetching $f"; curl -fsSL -g "$gsc_base/$f" -o "$dest"; }
 done
 
 if [ "${NERD_FONTS}" = "1" ]; then

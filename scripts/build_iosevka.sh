@@ -5,8 +5,9 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 source ./config.sh
 
-echo "==> Placing private-build-plans.toml into $IOSEVKA_DIR"
-cp ./private-build-plans.toml "$IOSEVKA_DIR/private-build-plans.toml"
+echo "==> Copying iosevka-config.toml -> $IOSEVKA_DIR/private-build-plans.toml"
+# Iosevka's build tool requires the plan file to be named private-build-plans.toml.
+cp ./iosevka-config.toml "$IOSEVKA_DIR/private-build-plans.toml"
 
 echo "==> Building Iosevka plan '$BUILD_PLAN' (this takes a while)"
 jcmd_arg=""
