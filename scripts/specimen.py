@@ -123,6 +123,11 @@ ALIGN_SAMPLE = """\
 |あいうえ|かきくけ|   4 full-width = 8 half-width
 |漢字表示|テスト枠|   should line up with the ru: above"""
 
+CHARSET_SAMPLE = """\
+ABCDEFGHIJKLMNOPQRSTUVWXYZ
+abcdefghijklmnopqrstuvwxyz
+0123456789  !"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"""
+
 NERD_SAMPLE = "               "
 BOX_SAMPLE = "┌───┬───┐\n│ a │ b │\n├───┼───┤\n│ c │ d │\n└───┴───┘   ║╔═╗║ ╭──╮ ▏▎▍▌▋▊▉█ ░▒▓"
 
@@ -158,9 +163,13 @@ def build_html(results):
         return f"<section><h2>{esc(title)}</h2><pre style='{style_css}'>{esc(content)}</pre></section>"
 
     body = [
-        f"<header><h1>{FAMILY}</h1><p>v{VERSION} · width {WIDTH_EM}em (half={HALF}, full={FULL}) · Iosevka + LINE Seed JP + Nerd Fonts</p></header>",
+        f"<header><h1>{FAMILY}</h1><p>v{VERSION} · width {WIDTH_EM}em (half={HALF}, full={FULL}) · Iosevka + IBM Plex Sans JP + Google Sans Code + Nerd Fonts</p></header>",
         f"<section><h2>Metric verification</h2>{table}</section>",
         block("Alignment (full-width must equal 2 half-width)", ALIGN_SAMPLE),
+        block("Character set — Regular", CHARSET_SAMPLE),
+        block("Character set — Bold", CHARSET_SAMPLE, "font-weight:700"),
+        block("Character set — Italic", CHARSET_SAMPLE, "font-style:italic"),
+        block("Character set — Bold Italic", CHARSET_SAMPLE, "font-weight:700;font-style:italic"),
         block("Ligatures & operators — Regular", CODE_SAMPLE),
         block("Ligatures & operators — Bold", CODE_SAMPLE, "font-weight:700"),
         block("Ligatures & operators — Italic", CODE_SAMPLE, "font-style:italic"),
