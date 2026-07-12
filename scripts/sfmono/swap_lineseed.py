@@ -92,7 +92,16 @@ for lo, hi in RANGES:
         b2 = BoundsPen(None)
         rec.replay(TransformPen(b2, Transform(S, 0, yx, S, e0, 0)))
         cx2 = (b2.bounds[0] + b2.bounds[2]) / 2
-        M = Transform(S, 0, yx, S, e0 + (adv / 2.0 - cx2), DY)
+        if cp in (0x3001, 0x3002):
+            # issue #4: left-align 、。 instead of centring, using LINE Seed's
+            # own left side bearing mapped proportionally into the full cell.
+            src_xmin = b1.bounds[0] / S
+            src_adv = jp["hmtx"][sname][0]
+            left = src_xmin * adv / src_adv
+            tx = e0 + (left - b2.bounds[0])
+        else:
+            tx = e0 + (adv / 2.0 - cx2)
+        M = Transform(S, 0, yx, S, tx, DY)
         pen = T2CharStringPen(adv, None)
         rec.replay(TransformPen(Qu2CuPen(pen, max_err=1.0, reverse_direction=True), M))
         cs[tname] = pen.getCharString(private=priv, globalSubrs=gsubrs)
