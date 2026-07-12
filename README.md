@@ -16,7 +16,8 @@ transforms on a [SF Mono Square][sfms]-style base:
   as the fallback for the rest.
 - **Italic** — 14 lowercase letters grafted from **Google Sans Code**'s true
   italic; the rest is SF Mono's italic, centred in the cell.
-- **Icons** — **Nerd Fonts** (official v3.4.0 patcher, single-width).
+- **Icons** — **Nerd Fonts** (official v3.4.0 patcher, variable-width — icons
+  sized to match SF Mono Square).
 
 ## Not distributed — build it yourself
 
@@ -51,7 +52,7 @@ Tuning knobs (env vars for `make build`):
 `scripts/sfmono/`, orchestrated by `build.sh`:
 
 1. `build_base.py` — SF Mono ×0.809 (square) + Migu 1M ×0.82 → base.
-2. nerd-fonts `font-patcher --single-width-glyphs` → icons (CJK stays full-width).
+2. nerd-fonts `font-patcher --variable-width-glyphs` → icons (CJK stays full-width).
 3. `swap_lineseed.py` — swap kana/kanji to LINE Seed JP (Migu fallback).
 4. `graft_italic.py` + `center_italic.py` — Google Sans Code italic letters, centred.
 5. `finalize.py` — RIBBI name / OS2 / metrics.

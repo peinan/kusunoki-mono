@@ -117,6 +117,17 @@ subfamily = {"Regular": "Regular", "Bold": "Bold",
 sf.familyname = "Kusunoki Mono"
 sf.fontname = "KusunokiMono-" + STYLE
 sf.fullname = "Kusunoki Mono" + ("" if subfamily == "Regular" else " " + subfamily)
+
+# Square line box (baseline-to-baseline = em = FULL) so the base is square in
+# both cell width and line height, matching SF Mono Square (1638/-410 at 2048).
+# The nerd patch (P2) sizes icons against this box, so it must be the final,
+# shipped metric here — otherwise icons get sized to SF Mono's native 2444 box
+# and then shipped in the 2048 box, making Powerline separators overflow the
+# line. finalize.py re-affirms the same values.
+sf.os2_typoascent, sf.os2_typodescent, sf.os2_typolinegap = 1638, -410, 0
+sf.os2_winascent, sf.os2_windescent = 1638, 410
+sf.hhea_ascent, sf.hhea_descent, sf.hhea_linegap = 1638, -410, 0
+sf.os2_use_typo_metrics = 1
 sf.generate(OUT)
 sf.close()
 print(f"[build_base] merged {kept} Migu JP glyphs -> {OUT}")

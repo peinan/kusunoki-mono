@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Build Kusunoki Mono — self-contained SF Mono Square reproduction + transforms.
 #   P1 base    : SF Mono ×0.809 (square) + Migu 1M ×0.82
-#   P2 nerd    : official nerd-fonts font-patcher --mono (single-width icons, v3.4.0)
+#   P2 nerd    : official nerd-fonts font-patcher --variable-width-glyphs (Propo, v3.4.0)
 #   P3 lineseed: swap kana/kanji to LINE Seed JP (Migu fallback)
 #   P4 italic  : graft GSC true-italic letters + centre (italic styles only)
 #   P5 final   : name / OS2 / metrics (RIBBI family "Kusunoki Mono")
@@ -28,10 +28,12 @@ GSC_IT="$ROOT/$SRC/google-sans-code/GoogleSansCode-Italic[wght].ttf"
 nerd_patch() {  # $1=style; logs to $B/$1.p2.log; echoes patched .otf path on stdout
   local st=$1
   rm -f "$NERDDIR"/*.otf
-  # --single-width-glyphs: added Nerd icons are single-cell; existing CJK stays
-  # full-width. (NOT --mono, which would force existing glyphs single-width too.)
+  # --variable-width-glyphs (Nerd Font Propo): keep each icon's natural width and
+  # per-set size, like SF Mono Square. --single-width-glyphs (Mono) instead packs
+  # every icon into one half-cell, shrinking non-Powerline icons to ~50% height
+  # (too small — issue #9). Existing Latin/CJK advances are untouched either way.
   ( cd "$PATCHER_DIR" && fontforge -script ./font-patcher \
-      --complete --single-width-glyphs --careful --quiet \
+      --complete --variable-width-glyphs --careful --quiet \
       --outputdir "$ROOT/$NERDDIR" "$ROOT/$BASE/KusunokiMono-$st.otf" ) >"$B/$st.p2.log" 2>&1
   ls "$NERDDIR"/*.otf 2>/dev/null | head -1
 }
@@ -43,7 +45,7 @@ buildone() {  # 1=style 2=sf 3=migu 4=lineseed 5=gsc_wght(optional, italics)
   fontforge -quiet -script scripts/sfmono/build_base.py \
     "$ROOT/$SRC/$sf" "$ROOT/$SRC/$migu" "$ROOT/$BASE/KusunokiMono-$st.otf" "$st" >"$B/$st.p1.log" 2>&1 \
     && grep -E '^\[build_base\]' "$B/$st.p1.log" | tail -1 || { echo "  !! P1 $st FAILED"; tail -3 "$B/$st.p1.log"; return 1; }
-  echo "-- P2 nerd (--mono, official v3.4.0)"
+  echo "-- P2 nerd (--variable-width-glyphs / Propo, official v3.4.0)"
   local patched; patched=$(nerd_patch "$st")
   [ -s "$patched" ] || { echo "  !! P2 $st FAILED"; tail -3 "$B/$st.p2.log"; return 1; }
   echo "   -> $(basename "$patched")"
