@@ -1,36 +1,17 @@
-# Kusunoki Mono build orchestration.
-# Config knobs live in config.sh; Iosevka design in iosevka-config.toml.
-
+# Kusunoki Mono (SF Mono Square edition) — build orchestration.
+# A personal build recipe; the output embeds Apple SF Mono and is not
+# redistributable. See README.md.
 .DEFAULT_GOAL := build
-.PHONY: setup iosevka merge build variants package dist-all verify clean distclean help
+.PHONY: setup build clean help
 
 help: ## Show this help
 	@grep -E '^[a-z].*:.*##' $(MAKEFILE_LIST) | sed 's/:.*##/\t/' | sort
 
-setup: ## Install deps, download font sources, npm install
-	@bash scripts/setup.sh
+setup: ## Fetch sources (SF Mono, Migu 1M, nerd-fonts patcher, LINE Seed JP, Google Sans Code)
+	@bash scripts/sfmono/setup.sh
 
-iosevka: ## Build the custom Iosevka base (Latin/ASCII/ligatures)
-	@bash scripts/build_iosevka.sh
+build: ## Build the 4 styles into build/sfms/dist/
+	@bash scripts/sfmono/build.sh
 
-merge: ## Merge Iosevka + IBM Plex Sans JP + Nerd Fonts -> dist/
-	@bash scripts/merge_all.sh
-
-build: iosevka merge ## Full build of one variant: Iosevka, then merge (local dev)
-
-variants: ## Build all 4 release variants (NF x ligatures); run after `make iosevka`
-	@bash scripts/build_variants.sh
-
-package: ## Zip each built variant into dist/release-assets/
-	@bash scripts/package.sh
-
-dist-all: iosevka variants package ## Full release build: base + 4 variants + zips
-
-verify: ## Metric assertions + specimen (HTML) for the current variant
-	@bash scripts/verify.sh
-
-clean: ## Remove build/ and dist/
-	@rm -rf build dist
-
-distclean: clean ## Also remove downloaded sources/
-	@rm -rf sources
+clean: ## Remove build artifacts (keeps fetched sources/)
+	@rm -rf build

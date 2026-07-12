@@ -4,94 +4,68 @@ English | [日本語](README.ja.md)
 
 </div>
 
-# Kusunoki Mono
+# Kusunoki Mono (SF Mono Square edition)
 
-[![License: OFL 1.1](https://img.shields.io/badge/license-OFL--1.1-blue.svg)](OFL.txt)
+A personal monospace font for coding with Japanese, built by layering custom
+transforms on a [SF Mono Square][sfms]-style base:
 
-A monospace font for coding with Japanese. It merges [Iosevka][iosevka] for
-Latin / ASCII / symbols / ligatures, [IBM Plex Sans JP][plex] for Japanese kana and
-kanji, [Google Sans Code][gsc] for the digits, and [Nerd Fonts][nerd] for terminal
-icons — with the CJK glyphs sized to exactly two Latin columns so text stays aligned.
+- **Latin / ASCII / symbols / digits** — Apple **SF Mono**, condensed to a
+  square grid (a full-width CJK glyph is exactly two Latin columns, so mixed
+  Japanese and code stay aligned).
+- **Japanese** — **LINE Seed JP** for the kana / kanji it covers, **Migu 1M**
+  as the fallback for the rest.
+- **Italic** — 14 lowercase letters grafted from **Google Sans Code**'s true
+  italic; the rest is SF Mono's italic, centred in the cell.
+- **Icons** — **Nerd Fonts** (official v3.4.0 patcher, single-width).
 
-![Kusunoki Mono specimen](docs/images/specimen.png)
+## Not distributed — build it yourself
 
-## Features
+The output **embeds Apple SF Mono**, which Apple licenses for local use but
+does **not** permit redistributing. So no font binaries are shipped here — this
+repo is a **build recipe** that downloads SF Mono from Apple plus the
+OFL/MIT source fonts and builds the font locally on your Mac.
 
-- **Aligned** — a full-width CJK glyph is exactly two Latin columns, so mixed Japanese and code stay on the grid.
-- **Legible glyphs** — Google Sans Code digits and Iosevka's `ss14` design keep `0 O` and `1 l I` distinct.
-- **Ligatures** — `=> != >= <= |> ->` and friends (the `LG` / `NFLG` variants; each ligature group is configurable).
-- **Nerd Font icons** — Powerline and terminal glyphs (the `NF` / `NFLG` variants).
-- **Visible ideographic space** — U+3000 is drawn as a faint box.
-- **Four styles** — Regular / Bold / Italic / Bold Italic, with the CJK slanted to match the Latin italic.
+## Build (macOS)
 
-## Which one to download
-
-Four variants, each in **Regular / Bold / Italic / Bold Italic**. They use
-different family names, so you can install several side by side and choose per app.
-
-| Font family            | Ligatures | Nerd Font icons | Good for                              |
-| ---------------------- | :-------: | :-------------: | ------------------------------------- |
-| **Kusunoki Mono**      |     –     |        –        | Plain, maximally compatible           |
-| **Kusunoki Mono NF**   |     –     |        ✓        | Terminals with icons, no ligatures    |
-| **Kusunoki Mono LG**   |     ✓     |        –        | Editors, with ligatures               |
-| **Kusunoki Mono NFLG** |     ✓     |        ✓        | Everything — ligatures **and** icons  |
-
-Not sure? Pick **NFLG** for a terminal/editor that shows icons and ligatures, or
-plain **Kusunoki Mono** if you want neither.
-
-## Install
-
-1. Download a variant's zip from the [Releases page][releases].
-2. Install the `.ttf` files:
-   - **macOS** — open them and click *Install*, or copy to `~/Library/Fonts/`.
-   - **Windows** — select them, right-click → *Install*.
-   - **Linux** — copy to `~/.local/share/fonts/`, then `fc-cache -f`.
-3. Set your editor/terminal font to the family name, e.g. `Kusunoki Mono NFLG`.
-
-Ligatures (the `LG` / `NFLG` variants) usually need turning on in your app too —
-e.g. VS Code `"editor.fontLigatures": true`. The plain / `NF` variants have no
-ligatures at all, which some people prefer in a terminal.
-
-## Tweak it yourself
-
-You only need this to change something — the released fonts work as-is.
-
-Requirements: macOS + [Homebrew][brew], [`uv`][uv], Node.js ≥ 18, and an
-[Iosevka][iosevka] checkout next to this repo at `../Iosevka` (or set `IOSEVKA_DIR`).
+Requirements: macOS, [Homebrew][brew] (`brew install fontforge`), and
+[`uv`][uv].
 
 ```sh
-make setup   # one-time: install tools, download the source fonts
-make build   # build one variant → dist/<Family>/
-make verify  # open dist/<Family>/specimen.html to eyeball the result
+make setup   # fetch SF Mono (Apple), Migu 1M, nerd-fonts patcher, LINE Seed JP, Google Sans Code
+make build   # → build/sfms/dist/KusunokiMono-{Regular,Bold,Italic,BoldItalic}.otf
 ```
 
-Two knobs cover most tastes:
+Install the four `.otf` into `~/Library/Fonts/` and set your terminal / editor
+font to **Kusunoki Mono**.
 
-- **Density** — `WIDTH_EM` in `config.sh`: `0.6` (roomier, default) or `0.5`
-  (tighter; full-width CJK = exactly 1em). Then `make && make verify`.
-- **Ligatures** — which ligatures fire is the `[buildPlans.KusunokiMono.ligations]`
-  table in `iosevka-config.toml` (`inherits` / `enables` / `disables`). Then
-  `make && make verify`.
+Tuning knobs (env vars for `make build`):
 
-Full build pipeline, the variant matrix, and the release/CI setup are in
-[docs/BUILD.md](docs/BUILD.md).
+- `JP_SCALE` — Japanese optical size (default `0.82`).
+- `ITALIC_INK_OFFSET` — italic Latin ink offset as a fraction of the cell
+  (`0.0` = centred like the upright [default]; `0.076` = SF Mono's native
+  right-lean).
+- `GSC_R` / `GSC_B` — Google Sans Code weight for the grafted italic letters.
 
-## Built from
+## How it's built
 
-- [Iosevka][iosevka] — Latin, ASCII, symbols, box drawing, ligatures (OFL 1.1)
-- [IBM Plex Sans JP][plex] — Japanese kana & kanji (OFL 1.1)
-- [Google Sans Code][gsc] — digits 0–9 (OFL 1.1)
-- [Nerd Fonts][nerd] — icon glyphs (MIT + upstream glyph licenses)
+`scripts/sfmono/`, orchestrated by `build.sh`:
 
-## License
+1. `build_base.py` — SF Mono ×0.809 (square) + Migu 1M ×0.82 → base.
+2. nerd-fonts `font-patcher --single-width-glyphs` → icons (CJK stays full-width).
+3. `swap_lineseed.py` — swap kana/kanji to LINE Seed JP (Migu fallback).
+4. `graft_italic.py` + `center_italic.py` — Google Sans Code italic letters, centred.
+5. `finalize.py` — RIBBI name / OS2 / metrics.
 
-[SIL Open Font License 1.1](OFL.txt). "Kusunoki Mono" is a new name and is not a
-reserved name of any of the source fonts.
+Deps are just `fontforge` + `uv` (fonttools) + the nerd-fonts patcher fetched
+by `setup.sh`.
 
-[iosevka]: https://github.com/be5invis/Iosevka
-[plex]: https://github.com/IBM/plex
-[gsc]: https://github.com/googlefonts/googlesans-code
-[nerd]: https://www.nerdfonts.com/
-[releases]: https://github.com/peinan/kusunoki/releases
+## Licensing
+
+The built font is a **personal, non-redistributable** artifact — it contains
+Apple SF Mono. The source fonts keep their own licenses: SF Mono (© Apple), Migu
+1M (M+ / IPA), LINE Seed JP (OFL 1.1), Google Sans Code (OFL 1.1), Nerd Fonts
+(MIT + upstream). The build scripts here are the author's own.
+
+[sfms]: https://github.com/delphinus/homebrew-sfmono-square
 [brew]: https://brew.sh/
 [uv]: https://docs.astral.sh/uv/
