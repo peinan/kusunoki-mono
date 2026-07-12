@@ -88,5 +88,16 @@ else
   echo "==> Google Sans Code present"
 fi
 
+# --- JetBrains Mono (programming-ligature designs) ---------------------------
+if [ ! -s "$SRC/jetbrains-mono/JetBrainsMono[wght].ttf" ]; then
+  echo "==> JetBrains Mono"
+  mkdir -p "$SRC/jetbrains-mono"
+  curl -fsSL -g "$GF/jetbrainsmono/JetBrainsMono%5Bwght%5D.ttf" \
+    -o "$SRC/jetbrains-mono/JetBrainsMono[wght].ttf"
+  curl -fsSL "$GF/jetbrainsmono/OFL.txt" -o "$SRC/jetbrains-mono/OFL.txt"
+else
+  echo "==> JetBrains Mono present"
+fi
+
 echo "==> setup complete: $SRC"
 ls -1 "$SRC"
