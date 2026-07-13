@@ -1,4 +1,4 @@
-# Kusunoki Mono (SF Mono Square edition) — build orchestration.
+# Kusunoki Mono — build orchestration.
 # A personal build recipe; the output embeds Apple SF Mono and is not
 # redistributable. See README.md.
 .DEFAULT_GOAL := build
