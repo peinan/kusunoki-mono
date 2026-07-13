@@ -3,6 +3,7 @@
 # Build artifacts
 /build/
 /dist/
+/dist-0.5em/
 # Python / uv
 /.venv/
 __pycache__/

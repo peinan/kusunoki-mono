@@ -4,87 +4,72 @@
 
 </div>
 
-# Kusunoki Mono
+# Kusunoki Mono (SF Mono Square edition)
 
-[![License: OFL 1.1](https://img.shields.io/badge/license-OFL--1.1-blue.svg)](OFL.txt)
+日本語コーディング向けの個人用等幅フォント。[SF Mono Square][sfms] 系のベースに
+独自変換を重ねて作ります:
 
-日本語まじりのコードを書くための等幅フォントです。
-Latin / ASCII / 記号 / リガチャに [Iosevka][iosevka]、日本語のかなと漢字に [IBM Plex Sans JP][plex]、数字に [Google Sans Code][gsc]、ターミナルのアイコンに [Nerd Fonts][nerd] を合成しています。
-全角の CJK グリフは Latin 2 桁ぶんの幅にそろえてあるので、表示が崩れません。
+- **Latin / ASCII / 記号 / 数字** — Apple **SF Mono** を正方グリッドに詰めたもの
+  (全角 CJK = ちょうど 2 Latin 列。和文とコードがグリッドに揃う)。
+- **和文** — カバーする仮名・漢字は **LINE Seed JP**、残りは **Migu 1M** を
+  フォールバック。
+- **イタリック** — 小文字 14 字を **Google Sans Code** の true italic から移植、
+  残りは SF Mono の italic をセル中央寄せ。
+- **アイコン** — **Nerd Fonts**(公式 v3.4.0 patcher、可変幅で SF Mono Square 同様のサイズ)。
 
-![Kusunoki Mono スペシメン](docs/images/specimen.png)
+## 配布しません — 自分でビルド
 
-## 特徴
+出力には **Apple SF Mono が含まれ**、Apple はローカル利用を許諾していますが
+**再配布は認めていません**。そのためフォントバイナリは同梱せず、この repo は
+**ビルドレシピ**です(SF Mono を Apple から、OFL/MIT のソースフォントを取得し、
+手元の Mac でビルド)。
 
-- **桁がそろう**：全角の CJK グリフが半角ラテンちょうど 2 つ分で、日本語まじりのコードでも桁が崩れません。
-- **判別しやすい字形**：Google Sans Code の数字と Iosevka の `ss14` 設計で、`0 O` や `1 l I` を見分けやすくしています。
-- **リガチャ**：`=> != >= <= |> ->` などの合字（`LG` / `NFLG` バリアント。合字グループごとに調整できます）。
-- **Nerd Font アイコン**：Powerline やターミナル用のアイコン（`NF` / `NFLG` バリアント）。
-- **全角スペースの可視化**：U+3000 を薄い枠で表示します。
-- **4 スタイル**：Regular / Bold / Italic / Bold Italic。斜体は和文もラテンの傾きに合わせます。
+## ビルド(macOS)
 
-## どれをダウンロードするか
-
-4 つのバリアントがあり、それぞれに Regular / Bold / Italic / Bold Italic を用意しています。
-family 名が異なるので、複数を同時にインストールしてアプリごとに使い分けられます。
-
-| フォント family        | リガチャ | Nerd Font アイコン | 向いている用途                             |
-| ---------------------- | :------: | :----------------: | ------------------------------------------ |
-| **Kusunoki Mono**      |    –     |         –          | 素の構成。互換性を最優先したいとき         |
-| **Kusunoki Mono NF**   |    –     |         ✓          | アイコンを表示するターミナル（リガチャなし） |
-| **Kusunoki Mono LG**   |    ✓     |         –          | リガチャを使うエディタ                     |
-| **Kusunoki Mono NFLG** |    ✓     |         ✓          | 全部入り（リガチャとアイコン）             |
-
-迷ったら、アイコンとリガチャを両方使うなら **NFLG**、どちらも要らないなら素の **Kusunoki Mono** を選んでください。
-
-## インストール
-
-1. [Releases ページ][releases]から使いたいバリアントの zip をダウンロードします。
-2. `.ttf` をインストールします。
-   - **macOS**：`.ttf` を開いて「インストール」、または `~/Library/Fonts/` にコピー。
-   - **Windows**：`.ttf` を選択して右クリックから「インストール」。
-   - **Linux**：`~/.local/share/fonts/` にコピーして `fc-cache -f` を実行。
-3. エディタやターミナルのフォントに family 名（例：`Kusunoki Mono NFLG`）を指定します。
-
-リガチャ（`LG` と `NFLG`）は、アプリ側でも有効化が必要なことが多いです（例：VS Code の `"editor.fontLigatures": true`）。
-素の構成と `NF` はリガチャを一切含みません。ターミナルではこちらを好む人もいます。
-
-## 自分で調整する
-
-変更したいときだけ必要です。
-配布フォントはそのまま使えます。
-
-必要なもの：macOS と [Homebrew][brew]、[`uv`][uv]、Node.js 18 以上、そしてこのリポジトリの隣（`../Iosevka`）に置いた [Iosevka][iosevka] のチェックアウト（`IOSEVKA_DIR` で変更可）。
+必要: macOS、[Homebrew][brew](`brew install fontforge`)、[`uv`][uv]。
 
 ```sh
-make setup   # 初回のみ。ツール導入、構成元フォントのダウンロード
-make build   # バリアントを 1 つビルド → dist/<Family>/
-make verify  # dist/<Family>/specimen.html を開いて目視確認
+make setup   # SF Mono(Apple)/ Migu 1M / nerd-fonts patcher / LINE Seed JP / Google Sans Code を取得
+make build   # → build/sfms/dist/KusunokiMono-{Regular,Bold,Italic,BoldItalic}.otf
 ```
 
-好みの多くは 2 つのノブで足ります。
+4 つの `.otf` を `~/Library/Fonts/` に入れ、端末/エディタのフォントを
+**Kusunoki Mono** に設定します。
 
-- **字幅（密度）**：`config.sh` の `WIDTH_EM`。`0.6`（ゆったり、既定）か `0.5`（詰まった見た目で、全角 CJK がちょうど 1em）。変更後に `make && make verify`。
-- **リガチャ**：発火するリガチャの種類は `iosevka-config.toml` の `[buildPlans.KusunokiMono.ligations]`（`inherits` / `enables` / `disables`）で決まります。変更後に `make && make verify`。
+調整ノブ(`make build` の環境変数):
 
-ビルドパイプライン全体、バリアントの仕組み、リリースと CI の詳細は [docs/BUILD.ja.md](docs/BUILD.ja.md) にあります。
+- `JP_SCALE` — 和文の光学サイズ(既定 `0.82`)。
+- `ITALIC_INK_OFFSET` — italic の英字インク位置(セル比)。`0.0`=upright と同じ中央
+  (既定)、`0.076`=SF Mono 本来の右寄り。
+- `GSC_R` / `GSC_B` — 移植する italic 文字の Google Sans Code ウェイト。
+- `KM_AMBIGUOUS_WIDTH` — `※ ★ ℃` など East Asian Width が曖昧な記号のセル幅。
+  `narrow`(既定)は1セル＝Ghostty 等の厳密な端末で被らない。`wide` は2セル
+  (SF Mono Square 相当・端末側で ambiguous=wide 設定が必要)。
+- `KM_SFMS_DIR` — `SFMonoSquare-*.otf` のあるディレクトリ。アイコンを SF Mono
+  Square のサイズに合わせるのに使用(既定 `~/Library/Fonts`、無ければスキップ)。
 
-## 構成元
+## ビルドの流れ
 
-- [Iosevka][iosevka]：Latin、ASCII、記号、罫線、リガチャ（OFL 1.1）
-- [IBM Plex Sans JP][plex]：日本語のかなと漢字（OFL 1.1）
-- [Google Sans Code][gsc]：数字 0–9（OFL 1.1）
-- [Nerd Fonts][nerd]：アイコングリフ（MIT および各上流のグリフライセンス）
+`scripts/sfmono/`(`build.sh` が統括):
+
+1. `build_base.py` — SF Mono ×0.809(正方)+ Migu 1M ×0.82。SF Mono に無い記号
+   (※・矢印など)も Migu から補完 → ベース。
+2. nerd-fonts `font-patcher --variable-width-glyphs` → アイコン(CJK は全角のまま)。
+3. `plan_icon_scale.py` + `apply_icon_scale.py` — SF Mono Square より大きいアイコンを
+   同サイズに縮小(同一グリフのみ・ローカルの SFMS 参照が必要、無ければスキップ)。
+4. `swap_lineseed.py` — 仮名/漢字を LINE Seed JP に差替(Migu フォールバック)。
+5. `graft_italic.py` + `center_italic.py` — Google Sans Code の italic 文字を中央寄せで移植。
+6. `finalize.py` — RIBBI name / OS2 / メトリクス。
+
+依存は `fontforge` + `uv`(fonttools)+ `setup.sh` が取得する nerd-fonts patcher のみ。
 
 ## ライセンス
 
-[SIL Open Font License 1.1](OFL.txt)。
-「Kusunoki Mono」は新しい名前で、構成元フォントいずれの予約フォント名にも該当しません。
+ビルド済みフォントは Apple SF Mono を含む **個人用・再配布不可**の成果物です。
+ソースフォントは各々のライセンス: SF Mono(© Apple)、Migu 1M(M+ / IPA)、
+LINE Seed JP(OFL 1.1)、Google Sans Code(OFL 1.1)、Nerd Fonts(MIT + upstream)。
+ビルドスクリプトは作者のものです。
 
-[iosevka]: https://github.com/be5invis/Iosevka
-[plex]: https://github.com/IBM/plex
-[gsc]: https://github.com/googlefonts/googlesans-code
-[nerd]: https://www.nerdfonts.com/
-[releases]: https://github.com/peinan/kusunoki/releases
+[sfms]: https://github.com/delphinus/homebrew-sfmono-square
 [brew]: https://brew.sh/
 [uv]: https://docs.astral.sh/uv/
