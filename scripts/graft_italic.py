@@ -4,7 +4,7 @@
 # ///
 """P3: graft Google Sans Code true-italic letters into an italic style.
 
-    uv run scripts/sfmono/graft_italic.py <base_italic.otf> <gsc_italic_vf.ttf> <out.otf> <gsc_wght>
+    uv run scripts/graft_italic.py <base_italic.otf> <gsc_italic_vf.ttf> <out.otf> <gsc_wght>
 
 SF Mono's italic is kept for everything except 14 lowercase letters
 (a b c d e f i j k l p v y z), which are replaced with Google Sans Code's true

@@ -4,7 +4,7 @@
 # ///
 """Set the italic's Latin ink-offset (parameterised).
 
-    ITALIC_INK_OFFSET=0.0 uv run scripts/sfmono/center_italic.py <in.otf> <out.otf>
+    ITALIC_INK_OFFSET=0.0 uv run scripts/center_italic.py <in.otf> <out.otf>
 
 SF Mono's italic sits its ink right-of-centre (~+7.6% of the cell). This shifts
 the ASCII (SF Mono) glyphs uniformly so their MEDIAN ink-offset equals

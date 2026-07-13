@@ -8,7 +8,7 @@ reference shrink to match it — but ONLY when both fonts draw the SAME glyph
 another's size is meaningless). Sameness is decided by rasterizing each glyph,
 cropping to its ink box, normalizing, and requiring a high mask IoU.
 
-    uv run scripts/sfmono/plan_icon_scale.py <patched.otf> <sfms_ref.otf> <out.json> [min_diff=2] [iou=0.6]
+    uv run scripts/plan_icon_scale.py <patched.otf> <sfms_ref.otf> <out.json> [min_diff=2] [iou=0.6]
 
 Emits {"CPHEX": scale(<1), ...}. Build-time only; nothing SFMS-derived is committed.
 """

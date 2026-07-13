@@ -8,10 +8,10 @@ help: ## Show this help
 	@grep -E '^[a-z].*:.*##' $(MAKEFILE_LIST) | sed 's/:.*##/\t/' | sort
 
 setup: ## Fetch sources (SF Mono, Migu 1M, nerd-fonts patcher, LINE Seed JP, Google Sans Code)
-	@bash scripts/sfmono/setup.sh
+	@bash scripts/setup.sh
 
 build: ## Build the 4 styles into build/sfms/dist/
-	@bash scripts/sfmono/build.sh
+	@bash scripts/build.sh
 
 clean: ## Remove build artifacts (keeps fetched sources/)
 	@rm -rf build

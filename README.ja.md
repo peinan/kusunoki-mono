@@ -50,7 +50,7 @@ make build   # → build/sfms/dist/KusunokiMono-{Regular,Bold,Italic,BoldItalic}
 
 ## ビルドの流れ
 
-`scripts/sfmono/`(`build.sh` が統括):
+`scripts/`(`build.sh` が統括):
 
 1. `build_base.py` — SF Mono ×0.809(正方)+ Migu 1M ×0.82。SF Mono に無い記号
    (※・矢印など)も Migu から補完 → ベース。

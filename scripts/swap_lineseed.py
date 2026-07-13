@@ -4,7 +4,7 @@
 # ///
 """P2: swap the square base's Noto Sans JP for LINE Seed JP where LINE Seed covers it.
 
-    uv run scripts/sfmono/swap_lineseed.py <base.otf> <out.otf> <lineseed.ttf> <style>
+    uv run scripts/swap_lineseed.py <base.otf> <out.otf> <lineseed.ttf> <style>
 
 Only kana / katakana / kanji / CJK punctuation present in BOTH the base and LINE
 Seed are replaced; everything else (SF Mono Latin, digits, Nerd icons, and the rare

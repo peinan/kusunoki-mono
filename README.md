@@ -55,7 +55,7 @@ Tuning knobs (env vars for `make build`):
 
 ## How it's built
 
-`scripts/sfmono/`, orchestrated by `build.sh`:
+`scripts/`, orchestrated by `build.sh`:
 
 1. `build_base.py` — SF Mono ×0.809 (square) + Migu 1M ×0.82; also fills symbols
    SF Mono lacks (※, arrows, …) from Migu → base.

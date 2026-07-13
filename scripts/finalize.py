@@ -4,7 +4,7 @@
 # ///
 """P4: finalize a built style — name table (RIBBI), OS/2, metrics, post.
 
-    KM_VERSION=0.6.0 uv run scripts/sfmono/finalize.py <in.otf> <out.otf> <style>
+    KM_VERSION=0.6.0 uv run scripts/finalize.py <in.otf> <out.otf> <style>
 
 Makes the font a coherent, installable Japanese monospace: the 4 styles group
 under one family "Kusunoki Mono", vertical metrics match SF Mono Square
