@@ -15,7 +15,7 @@
   フォールバック。
 - **イタリック** — 小文字 14 字を **Google Sans Code** の true italic から移植、
   残りは SF Mono の italic をセル中央寄せ。
-- **アイコン** — **Nerd Fonts**(公式 v3.4.0 patcher、単一幅)。
+- **アイコン** — **Nerd Fonts**(公式 v3.4.0 patcher、可変幅で SF Mono Square 同様のサイズ)。
 
 ## 配布しません — 自分でビルド
 
@@ -42,16 +42,24 @@ make build   # → build/sfms/dist/KusunokiMono-{Regular,Bold,Italic,BoldItalic}
 - `ITALIC_INK_OFFSET` — italic の英字インク位置(セル比)。`0.0`=upright と同じ中央
   (既定)、`0.076`=SF Mono 本来の右寄り。
 - `GSC_R` / `GSC_B` — 移植する italic 文字の Google Sans Code ウェイト。
+- `KM_AMBIGUOUS_WIDTH` — `※ ★ ℃` など East Asian Width が曖昧な記号のセル幅。
+  `narrow`(既定)は1セル＝Ghostty 等の厳密な端末で被らない。`wide` は2セル
+  (SF Mono Square 相当・端末側で ambiguous=wide 設定が必要)。
+- `KM_SFMS_DIR` — `SFMonoSquare-*.otf` のあるディレクトリ。アイコンを SF Mono
+  Square のサイズに合わせるのに使用(既定 `~/Library/Fonts`、無ければスキップ)。
 
 ## ビルドの流れ
 
 `scripts/sfmono/`(`build.sh` が統括):
 
-1. `build_base.py` — SF Mono ×0.809(正方)+ Migu 1M ×0.82 → ベース。
-2. nerd-fonts `font-patcher --single-width-glyphs` → アイコン(CJK は全角のまま)。
-3. `swap_lineseed.py` — 仮名/漢字を LINE Seed JP に差替(Migu フォールバック)。
-4. `graft_italic.py` + `center_italic.py` — Google Sans Code の italic 文字を中央寄せで移植。
-5. `finalize.py` — RIBBI name / OS2 / メトリクス。
+1. `build_base.py` — SF Mono ×0.809(正方)+ Migu 1M ×0.82。SF Mono に無い記号
+   (※・矢印など)も Migu から補完 → ベース。
+2. nerd-fonts `font-patcher --variable-width-glyphs` → アイコン(CJK は全角のまま)。
+3. `plan_icon_scale.py` + `apply_icon_scale.py` — SF Mono Square より大きいアイコンを
+   同サイズに縮小(同一グリフのみ・ローカルの SFMS 参照が必要、無ければスキップ)。
+4. `swap_lineseed.py` — 仮名/漢字を LINE Seed JP に差替(Migu フォールバック)。
+5. `graft_italic.py` + `center_italic.py` — Google Sans Code の italic 文字を中央寄せで移植。
+6. `finalize.py` — RIBBI name / OS2 / メトリクス。
 
 依存は `fontforge` + `uv`(fonttools)+ `setup.sh` が取得する nerd-fonts patcher のみ。
 
