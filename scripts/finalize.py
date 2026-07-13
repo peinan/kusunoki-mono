@@ -2,7 +2,7 @@
 # requires-python = ">=3.11"
 # dependencies = ["fonttools>=4.50"]
 # ///
-"""P4: finalize a built style — name table (RIBBI), OS/2, metrics, post.
+"""P5: finalize a built style — name table (RIBBI), OS/2, metrics, post.
 
     KM_VERSION=0.6.0 uv run scripts/finalize.py <in.otf> <out.otf> <style>
 
@@ -26,9 +26,10 @@ SUB = {"Regular": "Regular", "Bold": "Bold",
        "Italic": "Italic", "BoldItalic": "Bold Italic"}[STYLE]
 
 COPYRIGHT = (
-    "Kusunoki Mono (SF Mono Square edition) — a personal, locally built font. "
-    "Built from Apple SF Mono (© Apple Inc.), Noto Sans JP (© The Noto Project Authors, OFL-1.1), "
+    "Kusunoki Mono — a personal, locally built font. "
+    "Built from Apple SF Mono (© Apple Inc.), Migu 1M (© itouhiro, M+ / IPA licenses), "
     "LINE Seed JP (© LY Corporation, OFL-1.1), Google Sans Code (© Google LLC, OFL-1.1), "
+    "JetBrains Mono (© The JetBrains Mono Project Authors, OFL-1.1), "
     "and Nerd Fonts (© Ryan L McIntyre, MIT)."
 )
 LICENSE_DESC = (

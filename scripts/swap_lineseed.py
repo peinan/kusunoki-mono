@@ -2,13 +2,13 @@
 # requires-python = ">=3.11"
 # dependencies = ["fonttools>=4.50"]
 # ///
-"""P2: swap the square base's Noto Sans JP for LINE Seed JP where LINE Seed covers it.
+"""P3: swap the square base's Migu 1M for LINE Seed JP where LINE Seed covers it.
 
     uv run scripts/swap_lineseed.py <base.otf> <out.otf> <lineseed.ttf> <style>
 
 Only kana / katakana / kanji / CJK punctuation present in BOTH the base and LINE
 Seed are replaced; everything else (SF Mono Latin, digits, Nerd icons, and the rare
-kanji LINE Seed lacks) keeps the base (Noto). Each LINE Seed glyph is scaled to the
+kanji LINE Seed lacks) keeps the base (Migu). Each LINE Seed glyph is scaled to the
 base's CJK size (measured on 国永日), centred in the full-width cell, vertically
 aligned, and — for italic — skewed to the base's italic angle. The advance is kept,
 so columns stay aligned.

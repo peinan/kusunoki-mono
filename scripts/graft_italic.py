@@ -2,7 +2,7 @@
 # requires-python = ">=3.11"
 # dependencies = ["fonttools>=4.50"]
 # ///
-"""P3: graft Google Sans Code true-italic letters into an italic style.
+"""P4: graft Google Sans Code true-italic letters into an italic style.
 
     uv run scripts/graft_italic.py <base_italic.otf> <gsc_italic_vf.ttf> <out.otf> <gsc_wght>
 
