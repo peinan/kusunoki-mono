@@ -122,6 +122,18 @@ for name in drop:
     if name in jp:
         jp.removeGlyph(name)
 
+# Visible full-width space (the SF Mono Square / Ricty idea): U+3000 becomes the
+# overlap of a ballot box (☐ U+2610) and a heavy cross (✚ U+271A) — a faint mark
+# so a full-width space is visible. Scaled and centred with the rest of the JP below.
+jp_unis = {g.unicode for g in jp.glyphs() if g.unicode is not None and g.unicode >= 0}
+if {0x2610, 0x271A, 0x3000} <= jp_unis:
+    jp.selection.select(("unicode",), 0x2610); jp.copy()
+    jp.selection.select(("unicode",), 0x3000); jp.paste()
+    jp.selection.select(("unicode",), 0x271A); jp.copy()
+    jp.selection.select(("unicode",), 0x3000); jp.pasteInto()
+    jp.selection.select(("unicode",), 0x3000); jp.intersect()
+    print("[build_base] visible full-width space (U+3000 = ☐ ∩ ✚)")
+
 kept = 0
 for g in jp.glyphs():
     cell = HALF if is_halfkana(g.unicode) else FULL

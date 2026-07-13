@@ -13,8 +13,10 @@ base's CJK size (measured on 国永日), centred in the full-width cell, vertica
 aligned, and — for italic — skewed to the base's italic angle. The advance is kept,
 so columns stay aligned.
 
-Note: `、`/`。` are centred here like every other CJK glyph; left-aligning them is
-issue #4, handled in a later step.
+Exceptions: `、`/`。` (issue #4) and the full-width brackets （）「」『』【】〔〕〈〉《》
+［］｛｝ keep LINE Seed's own horizontal placement instead of being centred — their
+left side bearing is mapped proportionally into the cell, so open brackets hug the
+right and close brackets hug the left.
 """
 import math
 import sys
@@ -30,9 +32,22 @@ from fontTools.misc.transform import Transform
 BASE, OUT, JPSRC, STYLE = sys.argv[1:5]
 is_italic = "Italic" in STYLE
 
-# kana, katakana (+phonetic ext), CJK ext-A, CJK unified, CJK punctuation (skip U+3000)
+# kana, katakana (+phonetic ext), CJK ext-A, CJK unified, CJK punctuation (skip U+3000),
+# plus the full-width ASCII brackets （）［］｛｝ so they too come from LINE Seed.
 RANGES = [(0x3040, 0x309F), (0x30A0, 0x30FF), (0x31F0, 0x31FF),
-          (0x3400, 0x4DBF), (0x4E00, 0x9FFF), (0x3001, 0x303F)]
+          (0x3400, 0x4DBF), (0x4E00, 0x9FFF), (0x3001, 0x303F),
+          (0xFF08, 0xFF09), (0xFF3B, 0xFF3B), (0xFF3D, 0xFF3D),
+          (0xFF5B, 0xFF5B), (0xFF5D, 0xFF5D)]
+
+# Brackets are placed by LINE Seed's own side bearing (open brackets hug the right,
+# close brackets hug the left) rather than centred — the same treatment as 、。.
+BRACKETS = {
+    0xFF08, 0xFF09, 0xFF3B, 0xFF3D, 0xFF5B, 0xFF5D,      # （）［］｛｝
+    0x3008, 0x3009, 0x300A, 0x300B, 0x300C, 0x300D,      # 〈〉《》「」
+    0x300E, 0x300F, 0x3010, 0x3011, 0x3014, 0x3015,      # 『』【】〔〕
+    0x3016, 0x3017, 0x3018, 0x3019, 0x301A, 0x301B,      # 〖〗〘〙〚〛
+}
+SIDE_ALIGNED = {0x3001, 0x3002} | BRACKETS   # 、。 + brackets: positioned by LINE Seed bearing
 
 tgt = TTFont(BASE)
 jp = TTFont(JPSRC)
@@ -92,9 +107,10 @@ for lo, hi in RANGES:
         b2 = BoundsPen(None)
         rec.replay(TransformPen(b2, Transform(S, 0, yx, S, e0, 0)))
         cx2 = (b2.bounds[0] + b2.bounds[2]) / 2
-        if cp in (0x3001, 0x3002):
-            # issue #4: left-align 、。 instead of centring, using LINE Seed's
-            # own left side bearing mapped proportionally into the full cell.
+        if cp in SIDE_ALIGNED:
+            # 、。 (issue #4) and brackets: keep LINE Seed's own horizontal placement
+            # by mapping its left side bearing proportionally into the full cell
+            # (open brackets end up hugging the right, close brackets the left).
             src_xmin = b1.bounds[0] / S
             src_adv = jp["hmtx"][sname][0]
             left = src_xmin * adv / src_adv
