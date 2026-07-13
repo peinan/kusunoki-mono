@@ -7,7 +7,7 @@
 help: ## Show this help
 	@grep -E '^[a-z].*:.*##' $(MAKEFILE_LIST) | sed 's/:.*##/\t/' | sort
 
-setup: ## Fetch sources (SF Mono, Migu 1M, nerd-fonts patcher, LINE Seed JP, Google Sans Code)
+setup: ## Fetch sources (SF Mono, Migu 1M, LINE Seed JP, Google Sans Code, JetBrains Mono, nerd-fonts patcher)
 	@bash scripts/setup.sh
 
 build: ## Build the 4 styles into build/sfms/dist/
