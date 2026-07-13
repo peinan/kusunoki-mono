@@ -2,6 +2,8 @@
 # Build Kusunoki Mono — self-contained SF Mono Square reproduction + transforms.
 #   P1 base    : SF Mono ×0.809 (square) + Migu 1M ×0.82
 #   P2 nerd    : official nerd-fonts font-patcher --variable-width-glyphs (Propo, v3.4.0)
+#   P2.5 scale : shrink icons taller than SF Mono Square to match it (same-glyph only;
+#                needs a local SFMS ref, else skipped)
 #   P3 lineseed: swap kana/kanji to LINE Seed JP (Migu fallback)
 #   P4 italic  : graft GSC true-italic letters + centre (italic styles only)
 #   P5 final   : name / OS2 / metrics (RIBBI family "Kusunoki Mono")
@@ -10,7 +12,8 @@
 #
 # Deps: fontforge, uv (fonttools), and sources/nerd-patcher (official FontPatcher).
 # Knobs (env): JP_SCALE (Migu size, 0.82), ITALIC_INK_OFFSET (0=centred),
-# GSC_R/GSC_B (GSC italic weight), KM_VERSION.
+# GSC_R/GSC_B (GSC italic weight), KM_VERSION,
+# KM_SFMS_DIR (dir with SFMonoSquare-*.otf for P2.5; default ~/Library/Fonts).
 set -uo pipefail
 cd "$(dirname "$0")/../.."
 ROOT="$PWD"
@@ -24,6 +27,9 @@ export ITALIC_INK_OFFSET="${ITALIC_INK_OFFSET:-0.0}"
 GSC_R="${GSC_R:-360}"; GSC_B="${GSC_B:-650}"
 PATCHER_DIR="$ROOT/$SRC/nerd-patcher"
 GSC_IT="$ROOT/$SRC/google-sans-code/GoogleSansCode-Italic[wght].ttf"
+KM_SFMS_DIR="${KM_SFMS_DIR:-$HOME/Library/Fonts}"   # SFMS ref for P2.5 (optional)
+SFMS_REF="$KM_SFMS_DIR/SFMonoSquare-Regular.otf"    # one ref reused for all weights
+ICONPLAN="$B/iconscale.json"                        # built once from Regular, reused
 
 nerd_patch() {  # $1=style; logs to $B/$1.p2.log; echoes patched .otf path on stdout
   local st=$1
@@ -38,6 +44,18 @@ nerd_patch() {  # $1=style; logs to $B/$1.p2.log; echoes patched .otf path on st
   ls "$NERDDIR"/*.otf 2>/dev/null | head -1
 }
 
+icon_scale() {  # $1=style $2=patched.otf ; echoes path to use downstream (scaled, or original)
+  local st=$1 patched=$2
+  [ -f "$SFMS_REF" ] || { echo "$patched"; return 0; }   # no SFMS ref -> skip P2.5
+  if [ ! -f "$ICONPLAN" ]; then                          # plan once (from Regular), reuse
+    uv run scripts/sfmono/plan_icon_scale.py "$patched" "$SFMS_REF" "$ICONPLAN" 2 0.6 \
+      >"$B/iconscale.log" 2>&1 || { echo "$patched"; return 0; }
+  fi
+  local scaled="$NERDDIR/scaled-$st.otf"
+  fontforge -quiet -script scripts/sfmono/apply_icon_scale.py "$patched" "$ICONPLAN" "$scaled" \
+    >>"$B/iconscale.log" 2>&1 && echo "$scaled" || echo "$patched"
+}
+
 buildone() {  # 1=style 2=sf 3=migu 4=lineseed 5=gsc_wght(optional, italics)
   local st=$1 sf=$2 migu=$3 ls=$4 gscw=${5:-}
   echo "==== $st ===="
@@ -49,6 +67,10 @@ buildone() {  # 1=style 2=sf 3=migu 4=lineseed 5=gsc_wght(optional, italics)
   local patched; patched=$(nerd_patch "$st")
   [ -s "$patched" ] || { echo "  !! P2 $st FAILED"; tail -3 "$B/$st.p2.log"; return 1; }
   echo "   -> $(basename "$patched")"
+  echo "-- P2.5 icon downscale (match SF Mono Square; same-glyph only)"
+  patched=$(icon_scale "$st" "$patched")
+  grep -E '\[plan_icon_scale\]|\[apply_icon_scale\]' "$B/iconscale.log" 2>/dev/null | tail -2 \
+    || echo "   (skipped: no SFMS ref at $SFMS_REF)"
   echo "-- P3 LINE Seed swap"
   uv run scripts/sfmono/swap_lineseed.py "$patched" "$STAGE/KusunokiMono-$st.otf" "$ROOT/$SRC/$ls" "$st" >"$B/$st.p3.log" 2>&1 \
     && grep -E 'replaced' "$B/$st.p3.log" | tail -1 || { echo "  !! P3 $st FAILED"; tail -3 "$B/$st.p3.log"; return 1; }

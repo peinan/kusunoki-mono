@@ -47,11 +47,14 @@ make build   # → build/sfms/dist/KusunokiMono-{Regular,Bold,Italic,BoldItalic}
 
 `scripts/sfmono/`(`build.sh` が統括):
 
-1. `build_base.py` — SF Mono ×0.809(正方)+ Migu 1M ×0.82 → ベース。
+1. `build_base.py` — SF Mono ×0.809(正方)+ Migu 1M ×0.82。SF Mono に無い記号
+   (※・矢印など)も Migu から補完 → ベース。
 2. nerd-fonts `font-patcher --variable-width-glyphs` → アイコン(CJK は全角のまま)。
-3. `swap_lineseed.py` — 仮名/漢字を LINE Seed JP に差替(Migu フォールバック)。
-4. `graft_italic.py` + `center_italic.py` — Google Sans Code の italic 文字を中央寄せで移植。
-5. `finalize.py` — RIBBI name / OS2 / メトリクス。
+3. `plan_icon_scale.py` + `apply_icon_scale.py` — SF Mono Square より大きいアイコンを
+   同サイズに縮小(同一グリフのみ・ローカルの SFMS 参照が必要、無ければスキップ)。
+4. `swap_lineseed.py` — 仮名/漢字を LINE Seed JP に差替(Migu フォールバック)。
+5. `graft_italic.py` + `center_italic.py` — Google Sans Code の italic 文字を中央寄せで移植。
+6. `finalize.py` — RIBBI name / OS2 / メトリクス。
 
 依存は `fontforge` + `uv`(fonttools)+ `setup.sh` が取得する nerd-fonts patcher のみ。
 

@@ -51,11 +51,14 @@ Tuning knobs (env vars for `make build`):
 
 `scripts/sfmono/`, orchestrated by `build.sh`:
 
-1. `build_base.py` — SF Mono ×0.809 (square) + Migu 1M ×0.82 → base.
+1. `build_base.py` — SF Mono ×0.809 (square) + Migu 1M ×0.82; also fills symbols
+   SF Mono lacks (※, arrows, …) from Migu → base.
 2. nerd-fonts `font-patcher --variable-width-glyphs` → icons (CJK stays full-width).
-3. `swap_lineseed.py` — swap kana/kanji to LINE Seed JP (Migu fallback).
-4. `graft_italic.py` + `center_italic.py` — Google Sans Code italic letters, centred.
-5. `finalize.py` — RIBBI name / OS2 / metrics.
+3. `plan_icon_scale.py` + `apply_icon_scale.py` — shrink icons taller than SF Mono
+   Square to match it (same-glyph only; needs a local SFMS ref, else skipped).
+4. `swap_lineseed.py` — swap kana/kanji to LINE Seed JP (Migu fallback).
+5. `graft_italic.py` + `center_italic.py` — Google Sans Code italic letters, centred.
+6. `finalize.py` — RIBBI name / OS2 / metrics.
 
 Deps are just `fontforge` + `uv` (fonttools) + the nerd-fonts patcher fetched
 by `setup.sh`.

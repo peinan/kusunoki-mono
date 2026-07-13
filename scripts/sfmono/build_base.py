@@ -61,6 +61,21 @@ def is_halfkana(u):
     return u is not None and HALFWIDTH_KANA[0] <= u <= HALFWIDTH_KANA[1]
 
 
+# Symbols SF Mono lacks (※, arrows, math, dingbats, Roman numerals, …) are pulled
+# from Migu so they render in-font at Migu size instead of falling back to a huge
+# mismatched system glyph — matching SF Mono Square. Structural cell-filling glyphs
+# (box drawing 2500-257F, blocks 2580-259F, braille 2800-28FF) are left to SF Mono /
+# the nerd patcher and excluded here.
+SYMBOL_FILL_RANGES = [
+    (0x00A0, 0x00FF), (0x2000, 0x24FF), (0x25A0, 0x27BF),
+    (0x2900, 0x2BFF), (0x2E00, 0x2E7F),
+]
+
+
+def in_symbolfill(u):
+    return u is not None and u >= 0 and any(lo <= u <= hi for lo, hi in SYMBOL_FILL_RANGES)
+
+
 def strip_layout(font):
     # Only the outlines are wanted; dropping GSUB/GPOS avoids a warning flood
     # (dangling lookup refs after glyph pruning) that makes generate crawl.
@@ -89,7 +104,20 @@ jp = fontforge.open(JP)
 if jp.em != EM:
     jp.em = EM
 strip_layout(jp)
-drop = [g.glyphname for g in jp.glyphs() if not keep_jp(g)]
+
+sf_unicodes = set()
+for g in sf.glyphs():
+    if g.unicode is not None and g.unicode >= 0:
+        sf_unicodes.add(g.unicode)
+    for alt in (g.altuni or ()):
+        sf_unicodes.add(alt[0])
+
+
+def keep(g):  # JP glyphs, plus symbols SF Mono is missing (filled from Migu)
+    return keep_jp(g) or (in_symbolfill(g.unicode) and g.unicode not in sf_unicodes)
+
+
+drop = [g.glyphname for g in jp.glyphs() if not keep(g)]
 for name in drop:
     if name in jp:
         jp.removeGlyph(name)
