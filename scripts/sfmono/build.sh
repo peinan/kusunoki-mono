@@ -13,7 +13,8 @@
 # Deps: fontforge, uv (fonttools), and sources/nerd-patcher (official FontPatcher).
 # Knobs (env): JP_SCALE (Migu size, 0.82), ITALIC_INK_OFFSET (0=centred),
 # GSC_R/GSC_B (GSC italic weight), KM_VERSION,
-# KM_SFMS_DIR (dir with SFMonoSquare-*.otf for P2.5; default ~/Library/Fonts).
+# KM_SFMS_DIR (dir with SFMonoSquare-*.otf for P2.5; default ~/Library/Fonts),
+# KM_AMBIGUOUS_WIDTH (narrow[default]=ambiguous symbols like ※ are 1 cell / wide=2 cells).
 set -uo pipefail
 cd "$(dirname "$0")/../.."
 ROOT="$PWD"

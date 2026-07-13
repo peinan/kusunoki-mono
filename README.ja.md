@@ -42,6 +42,11 @@ make build   # → build/sfms/dist/KusunokiMono-{Regular,Bold,Italic,BoldItalic}
 - `ITALIC_INK_OFFSET` — italic の英字インク位置(セル比)。`0.0`=upright と同じ中央
   (既定)、`0.076`=SF Mono 本来の右寄り。
 - `GSC_R` / `GSC_B` — 移植する italic 文字の Google Sans Code ウェイト。
+- `KM_AMBIGUOUS_WIDTH` — `※ ★ ℃` など East Asian Width が曖昧な記号のセル幅。
+  `narrow`(既定)は1セル＝Ghostty 等の厳密な端末で被らない。`wide` は2セル
+  (SF Mono Square 相当・端末側で ambiguous=wide 設定が必要)。
+- `KM_SFMS_DIR` — `SFMonoSquare-*.otf` のあるディレクトリ。アイコンを SF Mono
+  Square のサイズに合わせるのに使用(既定 `~/Library/Fonts`、無ければスキップ)。
 
 ## ビルドの流れ
 

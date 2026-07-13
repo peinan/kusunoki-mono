@@ -46,6 +46,12 @@ Tuning knobs (env vars for `make build`):
   (`0.0` = centred like the upright [default]; `0.076` = SF Mono's native
   right-lean).
 - `GSC_R` / `GSC_B` — Google Sans Code weight for the grafted italic letters.
+- `KM_AMBIGUOUS_WIDTH` — cell width of East-Asian-ambiguous symbols like `※ ★ ℃`:
+  `narrow` (default) makes them 1 cell so they don't overlap in strict terminals
+  (Ghostty); `wide` makes them 2 cells (like SF Mono Square, for terminals set to
+  treat ambiguous width as wide).
+- `KM_SFMS_DIR` — directory holding `SFMonoSquare-*.otf`, used to size icons to
+  match SF Mono Square (default `~/Library/Fonts`; the step is skipped if absent).
 
 ## How it's built
 

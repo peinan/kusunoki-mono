@@ -17,6 +17,7 @@ JP_DY (vertical nudge at 2048 UPM).
 import math
 import os
 import sys
+import unicodedata
 
 import fontforge
 import psMat
@@ -30,6 +31,13 @@ FULL = 2 * HALF
 SF_SCALE = HALF / float(SF_NATIVE_ADV)
 JP_SCALE = float(os.environ.get("JP_SCALE", "0.82"))
 JP_DY = float(os.environ.get("JP_DY", "0"))
+# Cell width for the symbols filled from Migu, by Unicode East Asian Width.
+# Terminals decide a glyph's cell count from EAW, not the font: Wide/Fullwidth = 2
+# cells, Neutral/Narrow/Halfwidth = 1 cell always. "Ambiguous" (※ ★ ℃ …) is 1 cell
+# in strict terminals (Ghostty) but 2 in CJK-configured ones — KM_AMBIGUOUS_WIDTH
+# picks which: "narrow" (default, 1 cell — no overlap in Ghostty) or "wide" (2 cells,
+# like SF Mono Square; needs a terminal set to ambiguous=wide).
+AMBIG_WIDE = os.environ.get("KM_AMBIGUOUS_WIDTH", "narrow").lower() == "wide"
 is_italic = "Italic" in STYLE
 
 JP_RANGES = [
@@ -89,7 +97,18 @@ if is_italic and italic_angle < 0.1:
     italic_angle = 10.0
 rad = math.radians(italic_angle)
 print(f"[build_base] {STYLE} HALF={HALF} FULL={FULL} SF_SCALE={SF_SCALE:.4f} "
-      f"JP_SCALE={JP_SCALE} JP_DY={JP_DY} italic={italic_angle:.1f}deg")
+      f"JP_SCALE={JP_SCALE} JP_DY={JP_DY} ambiguous={'wide' if AMBIG_WIDE else 'narrow'} "
+      f"italic={italic_angle:.1f}deg")
+
+
+def symbol_cell(u):
+    """Cell width (HALF/FULL) for a Migu-filled symbol, from its East Asian Width."""
+    eaw = unicodedata.east_asian_width(chr(u)) if (u is not None and u >= 0) else "N"
+    if eaw in ("W", "F"):
+        return FULL
+    if eaw == "A":
+        return FULL if AMBIG_WIDE else HALF
+    return HALF   # N / Na / H are 1 cell in every terminal
 
 # --- SF Mono -> square half-cell ---
 if abs(SF_SCALE - 1.0) > 1e-6:
@@ -136,13 +155,29 @@ if {0x2610, 0x271A, 0x3000} <= jp_unis:
 
 kept = 0
 for g in jp.glyphs():
-    cell = HALF if is_halfkana(g.unicode) else FULL
-    g.transform(psMat.scale(JP_SCALE, JP_SCALE))
+    u = g.unicode
+    symbol = in_symbolfill(u)
+    cell = symbol_cell(u) if symbol else (HALF if is_halfkana(u) else FULL)
+    sc = JP_SCALE
+    if symbol and cell == HALF:
+        # Migu draws these symbols full-width; shrink so the ink fits the 1 cell.
+        nb = g.boundingBox()
+        nat_w = nb[2] - nb[0]
+        if nat_w > 0:
+            sc = min(JP_SCALE, HALF * 0.86 / nat_w)
+    g.transform(psMat.scale(sc, sc))
     if is_italic:
         g.transform(psMat.skew(rad))
     xmin, ymin, xmax, ymax = g.boundingBox()
     if xmax > xmin:
-        g.transform(psMat.translate((cell - (xmin + xmax)) / 2.0, JP_DY))
+        # A symbol shrunk to fit (sc < JP_SCALE) is scaled toward the baseline and
+        # ends up sitting low; lift it back to the height a JP_SCALE glyph would have
+        # so it stays vertically centred with the CJK glyphs. (This scales the glyph's
+        # own centre, so an intentional offset like a subscript is preserved.)
+        ty = JP_DY
+        if symbol and sc < JP_SCALE:
+            ty += (JP_SCALE / sc - 1.0) * (ymin + ymax) / 2.0
+        g.transform(psMat.translate((cell - (xmin + xmax)) / 2.0, ty))
     g.width = cell
     kept += 1
 
