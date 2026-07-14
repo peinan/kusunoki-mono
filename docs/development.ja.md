@@ -14,7 +14,6 @@
 | パス | 内容 |
 | --- | --- |
 | `scripts/` | パイプライン本体。`setup.sh` がソースを取得し、`build.sh` がフェーズを順に実行する。変換ごとに Python スクリプトが 1 つ |
-| `Formula/kusunoki-mono.rb` | Homebrew formula。固定した各ソースを `sources/` 相当へ置いて同じビルドを実行し、成果物は `share/fonts` へ |
 | `sources/` | 取得したソースフォント類。gitignore 対象で、バージョンは `setup.sh` で固定 |
 | `build/sfms/` | フェーズごとの中間生成物とログ。gitignore 対象 |
 | `build/sfms/dist/` | 最終成果物の 4 OTF |
@@ -115,6 +114,16 @@ Apple の DMG を hdiutil と pkgutil で展開するため macOS 専用。
 | nerd-fonts FontPatcher | v3.4.0 |
 | LINE Seed JP、Google Sans Code、JetBrains Mono | google/fonts の `main`、OFL |
 
+## Homebrew tap
+
+formula は [peinan/homebrew-kusunoki][tap] にある。
+固定した同じソースを `sources/` へ配置して `scripts/build.sh` を無改変で実行するので、`brew install` と `make build` の成果物は同じになる。
+リリースの流れ:
+
+- このリポジトリで `vX.Y.Z` タグを打つ
+- formula の `url` と `sha256` をそのタグの tarball に向ける
+- 最初のタグを打つまで formula は head-only なので、インストールには `--HEAD` が要る
+
 ## メトリクス早見
 
 | 項目 | 値 |
@@ -141,5 +150,6 @@ Apple の DMG を hdiutil と pkgutil で展開するため macOS 専用。
 - [delphinus/homebrew-sfmono-square][sfms]：このビルドが再現している手法。正方メトリクス、Propo アイコン、可視の全角空白、括弧のベアリング。スクリプトは独自の再実装で、コードは取り込んでいない
 - [作者の Qiita 記事][qiita]：SF Mono Square 自体の背景
 
+[tap]: https://github.com/peinan/homebrew-kusunoki
 [sfms]: https://github.com/delphinus/homebrew-sfmono-square
 [qiita]: https://qiita.com/delphinus/items/f472eb04ff91daf44274

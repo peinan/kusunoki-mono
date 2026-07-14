@@ -32,8 +32,8 @@ SF Mono を Apple から、OFL/MIT のソースフォントを各配布元から
 ### Homebrew
 
 ```sh
-brew tap peinan/kusunoki https://github.com/peinan/kusunoki
-brew install --HEAD kusunoki-mono
+brew tap peinan/kusunoki
+brew install kusunoki-mono
 cp "$(brew --prefix)/share/fonts/KusunokiMono-"*.otf ~/Library/Fonts/
 ```
 

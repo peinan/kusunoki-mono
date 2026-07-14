@@ -32,8 +32,8 @@ Both routes fetch the sources and build the font on your Mac.
 ### Homebrew
 
 ```sh
-brew tap peinan/kusunoki https://github.com/peinan/kusunoki
-brew install --HEAD kusunoki-mono
+brew tap peinan/kusunoki
+brew install kusunoki-mono
 cp "$(brew --prefix)/share/fonts/KusunokiMono-"*.otf ~/Library/Fonts/
 ```
 
