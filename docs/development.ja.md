@@ -14,6 +14,7 @@
 | パス | 内容 |
 | --- | --- |
 | `scripts/` | パイプライン本体。`setup.sh` がソースを取得し、`build.sh` がフェーズを順に実行する。変換ごとに Python スクリプトが 1 つ |
+| `Formula/kusunoki-mono.rb` | Homebrew formula。固定した各ソースを `sources/` 相当へ置いて同じビルドを実行し、成果物は `share/fonts` へ |
 | `sources/` | 取得したソースフォント類。gitignore 対象で、バージョンは `setup.sh` で固定 |
 | `build/sfms/` | フェーズごとの中間生成物とログ。gitignore 対象 |
 | `build/sfms/dist/` | 最終成果物の 4 OTF |

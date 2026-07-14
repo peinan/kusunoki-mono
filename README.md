@@ -25,7 +25,19 @@ not permit redistributing. Like SF Mono Square itself, this repo therefore
 ships no font binaries: it is a build recipe that downloads SF Mono from
 Apple plus the OFL/MIT source fonts and builds the font locally on your Mac.
 
-## Build (macOS)
+## Install (macOS)
+
+Both routes fetch the sources and build the font on your Mac.
+
+### Homebrew
+
+```sh
+brew tap peinan/kusunoki https://github.com/peinan/kusunoki
+brew install --HEAD kusunoki-mono
+cp "$(brew --prefix)/share/fonts/KusunokiMono-"*.otf ~/Library/Fonts/
+```
+
+### make
 
 Requirements: macOS, [Homebrew][brew], [`uv`][uv]
 
@@ -33,14 +45,15 @@ Requirements: macOS, [Homebrew][brew], [`uv`][uv]
 brew install fontforge
 make setup   # fetch the source fonts and the nerd-fonts patcher
 make build   # → build/sfms/dist/KusunokiMono-{Regular,Bold,Italic,BoldItalic}.otf
+cp build/sfms/dist/KusunokiMono-*.otf ~/Library/Fonts/
 ```
 
-Install the four `.otf` into `~/Library/Fonts/` and set your terminal or
-editor font to **Kusunoki Mono**.
+Set your terminal or editor font to **Kusunoki Mono**.
 
 ## Tuning knobs
 
-Env vars for `make build`:
+Env vars for `make build`; Homebrew scrubs custom env vars, so tune via the
+make route:
 
 | Variable | Default | Effect |
 | --- | --- | --- |

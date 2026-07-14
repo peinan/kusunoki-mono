@@ -14,6 +14,7 @@ install the font, see the [README](../README.md).
 | Path | Holds |
 | --- | --- |
 | `scripts/` | The whole pipeline: `setup.sh` fetches sources, `build.sh` runs the phases, one Python script per transform |
+| `Formula/kusunoki-mono.rb` | Homebrew formula: pinned resources staged into `sources/`, then the same build; fonts land in `share/fonts` |
 | `sources/` | Fetched inputs, gitignored; versions pinned in `setup.sh` |
 | `build/sfms/` | Per-phase intermediates and logs, gitignored |
 | `build/sfms/dist/` | The final four OTFs |
