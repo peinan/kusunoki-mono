@@ -22,7 +22,7 @@ cd "$(dirname "$0")/.."
 ROOT="$PWD"
 SRC=sources
 B=build/sfms
-BASE="$B/base"; NERDDIR="$B/nerd"; LIGDIR="$B/lig"; STAGE="$B/stage"; DIST="$B/dist"
+BASE="$B/base"; NERDDIR="$B/nerd"; LIGDIR="$B/lig"; STAGE="$B/stage"; DIST="dist"
 mkdir -p "$BASE" "$NERDDIR" "$LIGDIR" "$STAGE" "$DIST"
 
 export JP_SCALE="${JP_SCALE:-0.82}"

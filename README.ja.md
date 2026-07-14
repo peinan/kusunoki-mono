@@ -52,8 +52,8 @@ cp "$(brew --prefix)/share/fonts/KusunokiMono-"*.otf ~/Library/Fonts/
 ```sh
 brew install fontforge
 make setup   # ソースフォントと nerd-fonts patcher を取得
-make build   # → build/sfms/dist/KusunokiMono-{Regular,Bold,Italic,BoldItalic}.otf
-cp build/sfms/dist/KusunokiMono-*.otf ~/Library/Fonts/
+make build   # → dist/KusunokiMono-{Regular,Bold,Italic,BoldItalic}.otf
+cp dist/KusunokiMono-*.otf ~/Library/Fonts/
 ```
 
 `make build` の環境変数です。
