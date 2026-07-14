@@ -4,8 +4,9 @@
 
 [English](README.md) | 日本語
 
-![platform](https://img.shields.io/badge/platform-macOS-b4befe?labelColor=1e1e2e)
-![build](https://img.shields.io/badge/build-local_only-a6e3a1?labelColor=1e1e2e)
+![platform](https://img.badges.sh/platform-macOS-b4befe?labelColor=1e1e2e&logo=lucide:Apple)
+![version](https://img.badges.sh/version-v0.6.0-a6e3a1?labelColor=1e1e2e&logo=lucide:Tag)
+[![homebrew](https://img.badges.sh/homebrew-peinan%2Fkusunoki--mono-fab387?labelColor=1e1e2e&logo=lucide:Beer)](https://github.com/peinan/homebrew-kusunoki-mono)
 
 SF Mono を正方グリッドに詰め、LINE Seed JP を重ねた、自分でビルドする日本語コーディングフォント。
 
