@@ -8,9 +8,10 @@ English | [日本語](README.ja.md)
 ![version](https://img.badges.sh/version-v0.6.0-a6e3a1?labelColor=1e1e2e&logo=lucide:Tag&font=Space+Grotesk&fontWeight=500&labelFontWeight=700&messageFontWeight=700)
 [![homebrew](https://img.badges.sh/homebrew-peinan%2Fkusunoki--mono-fab387?labelColor=1e1e2e&logo=lucide:Beer&font=Space+Grotesk&fontWeight=500&labelFontWeight=700&messageFontWeight=700)](https://github.com/peinan/homebrew-kusunoki-mono)
 
-A Japanese coding font: SF Mono condensed to a square grid, layered with LINE Seed JP.
-
-![specimen](docs/images/specimen.png)
+Apple's beautifully crafted SF Mono, squared onto a Japanese-aligned grid and
+layered with LINE Seed JP, which stays crisp at small sizes. The italic is
+Google Sans Code's, hand-picked letter by letter to sit well with SF Mono —
+with JetBrains Mono ligatures and Nerd Fonts icons built in.
 
 </div>
 
@@ -22,15 +23,7 @@ A Japanese coding font: SF Mono condensed to a square grid, layered with LINE Se
 - **Google Sans Code** true italic
 - **Nerd Fonts** icons
 
-![grid](docs/images/grid.png)
-
-![ligatures](docs/images/ligatures.png)
-
-## Screenshots
-
-| | |
-| --- | --- |
-| ![editor](docs/images/editor.png) | ![git log](docs/images/gitlog.png) |
+![specimen](docs/images/specimen.png)
 
 ## Install
 
@@ -44,9 +37,9 @@ cp "$(brew --prefix)/share/fonts/KusunokiMono-"*.otf ~/Library/Fonts/
 
 Set your terminal or editor font to **Kusunoki Mono**.
 
-<details>
-<summary><b>Build with make (for the tuning knobs)</b></summary>
+### Build with make
 
+To tweak the font, build with make — the knobs below are env vars for `make build`.
 Requirements: [Homebrew][brew], [`uv`][uv]
 
 ```sh
@@ -55,9 +48,6 @@ make setup   # fetch the source fonts and the nerd-fonts patcher
 make build   # → dist/KusunokiMono-{Regular,Bold,Italic,BoldItalic}.otf
 cp dist/KusunokiMono-*.otf ~/Library/Fonts/
 ```
-
-Env vars for `make build`; Homebrew scrubs custom env vars, so tune via
-this route:
 
 | Variable | Default | Effect |
 | --- | --- | --- |
@@ -68,11 +58,17 @@ this route:
 | `KM_AMBIGUOUS_WIDTH` | `narrow` | Cells for East-Asian-ambiguous symbols like ※ ★ ℃; `narrow` is 1 cell and safe in strict terminals like Ghostty, `wide` is 2 cells |
 | `KM_SFMS_DIR` | `~/Library/Fonts` | Where `SFMonoSquare-*.otf` lives, used to size icons to match; the step is skipped if absent |
 
-</details>
-
 ## Development
 
 Pipeline internals are documented in [docs/development.md](docs/development.md).
+
+## Screenshots
+
+| | |
+| --- | --- |
+| ![editor](docs/images/editor.png) | ![git log](docs/images/gitlog.png) |
+
+![terminal](docs/images/terminal.png)
 
 ## Licensing
 

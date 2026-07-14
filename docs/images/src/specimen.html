@@ -7,10 +7,10 @@
 @font-face { font-family:"KMBI"; src:url("../../../dist/KusunokiMono-BoldItalic.otf"); }
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
-  width:1760px; height:1220px; background:#1e1e2e; color:#cdd6f4;
+  width:1760px; height:1980px; background:#1e1e2e; color:#cdd6f4;
   padding:64px 92px; font-family:"KM", monospace; overflow:hidden;
 }
-.sec { margin-bottom:44px; }
+.sec { margin-bottom:46px; }
 .h {
   font-family:-apple-system,sans-serif; font-size:21px; letter-spacing:2px;
   color:#6c7086; text-transform:uppercase; margin-bottom:14px;
@@ -27,6 +27,24 @@ pre { font-family:inherit; white-space:pre; font-feature-settings:"calt" on; fon
 .fbi { font-family:"KMBI", monospace; }
 .it { font-family:"KMI", monospace; }
 .cols { display:flex; gap:68px; align-items:flex-start; }
+.grid pre {
+  display:inline-block; font-size:34px; line-height:1.9;
+  background:repeating-linear-gradient(90deg, rgba(203,166,247,.085) 0 2ch, transparent 2ch 4ch);
+}
+.lrow { display:flex; align-items:center; gap:24px; }
+.lrow + .lrow { margin-top:12px; }
+.badge {
+  font-family:-apple-system,sans-serif; font-size:18px; font-weight:600;
+  letter-spacing:1px; width:104px; text-align:center; padding:6px 0;
+  border-radius:999px; border:1px solid transparent; flex:none;
+}
+.b-off, .b-reg { background:#313244; color:#7f849c; }
+.b-on { background:rgba(166,227,161,.16); color:#a6e3a1; border-color:rgba(166,227,161,.35); }
+.b-it { background:rgba(137,180,250,.16); color:#89b4fa; border-color:rgba(137,180,250,.35); }
+.ligs pre { font-size:34px; }
+.off pre { font-feature-settings:"calt" 0; color:#585b70; }
+.itl pre { font-family:"KMI", monospace; color:#b4befe; }
+.subsec + .subsec { margin-top:36px; }
 .punct pre { font-size:30px; }
 .leg pre { font-size:36px; line-height:1.55; }
 .icons pre { font-size:31px; letter-spacing:6px; color:#a6adc8; line-height:1.6; }
@@ -57,6 +75,27 @@ pre { font-family:inherit; white-space:pre; font-feature-settings:"calt" on; fon
       <pre>アイウエオ ガギグゲゴ ザジズゼゾ パピプペポ</pre>
       <pre>永東国愛雨楠 春夏秋冬 雪月風花</pre>
     </div>
+  </div>
+</div>
+
+<div class="sec grid">
+  <div class="h">Grid ── 半角 1 : 全角 2 (縞はすべて 2 桁幅)</div>
+  <pre>あのイーハトーヴォの、すきとおった風。
+ano ihatovo no sukitootta kaze....
+0123456789012345678901234567890123
+夏でも底に冷たさをもつ、青いそら。</pre>
+</div>
+
+<div class="sec ligs">
+  <div class="subsec">
+    <div class="h">Ligatures ── JetBrains Mono</div>
+    <div class="lrow off"><div class="badge b-off">OFF</div><pre>-> => >= <= == === != !== :: ... // /* */ && || ?? ?.</pre></div>
+    <div class="lrow"><div class="badge b-on">ON</div><pre>-> => >= <= == === != !== :: ... // /* */ && || ?? ?.</pre></div>
+  </div>
+  <div class="subsec">
+    <div class="h">Italics ── Google Sans Code</div>
+    <div class="lrow"><div class="badge b-reg">Regular</div><pre>quick brown fox jumps over the lazy dog 0123</pre></div>
+    <div class="lrow itl"><div class="badge b-it">Italic</div><pre>quick brown fox jumps over the lazy dog 0123</pre></div>
   </div>
 </div>
 
