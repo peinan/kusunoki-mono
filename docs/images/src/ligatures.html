@@ -1,20 +1,24 @@
+<!doctype html>
 <meta charset="utf-8">
 <style>
-@font-face { font-family:"KM"; src:url("../../../build/sfms/dist/KusunokiMono-Regular.otf"); font-weight:400; font-style:normal; }
-@font-face { font-family:"KM"; src:url("../../../build/sfms/dist/KusunokiMono-Italic.otf"); font-weight:400; font-style:italic; }
+@font-face { font-family:"KM"; src:url("../../../build/sfms/dist/KusunokiMono-Regular.otf"); }
+@font-face { font-family:"KMI"; src:url("../../../build/sfms/dist/KusunokiMono-Italic.otf"); }
 * { margin:0; padding:0; box-sizing:border-box; }
-body { width:1760px; height:400px; background:#1e1e2e; padding:56px 80px 60px; font-family:"KM", monospace; overflow:hidden; }
-.label {
+body { width:1760px; height:560px; background:#1e1e2e; padding:52px 80px 60px; font-family:"KM", monospace; overflow:hidden; }
+.l {
   font-family:-apple-system,"Hiragino Sans",sans-serif; font-size:22px; color:#6c7086;
-  text-transform:uppercase; letter-spacing:2px; margin-bottom:14px;
+  letter-spacing:1px; margin-bottom:14px;
 }
-pre { font-size:38px; color:#cdd6f4; white-space:pre; line-height:1.6; }
-.block + .label { margin-top:44px; }
-.it pre { font-style:italic; color:#b4befe; }
+.l + .l { margin-top:0; }
+pre { font-family:inherit; font-size:38px; color:#cdd6f4; white-space:pre; line-height:1.7; font-feature-settings:"calt" on; }
+.off pre { font-feature-settings:"calt" 0; color:#585b70; }
+.sep { margin-top:46px; }
+.it pre { font-family:"KMI", monospace; color:#b4befe; }
 </style>
 <body>
-<div class="label">Ligatures ── JetBrains Mono</div>
-<div class="block"><pre>->  =>  >=  <=  ==  ===  !=  !==  ::  ...  //  /*  */  &&  ||  ??  ?.</pre></div>
-<div class="label">True Italic ── Google Sans Code</div>
-<div class="block it"><pre>const done = items.filter(x => x.ok) != null  // abcdefijklpvyz</pre></div>
-</body>
+<div class="l">Ligatures (JetBrains Mono) ── calt off → on</div>
+<div class="off"><pre>-> => >= <= == === != !== :: ... // /* */ && || ?? ?.</pre></div>
+<div><pre>-> => >= <= == === != !== :: ... // /* */ && || ?? ?.</pre></div>
+<div class="l sep">True Italic (Google Sans Code) ── upright → italic</div>
+<div><pre>quick brown fox jumps over the lazy dog 0123</pre></div>
+<div class="it"><pre>quick brown fox jumps over the lazy dog 0123</pre></div></body>
