@@ -26,9 +26,11 @@ A Japanese coding font: SF Mono condensed to a square grid, layered with LINE Se
 
 ![ligatures](docs/images/ligatures.png)
 
-## In the editor
+## Screenshots
 
-![editor](docs/images/editor.png)
+| | |
+| --- | --- |
+| ![editor](docs/images/editor.png) | ![git log](docs/images/gitlog.png) |
 
 ## Install
 
