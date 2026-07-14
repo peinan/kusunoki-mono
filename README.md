@@ -10,7 +10,7 @@ English | [日本語](README.ja.md)
 A Japanese coding font you build yourself: SF Mono condensed to a square
 grid, layered with LINE Seed JP.
 
-![code sample](docs/images/sample.png)
+![specimen](docs/images/specimen.png)
 
 </div>
 

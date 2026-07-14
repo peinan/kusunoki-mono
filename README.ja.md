@@ -9,7 +9,7 @@
 
 SF Mono を正方グリッドに詰め、LINE Seed JP を重ねた、自分でビルドする日本語コーディングフォント。
 
-![コードサンプル](docs/images/sample.png)
+![字形見本](docs/images/specimen.png)
 
 </div>
 

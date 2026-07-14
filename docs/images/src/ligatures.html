@@ -4,21 +4,40 @@
 @font-face { font-family:"KM"; src:url("../../../build/sfms/dist/KusunokiMono-Regular.otf"); }
 @font-face { font-family:"KMI"; src:url("../../../build/sfms/dist/KusunokiMono-Italic.otf"); }
 * { margin:0; padding:0; box-sizing:border-box; }
-body { width:1760px; height:560px; background:#1e1e2e; padding:52px 80px 60px; font-family:"KM", monospace; overflow:hidden; }
-.l {
-  font-family:-apple-system,"Hiragino Sans",sans-serif; font-size:22px; color:#6c7086;
-  letter-spacing:1px; margin-bottom:14px;
+body {
+  width:1760px; height:560px; background:#1e1e2e; font-family:"KM", monospace;
+  display:flex; align-items:center; justify-content:center; overflow:hidden;
 }
-.l + .l { margin-top:0; }
-pre { font-family:inherit; font-size:38px; color:#cdd6f4; white-space:pre; line-height:1.7; font-feature-settings:"calt" on; }
+.h {
+  font-family:-apple-system,sans-serif; font-size:23px; font-weight:600;
+  letter-spacing:2px; color:#a6adc8; text-transform:uppercase; margin-bottom:16px;
+}
+.group + .group { margin-top:50px; }
+.row { display:flex; align-items:center; gap:26px; }
+.row + .row { margin-top:12px; }
+.badge {
+  font-family:-apple-system,sans-serif; font-size:19px; font-weight:600;
+  letter-spacing:1px; width:112px; text-align:center; padding:7px 0;
+  border-radius:999px; border:1px solid transparent; flex:none;
+}
+.b-off, .b-reg { background:#313244; color:#7f849c; }
+.b-on { background:rgba(166,227,161,.16); color:#a6e3a1; border-color:rgba(166,227,161,.35); }
+.b-it { background:rgba(137,180,250,.16); color:#89b4fa; border-color:rgba(137,180,250,.35); }
+pre { font-family:inherit; font-size:38px; white-space:pre; font-feature-settings:"calt" on; color:#cdd6f4; }
 .off pre { font-feature-settings:"calt" 0; color:#585b70; }
-.sep { margin-top:46px; }
 .it pre { font-family:"KMI", monospace; color:#b4befe; }
 </style>
 <body>
-<div class="l">Ligatures (JetBrains Mono) ── calt off → on</div>
-<div class="off"><pre>-> => >= <= == === != !== :: ... // /* */ && || ?? ?.</pre></div>
-<div><pre>-> => >= <= == === != !== :: ... // /* */ && || ?? ?.</pre></div>
-<div class="l sep">True Italic (Google Sans Code) ── upright → italic</div>
-<div><pre>quick brown fox jumps over the lazy dog 0123</pre></div>
-<div class="it"><pre>quick brown fox jumps over the lazy dog 0123</pre></div></body>
+<div>
+  <div class="group">
+    <div class="h">Ligatures</div>
+    <div class="row off"><div class="badge b-off">OFF</div><pre>-> => >= <= == === != !== :: ... // /* */ && || ?? ?.</pre></div>
+    <div class="row"><div class="badge b-on">ON</div><pre>-> => >= <= == === != !== :: ... // /* */ && || ?? ?.</pre></div>
+  </div>
+  <div class="group">
+    <div class="h">Italics</div>
+    <div class="row"><div class="badge b-reg">Regular</div><pre>quick brown fox jumps over the lazy dog 0123</pre></div>
+    <div class="row it"><div class="badge b-it">Italic</div><pre>quick brown fox jumps over the lazy dog 0123</pre></div>
+  </div>
+</div>
+</body>
