@@ -26,6 +26,10 @@ grid, layered with LINE Seed JP.
 
 ![ligatures](docs/images/ligatures.png)
 
+## In the editor
+
+![editor](docs/images/editor.png)
+
 ## Install (macOS)
 
 The output embeds Apple SF Mono, so no binaries are distributed — it builds
