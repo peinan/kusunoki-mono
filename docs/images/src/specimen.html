@@ -7,25 +7,27 @@
 @font-face { font-family:"KMBI"; src:url("../../../build/sfms/dist/KusunokiMono-BoldItalic.otf"); }
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
-  width:1760px; height:1640px; background:#1e1e2e; color:#cdd6f4;
-  padding:68px 92px; font-family:"KM", monospace; overflow:hidden;
+  width:1760px; height:1200px; background:#1e1e2e; color:#cdd6f4;
+  padding:64px 92px; font-family:"KM", monospace; overflow:hidden;
 }
-.sec { margin-bottom:42px; }
+.sec { margin-bottom:44px; }
 .h {
   font-family:-apple-system,sans-serif; font-size:21px; letter-spacing:2px;
   color:#6c7086; text-transform:uppercase; margin-bottom:14px;
 }
 pre { font-family:inherit; white-space:pre; font-feature-settings:"calt" on; font-size:30px; line-height:1.65; }
-.w pre { font-size:34px; line-height:1.8; }
-.tag { display:inline-block; width:2.4em; color:#585b70; }
+.w pre { font-size:34px; line-height:1.75; }
+.tag { display:inline-block; width:2.2em; color:#585b70; }
 .fb { font-family:"KMB", monospace; }
 .fi { font-family:"KMI", monospace; }
 .fbi { font-family:"KMBI", monospace; }
-.kanji pre { font-size:80px; line-height:1.25; }
-.kusu { background:linear-gradient(160deg,#cba6f7,#89b4fa); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.it { font-family:"KMI", monospace; color:#b4befe; }
+.cols { display:flex; gap:68px; align-items:flex-start; }
+.punct pre { font-size:34px; }
+.leg pre { font-size:36px; line-height:1.55; }
+.icons pre { font-size:42px; letter-spacing:8px; color:#a6adc8; line-height:1.35; }
 .sizes pre { line-height:1.55; }
 .slabel { display:inline-block; width:2.6em; color:#585b70; font-size:22px; }
-.icons pre { font-size:42px; letter-spacing:8px; color:#a6adc8; }
 </style>
 <body>
 
@@ -38,30 +40,38 @@ pre { font-family:inherit; white-space:pre; font-feature-settings:"calt" on; fon
 </div>
 
 <div class="sec">
-  <div class="h">Latin</div>
-  <pre style="font-feature-settings:'calt' 0">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz
-0123456789 !"#$%&amp;'()*+,-./:;&lt;=>?@[\]^_`{|}~</pre>
+  <div class="cols">
+    <div>
+      <div class="h">Latin</div>
+      <pre>ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</pre>
+      <pre class="it">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</pre>
+      <pre style="font-feature-settings:'calt' 0">0123456789 !"#$%&amp;'()*+,-./:;&lt;=>?@[\]^_`{|}~</pre>
+    </div>
+    <div>
+      <div class="h">Kana & Kanji</div>
+      <pre>あいうえお かきくけこ さしすせそ たちつてと</pre>
+      <pre>アイウエオ ガギグゲゴ ザジズゼゾ パピプペポ</pre>
+      <pre>永東国愛雨楠 春夏秋冬 雪月風花</pre>
+    </div>
+  </div>
 </div>
 
-<div class="sec">
-  <div class="h">Kana</div>
-  <pre>あいうえお かきくけこ さしすせそ たちつてと なにぬねの はひふへほ
-アイウエオ ガギグゲゴ ザジズゼゾ ダヂヅデド バビブベボ パピプペポ</pre>
-</div>
-
-<div class="sec kanji">
-  <div class="h">Kanji</div>
-  <pre>永 東 国 愛 雨 <span class="kusu">楠</span></pre>
-</div>
-
-<div class="sec">
+<div class="sec punct">
   <div class="h">Punctuation & Symbols</div>
   <pre>、。・「」『』（）【】〔〕→ … ※ ★ ℃ ± 楠　紅葉（全角スペースも可視化）</pre>
 </div>
 
 <div class="sec">
-  <div class="h">Legibility</div>
-  <pre style="font-size:36px">0O o  1lI|  2Z  5S  8B  rn m  ー一  ヘへ  力カ  ロ口  夕タ</pre>
+  <div class="cols">
+    <div class="leg">
+      <div class="h">Legibility</div>
+      <pre>0O o  1lI|  2Z  5S  8B  rn m  ー一  ヘへ  力カ  ロ口  夕タ</pre>
+    </div>
+    <div class="icons">
+      <div class="h">Nerd Fonts</div>
+      <pre>&#xE0A0; &#xE5FA; &#xE702; &#xE718; &#xE719; &#xE720; &#xE735; &#xE73C;</pre>
+    </div>
+  </div>
 </div>
 
 <div class="sec sizes">
@@ -70,11 +80,6 @@ pre { font-family:inherit; white-space:pre; font-feature-settings:"calt" on; fon
   <pre style="font-size:28px"><span class="slabel">14</span>素早い狐が怠け者の犬を飛び越える The quick brown fox 0123</pre>
   <pre style="font-size:32px"><span class="slabel">16</span>素早い狐が怠け者の犬を飛び越える The quick brown fox 0123</pre>
   <pre style="font-size:40px"><span class="slabel">20</span>素早い狐が怠け者の犬を飛び越える The quick brown fox 0123</pre>
-</div>
-
-<div class="sec icons">
-  <div class="h">Nerd Fonts</div>
-  <pre>&#xE0A0; &#xE5FA; &#xE702; &#xE718; &#xE719; &#xE720; &#xE735; &#xE73C;</pre>
 </div>
 
 </body>
