@@ -1,0 +1,43 @@
+<meta charset="utf-8">
+<style>
+@font-face { font-family:"KM"; src:url("../../../build/sfms/dist/KusunokiMono-Regular.otf"); font-weight:400; font-style:normal; }
+@font-face { font-family:"KM"; src:url("../../../build/sfms/dist/KusunokiMono-Bold.otf"); font-weight:700; font-style:normal; }
+@font-face { font-family:"KM"; src:url("../../../build/sfms/dist/KusunokiMono-Italic.otf"); font-weight:400; font-style:italic; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  width:1760px; height:500px;
+  background:#1e1e2e;
+  background-image:
+    radial-gradient(900px 500px at 12% -10%, rgba(203,166,247,.14), transparent 60%),
+    radial-gradient(700px 400px at 95% 115%, rgba(137,180,250,.10), transparent 60%);
+  display:flex; align-items:center; justify-content:center; gap:72px;
+  font-family:"KM", monospace; color:#cdd6f4;
+}
+.glyph {
+  font-size:230px; font-weight:700; line-height:1;
+  background:linear-gradient(160deg,#cba6f7,#89b4fa);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.title { font-size:92px; font-weight:700; letter-spacing:-1px; }
+.sub { margin-top:18px; font-size:29px; color:#a6adc8; }
+.chips { margin-top:36px; display:flex; gap:18px; }
+.chip {
+  font-family:-apple-system,"Hiragino Sans",sans-serif; font-size:22px; color:#bac2de;
+  background:#313244; border:1px solid #45475a; border-radius:999px;
+  padding:10px 22px; display:flex; align-items:center; gap:10px;
+}
+.dot { width:10px; height:10px; border-radius:50%; }
+</style>
+<body>
+  <div class="glyph">楠</div>
+  <div>
+    <div class="title">Kusunoki Mono</div>
+    <div class="sub">SF Mono × LINE Seed JP ── 日本語コーディングフォント</div>
+    <div class="chips">
+      <div class="chip"><span class="dot" style="background:#cba6f7"></span>半角1 : 全角2</div>
+      <div class="chip"><span class="dot" style="background:#a6e3a1"></span>Ligatures</div>
+      <div class="chip"><span class="dot" style="background:#fab387"></span>Nerd Fonts</div>
+      <div class="chip"><span class="dot" style="background:#89b4fa"></span>True Italic</div>
+    </div>
+  </div>
+</body>

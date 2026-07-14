@@ -1,0 +1,20 @@
+<meta charset="utf-8">
+<style>
+@font-face { font-family:"KM"; src:url("../../../build/sfms/dist/KusunokiMono-Regular.otf"); font-weight:400; font-style:normal; }
+@font-face { font-family:"KM"; src:url("../../../build/sfms/dist/KusunokiMono-Italic.otf"); font-weight:400; font-style:italic; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { width:1760px; height:400px; background:#1e1e2e; padding:56px 80px 60px; font-family:"KM", monospace; overflow:hidden; }
+.label {
+  font-family:-apple-system,"Hiragino Sans",sans-serif; font-size:22px; color:#6c7086;
+  text-transform:uppercase; letter-spacing:2px; margin-bottom:14px;
+}
+pre { font-size:38px; color:#cdd6f4; white-space:pre; line-height:1.6; }
+.block + .label { margin-top:44px; }
+.it pre { font-style:italic; color:#b4befe; }
+</style>
+<body>
+<div class="label">Ligatures ── JetBrains Mono</div>
+<div class="block"><pre>->  =>  >=  <=  ==  ===  !=  !==  ::  ...  //  /*  */  &&  ||  ??  ?.</pre></div>
+<div class="label">True Italic ── Google Sans Code</div>
+<div class="block it"><pre>const done = items.filter(x => x.ok) != null  // abcdefijklpvyz</pre></div>
+</body>

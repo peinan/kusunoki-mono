@@ -1,0 +1,68 @@
+<meta charset="utf-8">
+<style>
+@font-face { font-family:"KM"; src:url("../../../build/sfms/dist/KusunokiMono-Regular.otf"); font-weight:400; font-style:normal; }
+@font-face { font-family:"KM"; src:url("../../../build/sfms/dist/KusunokiMono-Bold.otf"); font-weight:700; font-style:normal; }
+@font-face { font-family:"KM"; src:url("../../../build/sfms/dist/KusunokiMono-Italic.otf"); font-weight:400; font-style:italic; }
+@font-face { font-family:"KM"; src:url("../../../build/sfms/dist/KusunokiMono-BoldItalic.otf"); font-weight:700; font-style:italic; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { width:1760px; height:1140px; background:#181825; font-family:"KM", monospace; display:flex; flex-direction:column; overflow:hidden; }
+pre { flex:1; }
+.bar {
+  height:72px; background:#11111b; display:flex; align-items:center; padding:0 28px;
+  border-bottom:1px solid #313244;
+}
+.lights { display:flex; gap:14px; }
+.lights span { width:22px; height:22px; border-radius:50%; }
+.tab {
+  margin-left:40px; background:#181825; border:1px solid #313244; border-bottom:none;
+  border-radius:12px 12px 0 0; padding:12px 28px 14px; font-size:24px; color:#a6adc8;
+  align-self:flex-end;
+}
+pre {
+  font-family:inherit; font-size:30px; line-height:1.78; padding:44px 56px 48px;
+  color:#cdd6f4; white-space:pre;
+}
+.c { color:#7f849c; font-style:italic; }
+.k { color:#cba6f7; }
+.s { color:#a6e3a1; }
+.n { color:#fab387; }
+.f { color:#89b4fa; }
+.t { color:#f9e2af; }
+.o { color:#94e2d5; }
+.status { display:flex; font-size:24px; height:56px; line-height:56px; }
+.status .pl { font-size:56px; line-height:56px; }
+.seg1 { background:#b4befe; color:#11111b; padding:0 24px; font-weight:700; }
+.seg2 { background:#45475a; color:#cdd6f4; padding:0 24px; }
+.seg3 { background:#313244; color:#a6adc8; padding:0 24px; }
+.rest { background:#11111b; flex:1; text-align:right; color:#6c7086; padding:0 28px; }
+</style>
+<body>
+<div class="bar">
+  <div class="lights"><span style="background:#ff5f57"></span><span style="background:#febc2e"></span><span style="background:#28c840"></span></div>
+  <div class="tab">sample.py</div>
+</div>
+<pre>
+<span class="c"># 楠 Kusunoki Mono ── コードと日本語がグリッドに揃う</span>
+<span class="k">from</span> dataclasses <span class="k">import</span> dataclass
+
+<span class="n">@dataclass</span>
+<span class="k">class</span> <span class="t">商品</span>:
+    名前: <span class="t">str</span>
+    価格: <span class="t">int</span>             <span class="c"># 税込、円</span>
+    在庫: <span class="t">bool</span> = <span class="n">True</span>     <span class="c"># ※ 取り寄せは False</span>
+
+<span class="k">def</span> <span class="f">合計</span>(かご: <span class="t">list</span>[<span class="t">商品</span>]) <span class="o">-></span> <span class="t">int</span>:
+    <span class="s">"""かごの合計金額を返す。空なら 0 円。"""</span>
+    <span class="k">return</span> <span class="f">sum</span>(x.価格 <span class="k">for</span> x <span class="k">in</span> かご <span class="k">if</span> x.在庫)
+
+かご = [<span class="t">商品</span>(<span class="s">"ほうじ茶"</span>, <span class="n">700</span>), <span class="t">商品</span>(<span class="s">"最中"</span>, <span class="n">380</span>)]
+<span class="k">assert</span> <span class="f">合計</span>(かご) <span class="o">!=</span> <span class="n">0</span> <span class="k">and</span> <span class="f">合計</span>(かご) <span class="o">>=</span> <span class="n">500</span>   <span class="c"># リガチャ: != >= -></span>
+<span class="f">print</span>(<span class="s">f"合計 {<span class="f">合計</span>(かご):,} 円"</span>)               <span class="c"># => 1,080 円</span>
+</pre>
+<div class="status">
+  <div class="seg1">NORMAL</div><div class="pl" style="color:#b4befe;background:#45475a">&#xE0B0;</div>
+  <div class="seg2">&#xE0A0; main</div><div class="pl" style="color:#45475a;background:#313244">&#xE0B0;</div>
+  <div class="seg3">~/ghq/github.com/peinan/kusunoki-mono</div><div class="pl" style="color:#313244;background:#11111b">&#xE0B0;</div>
+  <div class="rest">&#xE73C; Python   UTF-8   LF</div>
+</div>
+</body>

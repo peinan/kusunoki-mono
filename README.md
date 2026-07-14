@@ -1,35 +1,35 @@
 <div align="center">
 
+![Kusunoki Mono](docs/images/hero.png)
+
 English | [日本語](README.ja.md)
+
+![platform](https://img.shields.io/badge/platform-macOS-b4befe?labelColor=1e1e2e)
+![build](https://img.shields.io/badge/build-local_only-a6e3a1?labelColor=1e1e2e)
+
+A Japanese coding font you build yourself: SF Mono condensed to a square
+grid, layered with LINE Seed JP.
+
+![code sample](docs/images/sample.png)
 
 </div>
 
-# Kusunoki Mono
+## Features
 
-A personal monospace font for coding with Japanese, built by layering custom
-transforms on a [SF Mono Square][sfms]-style base. A full-width CJK glyph is
-exactly two Latin columns, so mixed Japanese and code stay aligned.
+- Fixed 1:2 grid — a full-width CJK glyph is exactly two columns, so Japanese and code stay aligned
+- Apple **SF Mono** for Latin, **LINE Seed JP** for Japanese (Migu 1M as the fallback)
+- **JetBrains Mono** programming ligatures
+- **Google Sans Code** true italic
+- **Nerd Fonts** icons, sized to match SF Mono Square
 
-| Part | Source |
-| --- | --- |
-| Latin / ASCII / symbols / digits | Apple SF Mono, condensed to the square grid |
-| Japanese | LINE Seed JP, with Migu 1M as the fallback |
-| Programming ligatures | JetBrains Mono, scaled to the square cell |
-| Italic lowercase | 14 letters from Google Sans Code's true italic; the rest stays SF Mono italic, centred |
-| Icons | Nerd Fonts v3.4.0, variable width, sized to match SF Mono Square |
+![grid](docs/images/grid.png)
 
-## Not distributed — build it yourself
-
-The output embeds Apple SF Mono, which Apple licenses for local use but does
-not permit redistributing. Like SF Mono Square itself, this repo therefore
-ships no font binaries: it is a build recipe that downloads SF Mono from
-Apple plus the OFL/MIT source fonts and builds the font locally on your Mac.
+![ligatures](docs/images/ligatures.png)
 
 ## Install (macOS)
 
-Both routes fetch the sources and build the font on your Mac.
-
-### Homebrew
+The output embeds Apple SF Mono, so no binaries are distributed — it builds
+on your Mac, the same way [SF Mono Square][sfms] does.
 
 ```sh
 brew tap peinan/kusunoki-mono
@@ -37,7 +37,10 @@ brew install kusunoki-mono
 cp "$(brew --prefix)/share/fonts/KusunokiMono-"*.otf ~/Library/Fonts/
 ```
 
-### make
+Set your terminal or editor font to **Kusunoki Mono**.
+
+<details>
+<summary><b>Build with make (for the tuning knobs)</b></summary>
 
 Requirements: macOS, [Homebrew][brew], [`uv`][uv]
 
@@ -48,12 +51,8 @@ make build   # → build/sfms/dist/KusunokiMono-{Regular,Bold,Italic,BoldItalic}
 cp build/sfms/dist/KusunokiMono-*.otf ~/Library/Fonts/
 ```
 
-Set your terminal or editor font to **Kusunoki Mono**.
-
-## Tuning knobs
-
-Env vars for `make build`; Homebrew scrubs custom env vars, so tune via the
-make route:
+Env vars for `make build`; Homebrew scrubs custom env vars, so tune via
+this route:
 
 | Variable | Default | Effect |
 | --- | --- | --- |
@@ -63,6 +62,8 @@ make route:
 | `GSC_R` / `GSC_B` | `360` / `650` | Google Sans Code weights for the grafted italic letters |
 | `KM_AMBIGUOUS_WIDTH` | `narrow` | Cells for East-Asian-ambiguous symbols like ※ ★ ℃; `narrow` is 1 cell and safe in strict terminals like Ghostty, `wide` is 2 cells like SF Mono Square |
 | `KM_SFMS_DIR` | `~/Library/Fonts` | Where `SFMonoSquare-*.otf` lives, used to size icons to match; the step is skipped if absent |
+
+</details>
 
 ## Development
 
