@@ -35,6 +35,8 @@ brew install kusunoki-mono
 cp "$(brew --prefix)/share/fonts/KusunokiMono-"*.otf ~/Library/Fonts/
 ```
 
+Homebrew 6.0 以降では、サードパーティ tap を初回に信頼する必要があります: `brew trust peinan/kusunoki-mono`
+
 端末やエディタのフォントを **Kusunoki Mono** に設定すれば完了です。
 
 ### make でビルドする
