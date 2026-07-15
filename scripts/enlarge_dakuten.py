@@ -4,7 +4,7 @@
 # ///
 """P2.8: enlarge kana dakuten (゛) / handakuten (゜) and skip-ink the overlap.
 
-    KM_DAKUTEN_SCALE=1.3 KM_HANDAKUTEN_SCALE=1.25 KM_DAKUTEN_HALO=0.18 \\
+    KM_DAKUTEN_SCALE=1.3 KM_HANDAKUTEN_SCALE=1.25 KM_DAKUTEN_HALO=0.24 \\
         uv run scripts/enlarge_dakuten.py <lineseed.ttf> <out.ttf>
 
 Each voiced kana X is rebuilt from its NFD parts as
@@ -28,9 +28,9 @@ Everything runs in LINE Seed's own em, before P3 swaps the glyphs into the
 base, so P3's scaling / centring / italic skew apply unchanged. Advances kept.
 
 Env: KM_DAKUTEN_SCALE (dakuten enlarge factor, 1.3), KM_HANDAKUTEN_SCALE (ring
-enlarge factor, 1.25), KM_DAKUTEN_HALO (carved gap as an extra fraction of the
-enlarged mark, 0.18), KM_DAKUTEN_SKIP_INK (1=carve, 0=just enlarge),
-KM_DAKUTEN_EXCLUDE (kana to leave untouched, default "ゞヾヷヸヹヺ").
+enlarge factor, 1.25), KM_DAKUTEN_HALO / KM_HANDAKUTEN_HALO (carved gap as an
+extra fraction of the enlarged mark, 0.24 / 0.18), KM_DAKUTEN_SKIP_INK (1=carve,
+0=just enlarge), KM_DAKUTEN_EXCLUDE (kana to leave untouched, "ゞヾヷヸヹヺ").
 """
 import os
 import sys
@@ -48,7 +48,8 @@ from fontTools.ttLib import TTFont
 IN, OUT = sys.argv[1], sys.argv[2]
 SCALE_DAKUTEN = float(os.environ.get("KM_DAKUTEN_SCALE", "1.3"))
 SCALE_HANDAKUTEN = float(os.environ.get("KM_HANDAKUTEN_SCALE", "1.25"))
-HALO = float(os.environ.get("KM_DAKUTEN_HALO", "0.18"))
+HALO_DAKUTEN = float(os.environ.get("KM_DAKUTEN_HALO", "0.24"))
+HALO_HANDAKUTEN = float(os.environ.get("KM_HANDAKUTEN_HALO", "0.18"))
 SKIP_INK = os.environ.get("KM_DAKUTEN_SKIP_INK", "1") != "0"
 EXCLUDE = set(os.environ.get("KM_DAKUTEN_EXCLUDE", "ゞヾヷヸヹヺ"))
 
@@ -308,10 +309,11 @@ for gname, (mark, body, is_semi, mb, from_fallback) in recovered.items():
         repaired.append(gname)
 
     scale = SCALE_HANDAKUTEN if is_semi else SCALE_DAKUTEN
+    halo_frac = HALO_HANDAKUTEN if is_semi else HALO_DAKUTEN
     mcx, mcy = (mb[0] + mb[2]) / 2, (mb[1] + mb[3]) / 2
     mark_big = scaled_about(mark, scale, mcx, mcy)
     if SKIP_INK:
-        halo = scaled_about(mark, scale * (1 + HALO), mcx, mcy)
+        halo = scaled_about(mark, scale * (1 + halo_frac), mcx, mcy)
         body = op("difference", body, halo)
     final = op("union", body, mark_big)
 
@@ -326,7 +328,7 @@ for gname, (mark, body, is_semi, mb, from_fallback) in recovered.items():
 tt.save(OUT)
 msg = (f"[enlarge_dakuten] enlarged {done} kana "
        f"(dakuten={SCALE_DAKUTEN} handakuten={SCALE_HANDAKUTEN} "
-       f"halo={HALO} skip_ink={int(SKIP_INK)}) -> {OUT}")
+       f"halo={HALO_DAKUTEN}/{HALO_HANDAKUTEN} skip_ink={int(SKIP_INK)}) -> {OUT}")
 if repaired:
     msg += f"; rebuilt welded rings: {' '.join(repaired)}"
 if fell_back:

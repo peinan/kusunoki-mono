@@ -19,8 +19,9 @@
 # LIG_YSCALE (ligature vertical scale, 1.478), GSC_R/GSC_B (GSC italic weight), KM_VERSION,
 # KM_SFMS_DIR (dir with SFMonoSquare-*.otf for P2.5; default ~/Library/Fonts),
 # KM_AMBIGUOUS_WIDTH (narrow[default]=ambiguous symbols like ※ are 1 cell / wide=2 cells),
-# KM_DAKUTEN_SCALE/KM_HANDAKUTEN_SCALE (P2.8 mark enlarge, 1.3/1.25), KM_DAKUTEN_HALO
-# (P2.8 carved gap fraction, 0.18), KM_DAKUTEN_SKIP_INK (1=carve), KM_DAKUTEN_EXCLUDE.
+# KM_DAKUTEN_SCALE/KM_HANDAKUTEN_SCALE (P2.8 mark enlarge, 1.3/1.25), KM_DAKUTEN_HALO/
+# KM_HANDAKUTEN_HALO (P2.8 carved gap fraction, 0.24/0.18), KM_DAKUTEN_SKIP_INK (1=carve),
+# KM_DAKUTEN_EXCLUDE.
 set -uo pipefail
 cd "$(dirname "$0")/.."
 ROOT="$PWD"
