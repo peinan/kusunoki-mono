@@ -1,0 +1,47 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+@font-face { font-family:"KM"; src:url("../../../dist/KusunokiMono-Regular.otf"); }
+@font-face { font-family:"KMB"; src:url("../../../dist/KusunokiMono-Bold.otf"); }
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  width:2560px; height:1280px;
+  background:#1e1e2e;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(205,214,244,.025) 0 2px, transparent 2px 64px),
+    radial-gradient(1400px 800px at 12% -10%, rgba(203,166,247,.16), transparent 60%),
+    radial-gradient(1100px 700px at 95% 115%, rgba(137,180,250,.12), transparent 60%);
+  display:flex; align-items:center; justify-content:center; gap:110px;
+  font-family:"KM", monospace; color:#cdd6f4;
+}
+.glyph {
+  font-family:"KMB", monospace;
+  font-size:400px; line-height:1;
+  background:linear-gradient(160deg,#cba6f7,#89b4fa);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.title { font-family:"KMB", monospace; font-size:148px; letter-spacing:-2px; }
+.fonts { margin-top:36px; font-size:50px; color:#a6adc8; }
+.desc { margin-top:20px; font-size:44px; color:#7f849c; }
+.chips { margin-top:56px; display:flex; gap:28px; }
+.chip {
+  font-family:-apple-system,"Hiragino Sans",sans-serif; font-size:36px; color:#bac2de;
+  background:#313244; border:1px solid #45475a; border-radius:999px;
+  padding:16px 36px; display:flex; align-items:center; gap:16px;
+}
+.dot { width:16px; height:16px; border-radius:50%; }
+</style>
+<body>
+  <div class="glyph">楠</div>
+  <div>
+    <div class="title">Kusunoki Mono</div>
+    <div class="fonts">SF Mono × LINE Seed JP × Google Sans Code</div>
+    <div class="desc">日本語プログラミング用の等幅フォント</div>
+    <div class="chips">
+      <div class="chip"><span class="dot" style="background:#89b4fa"></span>True Italic</div>
+      <div class="chip"><span class="dot" style="background:#fab387"></span>Nerd Fonts</div>
+      <div class="chip"><span class="dot" style="background:#a6e3a1"></span>Ligatures</div>
+      <div class="chip"><span class="dot" style="background:#cba6f7"></span>半角1 : 全角2</div>
+    </div>
+  </div>
+</body>
