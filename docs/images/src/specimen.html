@@ -7,7 +7,7 @@
 @font-face { font-family:"KMBI"; src:url("../../../dist/KusunokiMono-BoldItalic.otf"); }
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
-  width:1760px; height:1560px; background:#1e1e2e; color:#cdd6f4;
+  width:1760px; height:1640px; background:#1e1e2e; color:#cdd6f4;
   padding:64px 92px; font-family:"KM", monospace; overflow:hidden;
 }
 .sec { margin-bottom:46px; }
@@ -16,11 +16,8 @@ body {
   color:#6c7086; text-transform:uppercase; margin-bottom:14px;
 }
 pre { font-family:inherit; white-space:pre; font-feature-settings:"calt" on; font-size:30px; line-height:1.65; }
-.row { display:flex; align-items:baseline; }
-.wlabel {
-  font-family:-apple-system,sans-serif; font-size:18px; letter-spacing:1.5px;
-  color:#585b70; width:200px; flex:none;
-}
+.row { display:flex; align-items:center; gap:24px; }
+.row + .row { margin-top:6px; }
 .w pre { font-size:34px; line-height:1.85; }
 .fb { font-family:"KMB", monospace; }
 .fi { font-family:"KMI", monospace; }
@@ -31,7 +28,7 @@ pre { font-family:inherit; white-space:pre; font-feature-settings:"calt" on; fon
 .leg pre { font-size:36px; line-height:1.55; }
 .icons pre { font-size:31px; letter-spacing:6px; color:#a6adc8; line-height:1.6; }
 .grid pre {
-  display:inline-block; font-size:28px; line-height:1.95;
+  display:inline-block; font-size:36px; line-height:1.9;
   background:repeating-linear-gradient(90deg, rgba(203,166,247,.085) 0 2ch, transparent 2ch 4ch);
 }
 .lrow { display:flex; align-items:center; gap:20px; }
@@ -41,7 +38,9 @@ pre { font-family:inherit; white-space:pre; font-feature-settings:"calt" on; fon
   letter-spacing:1px; width:96px; text-align:center; padding:6px 0;
   border-radius:999px; border:1px solid transparent; flex:none;
 }
-.b-off, .b-reg { background:#313244; color:#7f849c; }
+.b-off, .b-reg, .b-lbl { background:#313244; color:#7f849c; }
+.badge.wide { width:150px; }
+.badge.sm { width:64px; }
 .b-on { background:rgba(166,227,161,.16); color:#a6e3a1; border-color:rgba(166,227,161,.35); }
 .b-it { background:rgba(137,180,250,.16); color:#89b4fa; border-color:rgba(137,180,250,.35); }
 .ligs pre { font-size:30px; }
@@ -55,10 +54,10 @@ pre { font-family:inherit; white-space:pre; font-feature-settings:"calt" on; fon
 
 <div class="sec w">
   <div class="h">Weights & Styles</div>
-  <div class="row"><div class="wlabel">REGULAR</div><pre>東京の楠は夏の夕暮れに輝き、風が頁をめくる。 The quick brown fox 0123456789</pre></div>
-  <div class="row"><div class="wlabel">BOLD</div><pre class="fb">東京の楠は夏の夕暮れに輝き、風が頁をめくる。 The quick brown fox 0123456789</pre></div>
-  <div class="row"><div class="wlabel">ITALIC</div><pre class="fi">東京の楠は夏の夕暮れに輝き、風が頁をめくる。 The quick brown fox 0123456789</pre></div>
-  <div class="row"><div class="wlabel">BOLD ITALIC</div><pre class="fbi">東京の楠は夏の夕暮れに輝き、風が頁をめくる。 The quick brown fox 0123456789</pre></div>
+  <div class="row"><div class="badge b-lbl wide">Regular</div><pre>東京の楠は夏の夕暮れに輝き、風が頁をめくる。 The quick brown fox 0123456789</pre></div>
+  <div class="row"><div class="badge b-lbl wide">Bold</div><pre class="fb">東京の楠は夏の夕暮れに輝き、風が頁をめくる。 The quick brown fox 0123456789</pre></div>
+  <div class="row"><div class="badge b-lbl wide">Italic</div><pre class="fi">東京の楠は夏の夕暮れに輝き、風が頁をめくる。 The quick brown fox 0123456789</pre></div>
+  <div class="row"><div class="badge b-lbl wide">Bold Italic</div><pre class="fbi">東京の楠は夏の夕暮れに輝き、風が頁をめくる。 The quick brown fox 0123456789</pre></div>
 </div>
 
 <div class="sec">
@@ -122,10 +121,10 @@ ano ihatovo no sukitootta kaze....
 
 <div class="sec sizes">
   <div class="h">Sizes</div>
-  <pre style="font-size:24px"><span class="slabel">12</span>素早い狐が怠け者の犬を飛び越える The quick brown fox 0123</pre>
-  <pre style="font-size:28px"><span class="slabel">14</span>素早い狐が怠け者の犬を飛び越える The quick brown fox 0123</pre>
-  <pre style="font-size:32px"><span class="slabel">16</span>素早い狐が怠け者の犬を飛び越える The quick brown fox 0123</pre>
-  <pre style="font-size:40px"><span class="slabel">20</span>素早い狐が怠け者の犬を飛び越える The quick brown fox 0123</pre>
+  <div class="row"><div class="badge b-lbl sm">12</div><pre style="font-size:24px">素早い狐が怠け者の犬を飛び越える The quick brown fox 0123</pre></div>
+  <div class="row"><div class="badge b-lbl sm">14</div><pre style="font-size:28px">素早い狐が怠け者の犬を飛び越える The quick brown fox 0123</pre></div>
+  <div class="row"><div class="badge b-lbl sm">16</div><pre style="font-size:32px">素早い狐が怠け者の犬を飛び越える The quick brown fox 0123</pre></div>
+  <div class="row"><div class="badge b-lbl sm">20</div><pre style="font-size:40px">素早い狐が怠け者の犬を飛び越える The quick brown fox 0123</pre></div>
 </div>
 
 </body>
