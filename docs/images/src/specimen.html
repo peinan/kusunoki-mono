@@ -7,7 +7,7 @@
 @font-face { font-family:"KMBI"; src:url("../../../dist/KusunokiMono-BoldItalic.otf"); }
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
-  width:1760px; height:1640px; background:#1e1e2e; color:#cdd6f4;
+  width:1760px; height:1668px; background:#1e1e2e; color:#cdd6f4;
   padding:64px 92px; font-family:"KM", monospace; overflow:hidden;
 }
 .sec { margin-bottom:46px; }
@@ -38,14 +38,16 @@ pre { font-family:inherit; white-space:pre; font-feature-settings:"calt" on; fon
   letter-spacing:1px; width:96px; text-align:center; padding:6px 0;
   border-radius:999px; border:1px solid transparent; flex:none;
 }
-.b-off, .b-reg, .b-lbl { background:#313244; color:#7f849c; }
+.b-off, .b-reg { background:#313244; color:#7f849c; }
+.b-lbl { background:transparent; border-color:#45475a; color:#7f849c; }
 .badge.wide { width:150px; }
 .badge.sm { width:64px; }
+.ligs .badge { width:120px; }
 .b-on { background:rgba(166,227,161,.16); color:#a6e3a1; border-color:rgba(166,227,161,.35); }
 .b-it { background:rgba(137,180,250,.16); color:#89b4fa; border-color:rgba(137,180,250,.35); }
 .ligs pre { font-size:30px; }
 .off pre { font-feature-settings:"calt" 0; color:#585b70; }
-.itl pre { font-family:"KMI", monospace; color:#b4befe; }
+.itl pre { font-family:"KMI", monospace; }
 .subsec + .subsec { margin-top:34px; }
 .sizes pre { line-height:1.55; }
 .slabel { display:inline-block; width:2.6em; color:#585b70; font-size:22px; }
