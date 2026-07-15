@@ -1,45 +1,53 @@
 <div align="center">
 
+![Kusunoki Mono](docs/images/hero.png)
+
 [English](README.md) | 日本語
+
+![platform](https://img.badges.sh/platform-macOS-b4befe?labelColor=1e1e2e&logo=apple&font=Space+Grotesk&fontWeight=500&labelFontWeight=700&messageFontWeight=700)
+![version](https://img.badges.sh/version-v0.6.0-a6e3a1?labelColor=1e1e2e&logo=lucide:Tag&font=Space+Grotesk&fontWeight=500&labelFontWeight=700&messageFontWeight=700)
+[![homebrew](https://img.badges.sh/homebrew-peinan%2Fkusunoki--mono-fab387?labelColor=1e1e2e&logo=lucide:Beer&font=Space+Grotesk&fontWeight=500&labelFontWeight=700&messageFontWeight=700)](https://github.com/peinan/homebrew-kusunoki-mono)
+
+Apple の美しい等幅フォント SF Mono を日本語と揃う正方グリッドに整え、
+小さくても視認性の高い LINE Seed JP を重ねた日本語プログラミングフォント。
+イタリックは SF Mono に馴染むかを一字ずつ確かめて選んだ Google Sans Code の true italic、
+さらに JetBrains Mono のリガチャと Nerd Fonts のアイコンも標準装備。
 
 </div>
 
-# Kusunoki Mono
+## 特徴
 
-日本語コーディング向けの個人用等幅フォント。
-[SF Mono Square][sfms] 系のベースに独自の変換を重ねて作ります。
-全角 CJK がちょうど Latin 2 桁ぶんになり、和文とコードがグリッドに揃います。
+- 半角 1 : 全角 2 の固定グリッド。日本語とコードが揃う
+- 英数字は Apple **SF Mono**、和文は **LINE Seed JP** (フォールバックは Migu 1M)
+- **JetBrains Mono** のプログラミングリガチャ
+- **Google Sans Code** の true italic
+- **Nerd Fonts** アイコン
 
-| 部位 | ソース |
-| --- | --- |
-| Latin / ASCII / 記号 / 数字 | Apple SF Mono を正方グリッドに凝縮 |
-| 和文 | LINE Seed JP。カバー外は Migu 1M でフォールバック |
-| プログラミングリガチャ | JetBrains Mono を正方セルに合わせて移植 |
-| イタリック小文字 | Google Sans Code の true italic から 14 字。残りは SF Mono italic を中央寄せ |
-| アイコン | Nerd Fonts v3.4.0。可変幅で SF Mono Square と同サイズ |
+![字形見本](docs/images/specimen.png)
 
-## 配布せず、自分でビルドする
+## インストール
 
-出力には Apple SF Mono が含まれます。
-Apple はローカル利用を許諾する一方、再配布は認めていません。
-そのため SF Mono Square と同じくフォントバイナリは同梱せず、このリポジトリが配布するのはビルドレシピです。
-SF Mono を Apple から、OFL/MIT のソースフォントを各配布元から取得し、手元の Mac でビルドします。
+出力には Apple SF Mono が含まれるため配布せず、手元でビルドします。
 
-## ビルド (macOS)
+```sh
+brew tap peinan/kusunoki-mono
+brew install kusunoki-mono
+cp "$(brew --prefix)/share/fonts/KusunokiMono-"*.otf ~/Library/Fonts/
+```
 
-必要なもの: macOS、[Homebrew][brew]、[`uv`][uv]
+端末やエディタのフォントを **Kusunoki Mono** に設定すれば完了です。
+
+### make でビルドする
+
+フォントを調整したいときは make でビルドします。下の表のノブを `make build` の環境変数として渡せます。
+必要なもの: [Homebrew][brew]、[`uv`][uv]
 
 ```sh
 brew install fontforge
 make setup   # ソースフォントと nerd-fonts patcher を取得
-make build   # → build/sfms/dist/KusunokiMono-{Regular,Bold,Italic,BoldItalic}.otf
+make build   # → dist/KusunokiMono-{Regular,Bold,Italic,BoldItalic}.otf
+cp dist/KusunokiMono-*.otf ~/Library/Fonts/
 ```
-
-4 つの `.otf` を `~/Library/Fonts/` に入れ、端末やエディタのフォントを **Kusunoki Mono** に設定します。
-
-## 調整ノブ
-
-`make build` の環境変数:
 
 | 変数 | 既定値 | 効果 |
 | --- | --- | --- |
@@ -47,12 +55,20 @@ make build   # → build/sfms/dist/KusunokiMono-{Regular,Bold,Italic,BoldItalic}
 | `LIG_YSCALE` | `1.478` | リガチャの高さ。既定値は `//` など背の高い演算子が SF Mono の `/` に揃う値 |
 | `ITALIC_INK_OFFSET` | `0.0` | italic 英字のインク位置。セル幅比で `0` は upright と同じ中央、`0.076` は SF Mono 本来の右寄り |
 | `GSC_R` / `GSC_B` | `360` / `650` | 移植する italic 文字の Google Sans Code ウェイト |
-| `KM_AMBIGUOUS_WIDTH` | `narrow` | ※ ★ ℃ など曖昧幅記号のセル数。`narrow` は 1 セルで Ghostty など厳密な端末でも被らず、`wide` は SF Mono Square と同じ 2 セル |
+| `KM_AMBIGUOUS_WIDTH` | `narrow` | ※ ★ ℃ など曖昧幅記号のセル数。`narrow` は 1 セルで Ghostty など厳密な端末でも被らず、`wide` は 2 セル |
 | `KM_SFMS_DIR` | `~/Library/Fonts` | アイコンのサイズ合わせに使う `SFMonoSquare-*.otf` の場所。無ければこの工程はスキップ |
 
 ## 開発
 
 パイプラインの内部は [docs/development.ja.md](docs/development.ja.md) にまとめています。
+
+## スクリーンショット
+
+| | |
+| --- | --- |
+| ![エディタ](docs/images/editor.png) | ![git log](docs/images/gitlog.png) |
+
+![ターミナル](docs/images/terminal.png)
 
 ## ライセンス
 
@@ -69,6 +85,5 @@ make build   # → build/sfms/dist/KusunokiMono-{Regular,Bold,Italic,BoldItalic}
 | JetBrains Mono | OFL 1.1 |
 | Nerd Fonts | MIT + upstream |
 
-[sfms]: https://github.com/delphinus/homebrew-sfmono-square
 [brew]: https://brew.sh/
 [uv]: https://docs.astral.sh/uv/

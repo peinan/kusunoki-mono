@@ -1,46 +1,53 @@
 <div align="center">
 
+![Kusunoki Mono](docs/images/hero.png)
+
 English | [日本語](README.ja.md)
+
+![platform](https://img.badges.sh/platform-macOS-b4befe?labelColor=1e1e2e&logo=apple&font=Space+Grotesk&fontWeight=500&labelFontWeight=700&messageFontWeight=700)
+![version](https://img.badges.sh/version-v0.6.0-a6e3a1?labelColor=1e1e2e&logo=lucide:Tag&font=Space+Grotesk&fontWeight=500&labelFontWeight=700&messageFontWeight=700)
+[![homebrew](https://img.badges.sh/homebrew-peinan%2Fkusunoki--mono-fab387?labelColor=1e1e2e&logo=lucide:Beer&font=Space+Grotesk&fontWeight=500&labelFontWeight=700&messageFontWeight=700)](https://github.com/peinan/homebrew-kusunoki-mono)
+
+Apple's beautifully crafted SF Mono, squared onto a Japanese-aligned grid and
+layered with LINE Seed JP, which stays crisp at small sizes. The italic is
+Google Sans Code's, hand-picked letter by letter to sit well with SF Mono —
+with JetBrains Mono ligatures and Nerd Fonts icons built in.
 
 </div>
 
-# Kusunoki Mono
+## Features
 
-A personal monospace font for coding with Japanese, built by layering custom
-transforms on a [SF Mono Square][sfms]-style base. A full-width CJK glyph is
-exactly two Latin columns, so mixed Japanese and code stay aligned.
+- Fixed 1:2 grid — a full-width CJK glyph is exactly two columns, so Japanese and code stay aligned
+- Apple **SF Mono** for Latin, **LINE Seed JP** for Japanese (Migu 1M as the fallback)
+- **JetBrains Mono** programming ligatures
+- **Google Sans Code** true italic
+- **Nerd Fonts** icons
 
-| Part | Source |
-| --- | --- |
-| Latin / ASCII / symbols / digits | Apple SF Mono, condensed to the square grid |
-| Japanese | LINE Seed JP, with Migu 1M as the fallback |
-| Programming ligatures | JetBrains Mono, scaled to the square cell |
-| Italic lowercase | 14 letters from Google Sans Code's true italic; the rest stays SF Mono italic, centred |
-| Icons | Nerd Fonts v3.4.0, variable width, sized to match SF Mono Square |
+![specimen](docs/images/specimen.png)
 
-## Not distributed — build it yourself
+## Install
 
-The output embeds Apple SF Mono, which Apple licenses for local use but does
-not permit redistributing. Like SF Mono Square itself, this repo therefore
-ships no font binaries: it is a build recipe that downloads SF Mono from
-Apple plus the OFL/MIT source fonts and builds the font locally on your Mac.
+The output embeds Apple SF Mono, so no binaries are distributed — it builds on your Mac.
 
-## Build (macOS)
+```sh
+brew tap peinan/kusunoki-mono
+brew install kusunoki-mono
+cp "$(brew --prefix)/share/fonts/KusunokiMono-"*.otf ~/Library/Fonts/
+```
 
-Requirements: macOS, [Homebrew][brew], [`uv`][uv]
+Set your terminal or editor font to **Kusunoki Mono**.
+
+### Build with make
+
+To tweak the font, build with make — the knobs below are env vars for `make build`.
+Requirements: [Homebrew][brew], [`uv`][uv]
 
 ```sh
 brew install fontforge
 make setup   # fetch the source fonts and the nerd-fonts patcher
-make build   # → build/sfms/dist/KusunokiMono-{Regular,Bold,Italic,BoldItalic}.otf
+make build   # → dist/KusunokiMono-{Regular,Bold,Italic,BoldItalic}.otf
+cp dist/KusunokiMono-*.otf ~/Library/Fonts/
 ```
-
-Install the four `.otf` into `~/Library/Fonts/` and set your terminal or
-editor font to **Kusunoki Mono**.
-
-## Tuning knobs
-
-Env vars for `make build`:
 
 | Variable | Default | Effect |
 | --- | --- | --- |
@@ -48,12 +55,20 @@ Env vars for `make build`:
 | `LIG_YSCALE` | `1.478` | Ligature height; the default matches tall operators like `//` to SF Mono's `/` |
 | `ITALIC_INK_OFFSET` | `0.0` | Italic Latin ink offset as a fraction of the cell; `0` is centred like the upright, `0.076` is SF Mono's native right-lean |
 | `GSC_R` / `GSC_B` | `360` / `650` | Google Sans Code weights for the grafted italic letters |
-| `KM_AMBIGUOUS_WIDTH` | `narrow` | Cells for East-Asian-ambiguous symbols like ※ ★ ℃; `narrow` is 1 cell and safe in strict terminals like Ghostty, `wide` is 2 cells like SF Mono Square |
+| `KM_AMBIGUOUS_WIDTH` | `narrow` | Cells for East-Asian-ambiguous symbols like ※ ★ ℃; `narrow` is 1 cell and safe in strict terminals like Ghostty, `wide` is 2 cells |
 | `KM_SFMS_DIR` | `~/Library/Fonts` | Where `SFMonoSquare-*.otf` lives, used to size icons to match; the step is skipped if absent |
 
 ## Development
 
 Pipeline internals are documented in [docs/development.md](docs/development.md).
+
+## Screenshots
+
+| | |
+| --- | --- |
+| ![editor](docs/images/editor.png) | ![git log](docs/images/gitlog.png) |
+
+![terminal](docs/images/terminal.png)
 
 ## Licensing
 
@@ -70,6 +85,5 @@ are the author's own.
 | JetBrains Mono | OFL 1.1 |
 | Nerd Fonts | MIT + upstream |
 
-[sfms]: https://github.com/delphinus/homebrew-sfmono-square
 [brew]: https://brew.sh/
 [uv]: https://docs.astral.sh/uv/

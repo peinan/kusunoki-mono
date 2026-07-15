@@ -16,7 +16,7 @@ install the font, see the [README](../README.md).
 | `scripts/` | The whole pipeline: `setup.sh` fetches sources, `build.sh` runs the phases, one Python script per transform |
 | `sources/` | Fetched inputs, gitignored; versions pinned in `setup.sh` |
 | `build/sfms/` | Per-phase intermediates and logs, gitignored |
-| `build/sfms/dist/` | The final four OTFs |
+| `dist/` | The final four OTFs |
 
 FontForge scripts run via `fontforge -script`; the fontTools ones declare
 inline dependencies with PEP 723 and run via `uv run`, so there is no venv
@@ -115,6 +115,16 @@ macOS-only, because Apple's DMG is extracted with hdiutil and pkgutil.
 | nerd-fonts FontPatcher | v3.4.0 |
 | LINE Seed JP, Google Sans Code, JetBrains Mono | google/fonts `main`, OFL |
 
+## Homebrew tap
+
+The formula lives in [peinan/homebrew-kusunoki-mono][tap]: it stages the same
+pinned sources into `sources/` and runs `scripts/build.sh` unchanged, so
+`brew install` and `make build` produce the same fonts. Release flow:
+
+- tag `vX.Y.Z` in this repo
+- point the formula's `url` and `sha256` at that tag's tarball
+- until the first tag the formula is head-only, so install needs `--HEAD`
+
 ## Metrics cheat sheet
 
 | Metric | Value |
@@ -146,5 +156,6 @@ spot checks:
 - [The author's Qiita article][qiita], in Japanese — background on SF Mono
   Square itself
 
+[tap]: https://github.com/peinan/homebrew-kusunoki-mono
 [sfms]: https://github.com/delphinus/homebrew-sfmono-square
 [qiita]: https://qiita.com/delphinus/items/f472eb04ff91daf44274

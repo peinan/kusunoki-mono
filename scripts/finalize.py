@@ -37,7 +37,7 @@ LICENSE_DESC = (
     "This is a personal, locally built font for the builder's own use only — it is not "
     "distributed and is not covered by the SIL Open Font License."
 )
-LICENSE_URL = "https://github.com/peinan/kusunoki"
+LICENSE_URL = "https://github.com/peinan/kusunoki-mono"
 
 f = TTFont(IN)
 
