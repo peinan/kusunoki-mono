@@ -1,0 +1,131 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+@font-face { font-family:"KM"; src:url("../../../dist/KusunokiMono-Regular.otf"); }
+@font-face { font-family:"KMB"; src:url("../../../dist/KusunokiMono-Bold.otf"); }
+@font-face { font-family:"KMI"; src:url("../../../dist/KusunokiMono-Italic.otf"); }
+@font-face { font-family:"KMBI"; src:url("../../../dist/KusunokiMono-BoldItalic.otf"); }
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  width:1694px; height:1668px; background:#1e1e2e; color:#cdd6f4;
+  padding:64px 92px; font-family:"KM", monospace; overflow:hidden;
+}
+.sec { margin-bottom:46px; }
+.h {
+  font-family:-apple-system,sans-serif; font-size:21px; letter-spacing:2px;
+  color:#6c7086; text-transform:uppercase; margin-bottom:14px;
+}
+pre { font-family:inherit; white-space:pre; font-feature-settings:"calt" on; font-size:30px; line-height:1.65; }
+.row { display:flex; align-items:center; gap:24px; }
+.row + .row { margin-top:6px; }
+.w pre { font-size:34px; line-height:1.85; }
+.fb { font-family:"KMB", monospace; }
+.fi { font-family:"KMI", monospace; }
+.fbi { font-family:"KMBI", monospace; }
+.it { font-family:"KMI", monospace; }
+.cols { display:flex; gap:64px; align-items:flex-start; }
+.punct pre { font-size:30px; }
+.leg pre { font-size:36px; line-height:1.55; }
+.icons pre { font-size:31px; letter-spacing:6px; color:#a6adc8; line-height:1.6; }
+.grid pre {
+  display:inline-block; font-size:34px; line-height:1.9;
+  background:repeating-linear-gradient(90deg, rgba(203,166,247,.085) 0 2ch, transparent 2ch 4ch);
+}
+.lrow { display:flex; align-items:center; gap:20px; }
+.lrow + .lrow { margin-top:12px; }
+.badge {
+  font-family:-apple-system,sans-serif; font-size:17px; font-weight:600;
+  letter-spacing:1px; width:96px; text-align:center; padding:6px 0;
+  border-radius:999px; border:1px solid transparent; flex:none;
+}
+.b-off, .b-reg, .b-lbl { background:transparent; border-color:#45475a; color:#7f849c; }
+.badge.wide { width:150px; }
+.badge.sm { width:64px; }
+.ligs .badge { width:120px; }
+.b-on { background:rgba(166,227,161,.16); color:#a6e3a1; border-color:rgba(166,227,161,.35); }
+.b-it { background:rgba(137,180,250,.16); color:#89b4fa; border-color:rgba(137,180,250,.35); }
+.ligs pre { font-size:30px; }
+.off pre { font-feature-settings:"calt" 0; color:#585b70; }
+.itl pre { font-family:"KMI", monospace; }
+.subsec + .subsec { margin-top:34px; }
+.sizes pre { line-height:1.55; }
+.slabel { display:inline-block; width:2.6em; color:#585b70; font-size:22px; }
+</style>
+<body>
+
+<div class="sec w">
+  <div class="h">Weights & Styles</div>
+  <div class="row"><div class="badge b-lbl wide">Regular</div><pre>東京の楠は夏の夕暮れに輝き、風が頁をめくる。 The quick brown fox 0123456789</pre></div>
+  <div class="row"><div class="badge b-lbl wide">Bold</div><pre class="fb">東京の楠は夏の夕暮れに輝き、風が頁をめくる。 The quick brown fox 0123456789</pre></div>
+  <div class="row"><div class="badge b-lbl wide">Italic</div><pre class="fi">東京の楠は夏の夕暮れに輝き、風が頁をめくる。 The quick brown fox 0123456789</pre></div>
+  <div class="row"><div class="badge b-lbl wide">Bold Italic</div><pre class="fbi">東京の楠は夏の夕暮れに輝き、風が頁をめくる。 The quick brown fox 0123456789</pre></div>
+</div>
+
+<div class="sec">
+  <div class="cols">
+    <div>
+      <div class="h">Latin</div>
+      <pre>ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</pre>
+      <pre class="it">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</pre>
+      <pre style="font-feature-settings:'calt' 0">0123456789 !"#$%&amp;'()*+,-./:;&lt;=>?@[\]^_`{|}~</pre>
+    </div>
+    <div>
+      <div class="h">Kana & Kanji</div>
+      <pre>あいうえお かきくけこ さしすせそ たちつてと</pre>
+      <pre>アイウエオ ガギグゲゴ ザジズゼゾ パピプペポ</pre>
+      <pre>永東国愛雨楠 春夏秋冬 雪月風花</pre>
+    </div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="cols">
+    <div class="punct">
+      <div class="h">Punctuation & Symbols</div>
+      <pre>、。・「」『』（）【】〔〕→ … ※ ★ ℃ ± 　 (全角スペース)</pre>
+    </div>
+    <div class="icons">
+      <div class="h">Nerd Fonts</div>
+      <pre>&#xE0A0; &#xF09B; &#xE702; &#xE62B; &#xF308; &#xE73C; &#xE718; &#xF07B; &#xF002; &#xF013; &#xF0E7; &#xF0F4;</pre>
+    </div>
+  </div>
+</div>
+
+<div class="sec leg">
+  <div class="h">Legibility</div>
+  <pre>0O o  1lI|  2Z  5S  8B  9gq  rn m  ソン  ツシ  ー一  ヘへ  力カ  ロ口  夕タ</pre>
+</div>
+
+<div class="sec">
+  <div class="cols">
+    <div class="ligs">
+      <div class="subsec">
+        <div class="h">Ligatures ── JetBrains Mono</div>
+        <div class="lrow off"><div class="badge b-off">OFF</div><pre>-> => >= <= == === != !== :: ... // /* */ &&</pre></div>
+        <div class="lrow"><div class="badge b-on">ON</div><pre>-> => >= <= == === != !== :: ... // /* */ &&</pre></div>
+      </div>
+      <div class="subsec">
+        <div class="h">Italics ── Google Sans Code</div>
+        <div class="lrow"><div class="badge b-reg">Regular</div><pre>quick brown fox jumps over the dog</pre></div>
+        <div class="lrow itl"><div class="badge b-it">Italic</div><pre>quick brown fox jumps over the dog</pre></div>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="h">Grid ── 半角 1 : 全角 2</div>
+      <pre>あのイーハトーヴォの、すきとおった風。
+ano ihatovo no sukitootta kaze....
+0123456789012345678901234567890123
+夏でも底に冷たさをもつ、青いそら。</pre>
+    </div>
+  </div>
+</div>
+
+<div class="sec sizes">
+  <div class="h">Sizes</div>
+  <div class="row"><div class="badge b-lbl sm">12</div><pre style="font-size:24px">素早い狐が怠け者の犬を飛び越える The quick brown fox 0123</pre></div>
+  <div class="row"><div class="badge b-lbl sm">14</div><pre style="font-size:28px">素早い狐が怠け者の犬を飛び越える The quick brown fox 0123</pre></div>
+  <div class="row"><div class="badge b-lbl sm">16</div><pre style="font-size:32px">素早い狐が怠け者の犬を飛び越える The quick brown fox 0123</pre></div>
+  <div class="row"><div class="badge b-lbl sm">20</div><pre style="font-size:40px">素早い狐が怠け者の犬を飛び越える The quick brown fox 0123</pre></div>
+</div>
+
+</body>

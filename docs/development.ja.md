@@ -16,7 +16,7 @@
 | `scripts/` | パイプライン本体。`setup.sh` がソースを取得し、`build.sh` がフェーズを順に実行する。変換ごとに Python スクリプトが 1 つ |
 | `sources/` | 取得したソースフォント類。gitignore 対象で、バージョンは `setup.sh` で固定 |
 | `build/sfms/` | フェーズごとの中間生成物とログ。gitignore 対象 |
-| `build/sfms/dist/` | 最終成果物の 4 OTF |
+| `dist/` | 最終成果物の 4 OTF |
 
 FontForge を使うスクリプトは `fontforge -script`、fontTools を使うスクリプトは PEP 723 宣言により `uv run` で単体実行できる。
 venv の準備は要らない。

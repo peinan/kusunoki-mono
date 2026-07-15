@@ -10,8 +10,8 @@ help: ## Show this help
 setup: ## Fetch sources (SF Mono, Migu 1M, LINE Seed JP, Google Sans Code, JetBrains Mono, nerd-fonts patcher)
 	@bash scripts/setup.sh
 
-build: ## Build the 4 styles into build/sfms/dist/
+build: ## Build the 4 styles into dist/
 	@bash scripts/build.sh
 
 clean: ## Remove build artifacts (keeps fetched sources/)
-	@rm -rf build
+	@rm -rf build dist

@@ -16,7 +16,7 @@ install the font, see the [README](../README.md).
 | `scripts/` | The whole pipeline: `setup.sh` fetches sources, `build.sh` runs the phases, one Python script per transform |
 | `sources/` | Fetched inputs, gitignored; versions pinned in `setup.sh` |
 | `build/sfms/` | Per-phase intermediates and logs, gitignored |
-| `build/sfms/dist/` | The final four OTFs |
+| `dist/` | The final four OTFs |
 
 FontForge scripts run via `fontforge -script`; the fontTools ones declare
 inline dependencies with PEP 723 and run via `uv run`, so there is no venv
