@@ -2,7 +2,7 @@
 Each listed glyph is scaled about its ink centre; the advance width is kept so
 the smaller icon simply sits centred in the same cell.
 
-    fontforge -quiet -script scripts/sfmono/apply_icon_scale.py <in.otf> <plan.json> <out.otf>
+    fontforge -quiet -script scripts/apply_icon_scale.py <in.otf> <plan.json> <out.otf>
 """
 import json
 import sys

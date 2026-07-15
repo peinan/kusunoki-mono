@@ -1,6 +1,6 @@
 """Add JetBrains Mono's programming ligatures to the font, scaled to fit.
 
-    fontforge -quiet -script scripts/sfmono/add_ligatures.py <target.otf> <jetbrains.ttf> <out.otf>
+    fontforge -quiet -script scripts/add_ligatures.py <target.otf> <jetbrains.ttf> <out.otf>
 
 JetBrains uses a terminal-safe spacer `calt`: for a sequence the leading cells
 become a blank SPC and the last cell holds a wide `.liga` glyph. We copy those

@@ -4,7 +4,7 @@
 # ///
 """Instance a variable font at a single weight -> static TTF.
 
-    uv run scripts/sfmono/instance_vf.py <vf.ttf> <out.ttf> <wght>
+    uv run scripts/instance_vf.py <vf.ttf> <out.ttf> <wght>
 """
 import sys
 

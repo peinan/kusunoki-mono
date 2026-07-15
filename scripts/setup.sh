@@ -2,12 +2,12 @@
 # Fetch every source the SF Mono Square build needs. Self-contained and
 # idempotent — re-running skips anything already present.
 #
-#   scripts/sfmono/setup.sh
+#   scripts/setup.sh
 #
 # macOS only (uses hdiutil / pkgutil to extract Apple's SF Mono). Set
 # SOURCES_DIR to fetch into a different directory (used by tests).
 set -uo pipefail
-cd "$(dirname "$0")/../.."
+cd "$(dirname "$0")/.."
 
 SRC="${SOURCES_DIR:-sources}"
 UA="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) curl"

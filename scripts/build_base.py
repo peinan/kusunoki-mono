@@ -1,7 +1,7 @@
 """P1: SF Mono Square base = SF Mono (Latin, CFF) + Migu 1M (JP), reproducing
 delphinus's SF Mono Square method.
 
-    fontforge -quiet -script scripts/sfmono/build_base.py <sf_mono.otf> <migu.ttf> <out.otf> <style>
+    fontforge -quiet -script scripts/build_base.py <sf_mono.otf> <migu.ttf> <out.otf> <style>
 
 - SF Mono is condensed uniformly ×(1024/1266)=0.809 to the square half-cell
   (advance 1024; a full-width CJK glyph = 2048 = one em = a square).

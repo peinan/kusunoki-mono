@@ -1,4 +1,4 @@
-# Downloaded font sources (IBM Plex Sans JP, Google Sans Code, Nerd Fonts) — fetched by scripts/setup.sh
+# Downloaded font sources (SF Mono, Migu 1M, LINE Seed JP, Google Sans Code, JetBrains Mono, nerd-fonts patcher) — fetched by scripts/setup.sh
 /sources/
 # Build artifacts
 /build/
