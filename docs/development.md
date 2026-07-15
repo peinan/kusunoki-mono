@@ -33,6 +33,7 @@ per style; each phase logs to `build/sfms/<style>.p<n>.log`.
 | P2 | nerd-fonts `font-patcher` | Icons, at their natural widths |
 | P2.5 | `plan_icon_scale.py` `apply_icon_scale.py` | Shrink icons taller than SF Mono Square |
 | P2.6 | `instance_vf.py` `add_ligatures.py` | JetBrains Mono ligatures |
+| P2.8 | `enlarge_dakuten.py` | Enlarge kana dakuten / handakuten, skip-ink carve |
 | P3 | `swap_lineseed.py` | Kana and kanji to LINE Seed JP |
 | P4 | `graft_italic.py` `center_italic.py` | True-italic lowercase; italic styles only |
 | P5 | `finalize.py` | Name table, OS/2, metrics |
@@ -76,6 +77,17 @@ JetBrains Mono, instanced at wght 400 and 700, provides the ligatures:
 - Copied with a non-uniform scale: horizontal is the cell ratio 1024/600, vertical is `LIG_YSCALE`
 - The script defaults to an x-height match; the build pins `1.478` so tall operators like `//` match SF Mono's `/` — issue #7
 - Italic styles slant the ligatures to the font's angle
+
+### P2.8 dakuten enlargement
+
+The voiced marks on kana grow MigMix-1P-style so ば/ぱ stay apart at small
+sizes — issue #6. Runs once per LINE Seed weight, before P3 picks the glyphs
+up; logs to `build/sfms/dakuten.<weight>.log`:
+
+- Each voiced kana is rebuilt from its NFD parts: the mark is the glyph minus its unvoiced base, the body is the base itself, so welded or fused marks don't need contour guessing; a handakuten ring welded into the body is rebuilt as concentric circles centred on its hole
+- Where the body was redrawn instead of pasted (ヅ デ …), the small top-right contours become the mark
+- The enlarged mark is unioned back, and a slightly larger copy is first carved out of the body, leaving a white gap where they overlap — the skip-ink look
+- `KM_DAKUTEN_SCALE` / `KM_HANDAKUTEN_SCALE` size the marks (1.3 / 1.25), `KM_DAKUTEN_HALO` the carved gap (0.18), `KM_DAKUTEN_SKIP_INK=0` disables the carve, `KM_DAKUTEN_EXCLUDE` lists kana to leave untouched (default ゞヾヷヸヹヺ)
 
 ### P3 Japanese swap
 

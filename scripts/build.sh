@@ -6,6 +6,8 @@
 #                needs a local SFMS ref, else skipped)
 #   P2.6 ligs  : graft JetBrains Mono ligatures (calt), scaled to the cell width
 #                and the target x-height (LIG_YSCALE) so tall ops aren't oversized
+#   P2.8 marks : enlarge kana dakuten/handakuten in LINE Seed + skip-ink carve
+#                (MigMix-1P-style, issue #6) — done once per LINE Seed weight
 #   P3 lineseed: swap kana/kanji to LINE Seed JP; 、。 & brackets by LINE Seed bearing
 #   P4 italic  : graft GSC true-italic letters + centre (italic styles only)
 #   P5 final   : name / OS2 / metrics (RIBBI family "Kusunoki Mono")
@@ -16,7 +18,9 @@
 # Knobs (env): JP_SCALE (Migu size, 0.82), ITALIC_INK_OFFSET (0=centred),
 # LIG_YSCALE (ligature vertical scale, 1.478), GSC_R/GSC_B (GSC italic weight), KM_VERSION,
 # KM_SFMS_DIR (dir with SFMonoSquare-*.otf for P2.5; default ~/Library/Fonts),
-# KM_AMBIGUOUS_WIDTH (narrow[default]=ambiguous symbols like ※ are 1 cell / wide=2 cells).
+# KM_AMBIGUOUS_WIDTH (narrow[default]=ambiguous symbols like ※ are 1 cell / wide=2 cells),
+# KM_DAKUTEN_SCALE/KM_HANDAKUTEN_SCALE (P2.8 mark enlarge, 1.3/1.25), KM_DAKUTEN_HALO
+# (P2.8 carved gap fraction, 0.18), KM_DAKUTEN_SKIP_INK (1=carve), KM_DAKUTEN_EXCLUDE.
 set -uo pipefail
 cd "$(dirname "$0")/.."
 ROOT="$PWD"
@@ -41,6 +45,16 @@ JB_B="$LIGDIR/JetBrainsMono-Bold.ttf"
 echo "==> instancing JetBrains Mono (wght 400 / 700) for ligatures"
 uv run scripts/instance_vf.py "$JB_VF" "$JB_R" 400 >/dev/null
 uv run scripts/instance_vf.py "$JB_VF" "$JB_B" 700 >/dev/null
+
+LSDIR="$B/lineseed"
+mkdir -p "$LSDIR"
+echo "==> P2.8 enlarging kana dakuten/handakuten (LINE Seed, MigMix-style)"
+for w in Regular Bold; do
+  uv run scripts/enlarge_dakuten.py "$ROOT/$SRC/lineseed-jp/LINESeedJP-$w.ttf" \
+    "$LSDIR/LINESeedJP-$w.ttf" >"$B/dakuten.$w.log" 2>&1 \
+    && grep -E '^\[enlarge_dakuten\]' "$B/dakuten.$w.log" | tail -1 \
+    || { echo "  !! P2.8 $w FAILED"; tail -3 "$B/dakuten.$w.log"; exit 1; }
+done
 
 nerd_patch() {  # $1=style; logs to $B/$1.p2.log; echoes patched .otf path on stdout
   local st=$1
@@ -67,7 +81,7 @@ icon_scale() {  # $1=style $2=patched.otf ; echoes path to use downstream (scale
     >>"$B/iconscale.log" 2>&1 && echo "$scaled" || echo "$patched"
 }
 
-buildone() {  # 1=style 2=sf 3=migu 4=lineseed 5=jb_instance 6=gsc_wght(optional, italics)
+buildone() {  # 1=style 2=sf 3=migu 4=lineseed(P2.8 output name) 5=jb_instance 6=gsc_wght(optional, italics)
   local st=$1 sf=$2 migu=$3 ls=$4 jb=$5 gscw=${6:-}
   echo "==== $st ===="
   echo "-- P1 base (SF Mono + Migu)"
@@ -85,8 +99,8 @@ buildone() {  # 1=style 2=sf 3=migu 4=lineseed 5=jb_instance 6=gsc_wght(optional
   echo "-- P2.6 ligatures (JetBrains, sy=LIG_YSCALE)"
   fontforge -quiet -script scripts/add_ligatures.py "$patched" "$jb" "$LIGDIR/KusunokiMono-$st.otf" >"$B/$st.plig.log" 2>&1 \
     && grep -E '^\[add_ligatures\]' "$B/$st.plig.log" | tail -1 || { echo "  !! ligatures $st FAILED"; tail -3 "$B/$st.plig.log"; return 1; }
-  echo "-- P3 LINE Seed swap"
-  uv run scripts/swap_lineseed.py "$LIGDIR/KusunokiMono-$st.otf" "$STAGE/KusunokiMono-$st.otf" "$ROOT/$SRC/$ls" "$st" >"$B/$st.p3.log" 2>&1 \
+  echo "-- P3 LINE Seed swap (P2.8-enlarged dakuten)"
+  uv run scripts/swap_lineseed.py "$LIGDIR/KusunokiMono-$st.otf" "$STAGE/KusunokiMono-$st.otf" "$ROOT/$LSDIR/$ls" "$st" >"$B/$st.p3.log" 2>&1 \
     && grep -E 'replaced' "$B/$st.p3.log" | tail -1 || { echo "  !! P3 $st FAILED"; tail -3 "$B/$st.p3.log"; return 1; }
   if [ -n "$gscw" ]; then
     echo "-- P4 GSC italic graft + centre"
@@ -99,10 +113,10 @@ buildone() {  # 1=style 2=sf 3=migu 4=lineseed 5=jb_instance 6=gsc_wght(optional
     && grep -E '\[finalize\]' "$B/$st.p5.log" | tail -1 || { echo "  !! P5 $st FAILED"; tail -3 "$B/$st.p5.log"; return 1; }
 }
 
-buildone Regular    sf-mono/SF-Mono-Regular.otf       migu-1m/migu-1m-regular.ttf  lineseed-jp/LINESeedJP-Regular.ttf "$JB_R"
-buildone Bold       sf-mono/SF-Mono-Bold.otf          migu-1m/migu-1m-bold.ttf     lineseed-jp/LINESeedJP-Bold.ttf   "$JB_B"
-buildone Italic     sf-mono/SF-Mono-RegularItalic.otf migu-1m/migu-1m-regular.ttf  lineseed-jp/LINESeedJP-Regular.ttf "$JB_R" "$GSC_R"
-buildone BoldItalic sf-mono/SF-Mono-BoldItalic.otf    migu-1m/migu-1m-bold.ttf     lineseed-jp/LINESeedJP-Bold.ttf   "$JB_B" "$GSC_B"
+buildone Regular    sf-mono/SF-Mono-Regular.otf       migu-1m/migu-1m-regular.ttf  LINESeedJP-Regular.ttf "$JB_R"
+buildone Bold       sf-mono/SF-Mono-Bold.otf          migu-1m/migu-1m-bold.ttf     LINESeedJP-Bold.ttf    "$JB_B"
+buildone Italic     sf-mono/SF-Mono-RegularItalic.otf migu-1m/migu-1m-regular.ttf  LINESeedJP-Regular.ttf "$JB_R" "$GSC_R"
+buildone BoldItalic sf-mono/SF-Mono-BoldItalic.otf    migu-1m/migu-1m-bold.ttf     LINESeedJP-Bold.ttf    "$JB_B" "$GSC_B"
 
 echo "==== built ===="
 ls -1 "$DIST"/KusunokiMono-*.otf
