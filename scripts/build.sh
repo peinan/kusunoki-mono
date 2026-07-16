@@ -50,11 +50,14 @@ uv run scripts/instance_vf.py "$JB_VF" "$JB_B" 700 >/dev/null
 LSDIR="$B/lineseed"
 mkdir -p "$LSDIR"
 echo "==> P2.8 enlarging kana dakuten/handakuten (LINE Seed, MigMix-style)"
-for w in Regular Bold; do
+# one output per style: italics share their weight's source, but per-style
+# overrides in scripts/dakuten_overrides.json may diverge them
+for st in Regular Bold Italic BoldItalic; do
+  case $st in Regular|Italic) w=Regular;; *) w=Bold;; esac
   uv run scripts/enlarge_dakuten.py "$ROOT/$SRC/lineseed-jp/LINESeedJP-$w.ttf" \
-    "$LSDIR/LINESeedJP-$w.ttf" >"$B/dakuten.$w.log" 2>&1 \
-    && grep -E '^\[enlarge_dakuten\]' "$B/dakuten.$w.log" | tail -1 \
-    || { echo "  !! P2.8 $w FAILED"; tail -3 "$B/dakuten.$w.log"; exit 1; }
+    "$LSDIR/LINESeedJP-$st.ttf" "$st" >"$B/dakuten.$st.log" 2>&1 \
+    && grep -E '^\[enlarge_dakuten\]' "$B/dakuten.$st.log" | cut -c1-110 \
+    || { echo "  !! P2.8 $st FAILED"; tail -3 "$B/dakuten.$st.log"; exit 1; }
 done
 
 nerd_patch() {  # $1=style; logs to $B/$1.p2.log; echoes patched .otf path on stdout
@@ -114,10 +117,10 @@ buildone() {  # 1=style 2=sf 3=migu 4=lineseed(P2.8 output name) 5=jb_instance 6
     && grep -E '\[finalize\]' "$B/$st.p5.log" | tail -1 || { echo "  !! P5 $st FAILED"; tail -3 "$B/$st.p5.log"; return 1; }
 }
 
-buildone Regular    sf-mono/SF-Mono-Regular.otf       migu-1m/migu-1m-regular.ttf  LINESeedJP-Regular.ttf "$JB_R"
-buildone Bold       sf-mono/SF-Mono-Bold.otf          migu-1m/migu-1m-bold.ttf     LINESeedJP-Bold.ttf    "$JB_B"
-buildone Italic     sf-mono/SF-Mono-RegularItalic.otf migu-1m/migu-1m-regular.ttf  LINESeedJP-Regular.ttf "$JB_R" "$GSC_R"
-buildone BoldItalic sf-mono/SF-Mono-BoldItalic.otf    migu-1m/migu-1m-bold.ttf     LINESeedJP-Bold.ttf    "$JB_B" "$GSC_B"
+buildone Regular    sf-mono/SF-Mono-Regular.otf       migu-1m/migu-1m-regular.ttf  LINESeedJP-Regular.ttf    "$JB_R"
+buildone Bold       sf-mono/SF-Mono-Bold.otf          migu-1m/migu-1m-bold.ttf     LINESeedJP-Bold.ttf       "$JB_B"
+buildone Italic     sf-mono/SF-Mono-RegularItalic.otf migu-1m/migu-1m-regular.ttf  LINESeedJP-Italic.ttf     "$JB_R" "$GSC_R"
+buildone BoldItalic sf-mono/SF-Mono-BoldItalic.otf    migu-1m/migu-1m-bold.ttf     LINESeedJP-BoldItalic.ttf "$JB_B" "$GSC_B"
 
 echo "==== built ===="
 ls -1 "$DIST"/KusunokiMono-*.otf

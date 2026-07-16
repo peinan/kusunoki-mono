@@ -4,14 +4,16 @@
 # ///
 """Visual per-kana tuner for the P2.8 dakuten enlargement (issue #6).
 
-    uv run scripts/dakuten_tuner.py [lineseed.ttf] [port]
+    uv run scripts/dakuten_tuner.py [port]
 
-Serves a local editor (default http://localhost:8765) that lists every voiced
-kana and lets each one's mark be tuned: size and skip-ink gap with sliders,
-position by dragging. Saving writes scripts/dakuten_overrides.json (or
-KM_DAKUTEN_OVERRIDES) — the same file scripts/enlarge_dakuten.py applies at
-build time, so the preview here is exactly what P2.8 produces. Run from the
-repo root, then rebuild (make build, or P2.8→P3→P5) to see it in the font.
+Serves a local editor (default http://localhost:8765) over both LINE Seed
+weights. Styles: Regular / Bold / Italic / BoldItalic — italics preview the
+same weight skewed, and every style inherits the Regular values until a field
+is changed on its tab. Per kana: mark size, rotation, skip-ink gap (uniform +
+per-side), position by dragging, and an exclude toggle. Saving writes
+scripts/dakuten_overrides.json (or KM_DAKUTEN_OVERRIDES) — the same file
+scripts/enlarge_dakuten.py applies at build time, through the same code path,
+so the preview is exactly what P2.8 produces. Rebuild to see it in the font.
 """
 import json
 import os
@@ -24,9 +26,12 @@ from fontTools.pens.svgPathPen import SVGPathPen
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import enlarge_dakuten as ed
 
-FONT = sys.argv[1] if len(sys.argv) > 1 else "sources/lineseed-jp/LINESeedJP-Regular.ttf"
-PORT = int(sys.argv[2]) if len(sys.argv) > 2 else 8765
+REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+FONTS = {w: os.path.join(REPO, "sources", "lineseed-jp", f"LINESeedJP-{w.capitalize()}.ttf")
+         for w in ("regular", "bold")}
+PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 8765
 HTML = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dakuten_tuner.html")
+ITALIC_SKEW = 10          # preview-only lean for the italic tabs, degrees
 
 
 def svg_d(path):
@@ -35,9 +40,9 @@ def svg_d(path):
     return pen.getCommands()
 
 
-def build_data():
-    font = ed.DakutenFont(FONT)
-    kana, fell_back, skipped, repaired = font.recover()
+def weight_data(path):
+    font = ed.DakutenFont(path)
+    kana, fell_back, skipped, repaired, rebuilt = font.recover()
     items = []
     for ch, d in kana.items():
         items.append({
@@ -46,23 +51,31 @@ def build_data():
             "gname": d["gname"],
             "is_semi": d["is_semi"],
             "fallback": d["fallback"],
+            "rebuilt": d["gname"] in rebuilt or d["gname"] in repaired,
             "adv": font.hmtx[d["gname"]][0],
             "body": svg_d(d["body"]),
             "mark": svg_d(d["mark"]),
             "mb": list(d["mb"]),
         })
+    return {"kana": items, "upm": font.upm,
+            "notes": {"fell_back": fell_back, "skipped": skipped,
+                      "repaired": repaired, "rebuilt": rebuilt}}
+
+
+def build_data():
+    weights = {w: weight_data(p) for w, p in FONTS.items()}
     return {
-        "font": FONT,
-        "upm": font.upm,
+        "fonts": {w: os.path.relpath(p, REPO) for w, p in FONTS.items()},
+        "upm": weights["regular"]["upm"],
         "skip_ink": ed.SKIP_INK,
+        "italic_skew": ITALIC_SKEW,
         "defaults": {
             "dakuten": {"scale": ed.SCALE_DAKUTEN, "halo": ed.HALO_DAKUTEN},
             "handakuten": {"scale": ed.SCALE_HANDAKUTEN, "halo": ed.HALO_HANDAKUTEN},
         },
-        "overrides_path": ed.OVERRIDES_PATH,
+        "overrides_path": os.path.relpath(ed.OVERRIDES_PATH, REPO),
         "overrides": ed.load_overrides(),
-        "notes": {"fell_back": fell_back, "skipped": skipped, "repaired": repaired},
-        "kana": items,
+        "weights": weights,
     }
 
 
@@ -91,21 +104,20 @@ class Handler(BaseHTTPRequestHandler):
         if self.path != "/save":
             self._send(404, b"not found", "text/plain")
             return
-        n = int(self.headers.get("Content-Length", "0"))
         try:
+            n = int(self.headers.get("Content-Length", "0"))
             overrides = json.loads(self.rfile.read(n).decode("utf-8"))
-            assert isinstance(overrides, dict)
-        except Exception as e:  # malformed client payload — report, don't crash
-            self._send(400, f"bad payload: {e}".encode(), "text/plain")
-            return
-        overrides = dict(sorted(overrides.items(), key=lambda kv: ord(kv[0][0])))
-        with open(ed.OVERRIDES_PATH, "w", encoding="utf-8") as f:
-            json.dump(overrides, f, ensure_ascii=False, indent=2)
-            f.write("\n")
-        DATA["overrides"] = overrides
-        self._send(200, json.dumps({"ok": True, "count": len(overrides),
-                                    "path": ed.OVERRIDES_PATH}).encode(),
-                   "application/json")
+            assert isinstance(overrides, dict), "payload must be an object"
+            overrides = dict(sorted(overrides.items(), key=lambda kv: ord(kv[0][0])))
+            with open(ed.OVERRIDES_PATH, "w", encoding="utf-8") as f:
+                json.dump(overrides, f, ensure_ascii=False, indent=2)
+                f.write("\n")
+            DATA["overrides"] = overrides
+            self._send(200, json.dumps({"ok": True, "count": len(overrides),
+                                        "path": os.path.relpath(ed.OVERRIDES_PATH, REPO)}).encode(),
+                       "application/json")
+        except Exception as e:  # report to the client instead of dropping the socket
+            self._send(500, f"save failed: {e}".encode(), "text/plain; charset=utf-8")
 
     def log_message(self, fmt, *args):  # keep the terminal quiet
         pass
@@ -113,7 +125,8 @@ class Handler(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     srv = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
-    print(f"[dakuten_tuner] {len(DATA['kana'])} kana from {FONT}")
+    n = len(DATA["weights"]["regular"]["kana"])
+    print(f"[dakuten_tuner] {n} kana × {len(FONTS)} weights from {REPO}/sources/lineseed-jp")
     print(f"[dakuten_tuner] overrides file: {ed.OVERRIDES_PATH}")
     print(f"[dakuten_tuner] open http://localhost:{PORT}")
     srv.serve_forever()

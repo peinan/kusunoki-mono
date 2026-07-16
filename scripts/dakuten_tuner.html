@@ -2,22 +2,29 @@
 <meta charset="utf-8">
 <title>濁点チューナー — Kusunoki Mono</title>
 <style>
-:root { --paper:#ffffff; --bg:#f2f3f5; --ink:#1a1a1a; --mut:#8a8f98; --acc:#d97706; --ghost:#e0447a; }
+:root { --paper:#ffffff; --bg:#f2f3f5; --ink:#1a1a1a; --mut:#8a8f98; --acc:#d97706; --ghost:#e0447a; --ok:#16a34a; }
 * { margin:0; padding:0; box-sizing:border-box; }
 [hidden] { display:none !important; }
 body { background:var(--bg); color:var(--ink); font-family:-apple-system,"Hiragino Sans",sans-serif; }
-header { display:flex; align-items:center; gap:16px; padding:14px 22px; background:var(--paper);
+header { display:flex; align-items:center; gap:16px; padding:12px 22px; background:var(--paper);
          border-bottom:1px solid #e2e4e8; position:sticky; top:0; z-index:2; }
 header h1 { font-size:16px; font-weight:700; }
 header .path { font-size:12px; color:var(--mut); }
 #status { margin-left:auto; font-size:13px; color:var(--mut); }
 #status.dirty { color:var(--acc); font-weight:600; }
+#status.err { color:#dc2626; font-weight:600; }
+#status.ok { color:var(--ok); font-weight:600; }
 button { font:inherit; font-size:13px; padding:7px 14px; border:1px solid #d4d7dc; border-radius:8px;
          background:var(--paper); cursor:pointer; }
 button:hover { border-color:#aab0b9; }
 button.primary { background:var(--ink); color:#fff; border-color:var(--ink); }
+button:disabled { opacity:.6; cursor:default; }
+#tabs { display:flex; gap:6px; padding:12px 22px 0; }
+#tabs button { border-radius:999px; padding:6px 16px; }
+#tabs button.on { background:var(--ink); color:#fff; border-color:var(--ink); }
+#tabs .hint { align-self:center; font-size:12px; color:var(--mut); margin-left:8px; }
 .glyph { color:var(--ink); display:block; }
-#list { display:grid; grid-template-columns:repeat(auto-fill, minmax(104px,1fr)); gap:10px; padding:18px 22px; }
+#list { display:grid; grid-template-columns:repeat(auto-fill, minmax(104px,1fr)); gap:10px; padding:16px 22px; }
 .cell { background:var(--paper); border:1px solid #e2e4e8; border-radius:10px; padding:8px 6px 6px;
         text-align:center; cursor:pointer; position:relative; }
 .cell:hover { border-color:#aab0b9; }
@@ -26,24 +33,26 @@ button.primary { background:var(--ink); color:#fff; border-color:var(--ink); }
 .cell .dot { position:absolute; top:7px; right:9px; width:9px; height:9px; border-radius:50%; background:var(--acc); }
 .cell.excl svg { opacity:.35; }
 .cell.excl .dot { background:#98a1ad; }
-#editor { display:flex; gap:22px; padding:20px 22px; align-items:flex-start; }
+#editor { display:flex; gap:22px; padding:16px 22px; align-items:flex-start; }
 #edLeft { flex:none; }
 #edCanvas { background:var(--paper); border:1px solid #e2e4e8; border-radius:12px; }
-#edSvg { display:block; width:520px; height:auto; color:var(--ink); touch-action:none; cursor:grab; }
+#edSvg { display:block; width:540px; height:auto; color:var(--ink); touch-action:none; cursor:grab; }
 #edSvg.drag { cursor:grabbing; }
-#strip { display:flex; gap:26px; margin-top:14px; align-items:flex-end; }
+#strip { display:flex; gap:20px; margin-top:14px; align-items:flex-end; flex-wrap:wrap; }
 .sset { background:var(--paper); border:1px solid #e2e4e8; border-radius:10px; padding:8px 12px; }
 .sset .cap { font-size:11px; color:var(--mut); margin-bottom:4px; }
 .sset .row { display:flex; align-items:flex-end; gap:2px; }
-#edRight { flex:1; max-width:430px; display:flex; flex-direction:column; gap:14px; }
-#edTitle { font-size:42px; font-weight:700; line-height:1; }
+#edRight { flex:1; max-width:440px; display:flex; flex-direction:column; gap:12px; }
+#edTitle { font-size:40px; font-weight:700; line-height:1; }
 #edTitle small { font-size:13px; color:var(--mut); font-weight:400; margin-left:10px; }
-.ctl { background:var(--paper); border:1px solid #e2e4e8; border-radius:10px; padding:12px 14px; }
-.ctl label { display:block; font-size:13px; color:var(--mut); margin-bottom:6px; }
+.ctl { background:var(--paper); border:1px solid #e2e4e8; border-radius:10px; padding:11px 14px; }
+.ctl label { display:block; font-size:13px; color:var(--mut); margin-bottom:5px; }
 .ctl .val { float:right; color:var(--ink); font-variant-numeric:tabular-nums; }
 .ctl input[type=range] { width:100%; }
 .ctl.checks { display:flex; gap:18px; }
 .ctl.checks label { margin:0; color:var(--ink); display:flex; gap:6px; align-items:center; font-size:13px; }
+.pads { display:grid; grid-template-columns:1fr 1fr; gap:8px 16px; margin-top:4px; }
+.pads .p label { font-size:12px; }
 #vPos { font-size:13px; color:var(--mut); font-variant-numeric:tabular-nums; }
 .btnrow { display:flex; gap:10px; flex-wrap:wrap; }
 #edNote { font-size:12px; color:var(--mut); line-height:1.6; }
@@ -55,6 +64,13 @@ kbd { background:#eceef1; border-radius:4px; padding:1px 5px; font-size:11px; }
   <span id="status"></span>
   <button id="saveBtn" class="primary">保存</button>
 </header>
+<nav id="tabs">
+  <button data-st="regular" class="on">Regular</button>
+  <button data-st="bold">Bold</button>
+  <button data-st="italic">Italic</button>
+  <button data-st="bolditalic">BoldItalic</button>
+  <span class="hint" id="tabHint">Regular の値が全スタイルに継承され、他タブでの変更はそのスタイルだけの差分になります</span>
+</nav>
 <main id="list"></main>
 <main id="editor" hidden>
   <div id="edLeft">
@@ -62,15 +78,25 @@ kbd { background:#eceef1; border-radius:4px; padding:1px 5px; font-size:11px; }
     <div id="strip"></div>
   </div>
   <div id="edRight">
-    <div><button id="bBack">← 一覧へ</button></div>
+    <div class="btnrow"><button id="bBack">← 一覧へ</button></div>
     <div id="edTitle"></div>
     <div class="ctl">
       <label>マーク倍率 <span class="val" id="vScale"></span></label>
       <input type="range" id="sScale" min="0.7" max="2.0" step="0.01">
     </div>
     <div class="ctl">
-      <label>skip ink (削りギャップ) <span class="val" id="vHalo"></span></label>
+      <label>回転 (度、反時計回りが正) <span class="val" id="vRot"></span></label>
+      <input type="range" id="sRot" min="-30" max="30" step="0.5">
+    </div>
+    <div class="ctl">
+      <label>skip ink 全体 <span class="val" id="vHalo"></span></label>
       <input type="range" id="sHalo" min="0" max="0.9" step="0.01">
+      <div class="pads">
+        <div class="p"><label>左 +<span class="val" id="vPadL"></span></label><input type="range" id="sPadL" min="-40" max="100" step="1"></div>
+        <div class="p"><label>右 +<span class="val" id="vPadR"></span></label><input type="range" id="sPadR" min="-40" max="100" step="1"></div>
+        <div class="p"><label>上 +<span class="val" id="vPadT"></span></label><input type="range" id="sPadT" min="-40" max="100" step="1"></div>
+        <div class="p"><label>下 +<span class="val" id="vPadB"></span></label><input type="range" id="sPadB" min="-40" max="100" step="1"></div>
+      </div>
     </div>
     <div class="ctl checks">
       <label><input type="checkbox" id="cSkip"> 削りを有効</label>
@@ -84,84 +110,172 @@ kbd { background:#eceef1; border-radius:4px; padding:1px 5px; font-size:11px; }
     </div>
     <div class="btnrow">
       <button id="bResetPos">位置リセット</button>
-      <button id="bResetAll">この字のオーバーライドを削除</button>
+      <button id="bResetStyle" hidden>このスタイルの差分をリセット</button>
+      <button id="bResetAll">この字のオーバーライドを全削除</button>
     </div>
     <div id="edNote"></div>
   </div>
 </main>
 <script>
 "use strict";
-let data, ov = {}, byChar = {}, cur = null, dirty = false;
+let data, ov = {}, byW = { regular: {}, bold: {} }, cur = null, style = "regular", dirty = false;
 const $ = id => document.getElementById(id);
+const LAYERS = ["bold", "italic", "bolditalic"];
+const weightOf = st => (st === "bold" || st === "bolditalic") ? "bold" : "regular";
+const isItalic = st => st === "italic" || st === "bolditalic";
+const kOf = ch => byW[weightOf(style)][ch];
 
 init();
 async function init() {
   data = await (await fetch("/data")).json();
-  for (const k of data.kana) byChar[k.char] = k;
+  for (const w of ["regular", "bold"])
+    for (const k of data.weights[w].kana) byW[w][k.char] = k;
   ov = JSON.parse(JSON.stringify(data.overrides || {}));
-  $("hPath").textContent = `${data.font} → ${data.overrides_path}`;
+  $("hPath").textContent = `${data.fonts.regular} + Bold → ${data.overrides_path}`;
   renderList();
+  for (const b of document.querySelectorAll("#tabs button"))
+    b.onclick = () => setStyle(b.dataset.st);
   $("saveBtn").onclick = save;
   $("bBack").onclick = () => { $("editor").hidden = true; $("list").hidden = false; cur = null; renderList(); };
-  $("sScale").oninput = e => { ensure(cur).scale = +e.target.value; touch(); paint(); };
-  $("sHalo").oninput  = e => { ensure(cur).halo  = +e.target.value; touch(); paint(); };
-  $("cSkip").onchange = e => { ensure(cur).skip_ink = e.target.checked; touch(); paint(); };
-  $("cExcl").onchange = e => { const o = ensure(cur); if (e.target.checked) o.exclude = true; else delete o.exclude; touch(); paint(); };
-  $("bResetPos").onclick = () => { const o = ensure(cur); delete o.dx; delete o.dy; touch(); paint(); };
+  $("sScale").oninput = e => setF("scale", +e.target.value);
+  $("sRot").oninput   = e => setF("rot", +e.target.value);
+  $("sHalo").oninput  = e => setF("halo", +e.target.value);
+  for (const [i, id] of ["sPadL", "sPadR", "sPadT", "sPadB"].entries())
+    $(id).oninput = e => { const p = eff(cur).pads.slice(); p[i] = +e.target.value; setF("halo_pad", p); };
+  $("cSkip").onchange = e => setF("skip_ink", e.target.checked);
+  $("cExcl").onchange = e => setF("exclude", e.target.checked);
+  $("bResetPos").onclick = () => { const o = layer(cur); delete o.dx; delete o.dy; touch(); paint(); };
+  $("bResetStyle").onclick = () => { if (ov[cur]) { delete ov[cur][style]; touch(); syncControls(); paint(); } };
   $("bResetAll").onclick = () => { delete ov[cur]; touch(); syncControls(); paint(); };
   document.addEventListener("keydown", nudge);
+  window.addEventListener("beforeunload", e => { if (dirty) { e.preventDefault(); e.returnValue = ""; } });
   dragSetup();
 }
 
+function setStyle(st) {
+  style = st;
+  for (const b of document.querySelectorAll("#tabs button"))
+    b.classList.toggle("on", b.dataset.st === st);
+  $("bResetStyle").hidden = st === "regular";
+  if (cur) { syncControls(); paint(); } else renderList();
+}
+
 const defs = k => data.defaults[k.is_semi ? "handakuten" : "dakuten"];
+function resolved(ch, st) {
+  const e = ov[ch] || {};
+  const base = {};
+  for (const [k, v] of Object.entries(e)) if (!LAYERS.includes(k)) base[k] = v;
+  if (st !== "regular") Object.assign(base, e[st] || {});
+  return base;
+}
 function eff(ch) {
-  const k = byChar[ch], d = defs(k), o = ov[ch] || {};
-  return { scale: o.scale ?? d.scale, halo: o.halo ?? d.halo,
+  const k = kOf(ch), d = defs(k), o = resolved(ch, style);
+  return { scale: o.scale ?? d.scale, halo: o.halo ?? d.halo, rot: o.rot ?? 0,
+           pads: o.halo_pad ?? [0, 0, 0, 0],
            skip: o.skip_ink ?? data.skip_ink, dx: o.dx ?? 0, dy: o.dy ?? 0,
            excl: !!o.exclude };
 }
 const ensure = ch => (ov[ch] = ov[ch] || {});
-function pruneOne(ch) {
-  const k = byChar[ch], d = defs(k), o = ov[ch];
-  if (!o) return null;
-  const e = {};
-  if (o.exclude) e.exclude = true;
-  else {
-    if (o.scale != null && Math.abs(o.scale - d.scale) > 1e-6) e.scale = +(+o.scale).toFixed(2);
-    if (o.halo  != null && Math.abs(o.halo  - d.halo)  > 1e-6) e.halo  = +(+o.halo).toFixed(2);
-    if (Math.round(o.dx || 0)) e.dx = Math.round(o.dx);
-    if (Math.round(o.dy || 0)) e.dy = Math.round(o.dy);
-    if (o.skip_ink != null && o.skip_ink !== data.skip_ink) e.skip_ink = o.skip_ink;
-  }
-  return Object.keys(e).length ? e : null;
+function layer(ch) {
+  const e = ensure(ch);
+  if (style === "regular") return e;
+  return (e[style] = e[style] || {});
 }
-function touch() { dirty = true; $("status").textContent = "未保存の変更あり"; $("status").className = "dirty"; }
+function setF(field, value) {
+  const o = layer(cur);
+  if (field === "exclude" && !value) delete o.exclude;
+  else o[field] = value;
+  touch();
+  if (field === "exclude" || field === "skip_ink") syncControls();
+  paint();
+}
+function touch() { dirty = true; setStatus("未保存の変更あり", "dirty"); }
+function setStatus(t, cls) { $("status").textContent = t; $("status").className = cls || ""; }
+
+// ---- pruning: base vs defaults, style layers vs the resolved base ----
+const near = (a, b) => Math.abs((+a) - (+b)) <= 1e-6;
+function effOf(vals, k) {
+  const d = defs(k);
+  return { scale: vals.scale ?? d.scale, halo: vals.halo ?? d.halo, rot: vals.rot ?? 0,
+           halo_pad: vals.halo_pad ?? [0, 0, 0, 0], skip_ink: vals.skip_ink ?? data.skip_ink,
+           dx: vals.dx ?? 0, dy: vals.dy ?? 0, exclude: !!vals.exclude };
+}
+function diffFields(vals, ref) {
+  const out = {};
+  if (vals.exclude) {
+    if (!ref.exclude) out.exclude = true;
+  } else {
+    if (vals.exclude === false && ref.exclude) out.exclude = false;
+    if (vals.scale != null && !near(vals.scale, ref.scale)) out.scale = +(+vals.scale).toFixed(2);
+    if (vals.halo  != null && !near(vals.halo,  ref.halo))  out.halo  = +(+vals.halo).toFixed(2);
+    if (vals.rot   != null && !near(vals.rot,   ref.rot))   out.rot   = +(+vals.rot).toFixed(1);
+    if (vals.dx != null && Math.round(vals.dx) !== Math.round(ref.dx)) out.dx = Math.round(vals.dx);
+    if (vals.dy != null && Math.round(vals.dy) !== Math.round(ref.dy)) out.dy = Math.round(vals.dy);
+    if (vals.halo_pad && vals.halo_pad.map(Math.round).join() !== ref.halo_pad.map(Math.round).join())
+      out.halo_pad = vals.halo_pad.map(Math.round);
+    if (vals.skip_ink != null && vals.skip_ink !== ref.skip_ink) out.skip_ink = vals.skip_ink;
+  }
+  return out;
+}
+function pruneOne(ch) {
+  const e = ov[ch];
+  if (!e) return null;
+  const k = byW.regular[ch] || byW.bold[ch];
+  const base = {};
+  for (const [key, v] of Object.entries(e)) if (!LAYERS.includes(key)) base[key] = v;
+  const d = defs(k);
+  const defRef = { scale: d.scale, halo: d.halo, rot: 0, halo_pad: [0, 0, 0, 0],
+                   skip_ink: data.skip_ink, dx: 0, dy: 0, exclude: false };
+  const out = diffFields(base, defRef);
+  const baseEff = effOf(base, k);
+  for (const st of LAYERS) {
+    if (!e[st]) continue;
+    const sub = diffFields({ ...e[st] }, baseEff);
+    if (Object.keys(sub).length) out[st] = sub;
+  }
+  return Object.keys(out).length ? out : null;
+}
 
 // ---- glyph rendering: body → halo painted paper-colour → mark (exact skip ink) ----
-function tf(k, K, dx, dy) {
-  const [x0, y0, x1, y1] = k.mb, cx = (x0 + x1) / 2 + dx, cy = (y0 + y1) / 2 + dy;
-  return `translate(${cx} ${cy}) scale(${K}) translate(${-cx} ${-cy}) translate(${dx} ${dy})`;
+function markTf(k, e) {
+  const [x0, y0, x1, y1] = k.mb, cx = (x0 + x1) / 2 + e.dx, cy = (y0 + y1) / 2 + e.dy;
+  return `rotate(${e.rot} ${cx} ${cy}) translate(${cx} ${cy}) scale(${e.scale}) translate(${-cx} ${-cy}) translate(${e.dx} ${e.dy})`;
 }
-const vb = k => `-60 ${-(data.upm + 40)} ${k.adv + 120} ${data.upm + 180}`;
+function haloTf(k, e) {
+  const [x0, y0, x1, y1] = k.mb, cx = (x0 + x1) / 2 + e.dx, cy = (y0 + y1) / 2 + e.dy;
+  const K = e.scale * (1 + e.halo);
+  const [l, r, t, b] = e.pads;
+  const w = (x1 - x0) * K, h = (y1 - y0) * K;
+  const sx = (w + l + r) / w, sy = (h + t + b) / h;
+  return `rotate(${e.rot} ${cx} ${cy}) ` +
+         `translate(${cx + (r - l) / 2} ${cy + (t - b) / 2}) scale(${sx} ${sy}) translate(${-cx} ${-cy}) ` +
+         `translate(${cx} ${cy}) scale(${K}) translate(${-cx} ${-cy}) translate(${e.dx} ${e.dy})`;
+}
+function vb(k) {
+  const u = data.upm, extra = isItalic(style) ? 200 : 0;
+  return `-70 ${-(u + 40)} ${k.adv + 140 + extra} ${u + 180}`;
+}
 function inner(k, e, ghost, bodyOnly) {
   let s = `<path d="${k.body}" fill="currentColor"/>`;
   if (!bodyOnly) {
     if (!e.excl && e.skip)
-      s += `<path d="${k.mark}" transform="${tf(k, e.scale * (1 + e.halo), e.dx, e.dy)}" fill="var(--paper)"/>`;
-    s += `<path d="${k.mark}"${e.excl ? "" : ` transform="${tf(k, e.scale, e.dx, e.dy)}"`} fill="currentColor"/>`;
+      s += `<path d="${k.mark}" transform="${haloTf(k, e)}" fill="var(--paper)"/>`;
+    s += `<path d="${k.mark}"${e.excl ? "" : ` transform="${markTf(k, e)}"`} fill="currentColor"/>`;
     if (ghost && !e.excl)
       s += `<path d="${k.mark}" fill="none" stroke="var(--ghost)" stroke-width="5" stroke-dasharray="14 10" opacity="0.5"/>`;
   }
-  return `<g transform="scale(1,-1)">${s}</g>`;
+  const skew = isItalic(style) ? ` transform="skewX(${-data.italic_skew})"` : "";
+  return `<g transform="scale(1,-1)"><g class="cs"${skew}>${s}</g></g>`;
 }
 const svgFor = (k, e, h, opts = {}) =>
   `<svg class="glyph" viewBox="${vb(k)}" height="${h}">${inner(k, e, opts.ghost, opts.bodyOnly)}</svg>`;
 
 // ---- list ----
 function renderList() {
-  $("list").innerHTML = data.kana.map(k => {
+  $("list").innerHTML = data.weights[weightOf(style)].kana.map(k => {
     const p = pruneOne(k.char);
-    const cls = "cell" + (p && p.exclude ? " excl" : "");
+    const exclHere = eff(k.char).excl;
+    const cls = "cell" + (exclHere ? " excl" : "");
     return `<div class="${cls}" data-ch="${k.char}">${p ? '<span class="dot"></span>' : ""}` +
            `${svgFor(k, eff(k.char), 84)}<div class="lbl">${k.char}</div></div>`;
   }).join("");
@@ -174,33 +288,37 @@ function open(ch) {
   cur = ch;
   $("list").hidden = true;
   $("editor").hidden = false;
-  const k = byChar[ch];
-  $("edTitle").innerHTML = `${ch}<small>${k.gname} / ${k.is_semi ? "半濁点" : "濁点"}` +
-    `${k.fallback ? " / contour-split fallback" : ""}</small>`;
-  $("edNote").textContent = k.fallback
-    ? "この字は本体が描き直されている(または溶接)ため、マークは右上の輪郭群から分離しています。"
-    : "マーク = グリフ − 清音の親字。破線は元のマーク位置。";
   syncControls();
   paint();
 }
 function syncControls() {
-  const e = eff(cur);
-  $("sScale").value = e.scale; $("sHalo").value = e.halo;
+  const k = kOf(cur), e = eff(cur);
+  $("edTitle").innerHTML = `${cur}<small>${k.gname} / ${k.is_semi ? "半濁点" : "濁点"}` +
+    `${k.rebuilt ? " / マーク再構築済み" : k.fallback ? " / contour-split" : ""}</small>`;
+  $("edNote").textContent = k.rebuilt
+    ? "このマークは溶接で欠けていたため、同スクリプトのきれいなマークから再構築されています。"
+    : "マーク = グリフ − 清音の親字。破線は元のマーク位置。";
+  $("sScale").value = e.scale; $("sRot").value = e.rot; $("sHalo").value = e.halo;
+  const ids = ["sPadL", "sPadR", "sPadT", "sPadB"];
+  ids.forEach((id, i) => $(id).value = e.pads[i]);
   $("cSkip").checked = e.skip; $("cExcl").checked = e.excl;
 }
 function paint() {
-  const k = byChar[cur], e = eff(cur);
+  const k = kOf(cur), e = eff(cur);
   const svg = $("edSvg");
   svg.setAttribute("viewBox", vb(k));
   svg.innerHTML = inner(k, e, true);
   $("vScale").textContent = (+e.scale).toFixed(2);
+  $("vRot").textContent = (+e.rot).toFixed(1) + "°";
   $("vHalo").textContent = (+e.halo).toFixed(2);
+  const vids = ["vPadL", "vPadR", "vPadT", "vPadB"];
+  vids.forEach((id, i) => $(id).textContent = Math.round(e.pads[i]));
   $("vPos").textContent = `位置: dx ${Math.round(e.dx)} / dy ${Math.round(e.dy)} (font units, y は上が正)`;
   $("strip").innerHTML = [14, 20, 28].map(px => {
     const h = Math.round(px * 1.18);
     return `<div class="sset"><div class="cap">${px}px 相当 — 清音 / 元 / 調整後</div><div class="row">` +
       svgFor(k, e, h, { bodyOnly: true }) +
-      svgFor(k, { scale: 1, halo: 0, skip: false, dx: 0, dy: 0, excl: true }, h) +
+      svgFor(k, { scale: 1, halo: 0, rot: 0, pads: [0, 0, 0, 0], skip: false, dx: 0, dy: 0, excl: true }, h) +
       svgFor(k, e, h) + `</div></div>`;
   }).join("");
 }
@@ -210,7 +328,7 @@ function dragSetup() {
   const svg = $("edSvg");
   let p0 = null, base = null;
   const pt = ev => {
-    const g = svg.querySelector("g");
+    const g = svg.querySelector(".cs");
     const m = g.getScreenCTM().inverse();
     return new DOMPoint(ev.clientX, ev.clientY).matrixTransform(m);
   };
@@ -224,16 +342,16 @@ function dragSetup() {
   });
   svg.addEventListener("pointermove", ev => {
     if (!p0) return;
-    const p = pt(ev), o = ensure(cur);
+    const p = pt(ev), o = layer(cur);
     o.dx = base.dx + (p.x - p0.x);
     o.dy = base.dy + (p.y - p0.y);
     touch(); paint();
   });
-  const up = ev => {
+  const up = () => {
     if (!p0) return;
     p0 = null; svg.classList.remove("drag");
-    const o = ensure(cur);
-    o.dx = Math.round(o.dx || 0); o.dy = Math.round(o.dy || 0);
+    const o = layer(cur), e = eff(cur);
+    o.dx = Math.round(e.dx); o.dy = Math.round(e.dy);
     paint();
   };
   svg.addEventListener("pointerup", up);
@@ -245,27 +363,35 @@ function nudge(ev) {
   const d = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, step], ArrowDown: [0, -step] }[ev.key];
   if (!d) return;
   ev.preventDefault();
-  const o = ensure(cur);
-  o.dx = (o.dx || 0) + d[0]; o.dy = (o.dy || 0) + d[1];
+  const o = layer(cur), e = eff(cur);
+  o.dx = Math.round(e.dx) + d[0]; o.dy = Math.round(e.dy) + d[1];
   touch(); paint();
 }
 
 // ---- save ----
 async function save() {
+  const btn = $("saveBtn");
   const out = {};
   for (const ch of Object.keys(ov)) {
     const p = pruneOne(ch);
     if (p) out[ch] = p;
   }
-  const res = await fetch("/save", { method: "POST", body: JSON.stringify(out) });
-  if (res.ok) {
+  btn.disabled = true;
+  btn.textContent = "保存中…";
+  try {
+    const res = await fetch("/save", { method: "POST", body: JSON.stringify(out) });
+    if (!res.ok) throw new Error(await res.text());
     const r = await res.json();
-    ov = out; dirty = false;
-    $("status").textContent = `保存済み: ${r.count} 字 → ${r.path} (要リビルド)`;
-    $("status").className = "";
+    ov = JSON.parse(JSON.stringify(out));
+    dirty = false;
+    btn.textContent = "保存しました ✓";
+    setStatus(`保存済み: ${r.count} 字 → ${r.path} (要リビルド)`, "ok");
     if (!$("list").hidden) renderList();
-  } else {
-    $("status").textContent = `保存失敗: ${await res.text()}`;
+  } catch (e) {
+    btn.textContent = "保存";
+    setStatus(`保存失敗: ${e.message}`, "err");
+  } finally {
+    setTimeout(() => { btn.textContent = "保存"; btn.disabled = false; }, 1400);
   }
 }
 </script>

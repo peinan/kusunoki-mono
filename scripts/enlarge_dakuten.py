@@ -24,13 +24,24 @@ where body / mark are recovered per glyph, most reliable method first:
    the glyph's top-right; a dot welded into the body stays body there (partial
    enlarge). Glyphs failing both are left untouched and reported.
 
+A dakuten the recovery leaves broken — one dot welded into the body (グ ゴ ゾ
+ダ ブ) or bitten by it (ぼ) — is rebuilt whole from the cleanest two-dot mark
+of the same script, anchored on the intact top-right dot, so both dots always
+move, scale, and carve together.
+
 Per-character tuning: scripts/dakuten_overrides.json (or KM_DAKUTEN_OVERRIDES)
-maps a kana to {"scale", "halo", "dx", "dy", "skip_ink", "exclude"} — values
-replace the global defaults for that kana, dx/dy move the mark in font units,
-exclude leaves the glyph untouched. scripts/dakuten_tuner.py edits the file
-visually. Everything runs in LINE Seed's own em, before P3 swaps the glyphs
-into the base, so P3's scaling / centring / italic skew apply unchanged.
-Advances are kept.
+maps a kana to {"scale", "halo", "dx", "dy", "rot", "halo_pad", "skip_ink",
+"exclude"} — values replace the global defaults for that kana. dx/dy move the
+mark in font units, rot tilts it (degrees, CCW), halo_pad = [left, right, top,
+bottom] widens the carved gap per side in font units, exclude leaves the glyph
+untouched. Optional "bold" / "italic" / "bolditalic" sub-objects override those
+base values per style (unset fields inherit). scripts/dakuten_tuner.py edits
+the file visually. The stage runs once per style:
+
+    uv run scripts/enlarge_dakuten.py <lineseed.ttf> <out.ttf> [style]
+
+Everything runs in LINE Seed's own em, before P3 swaps the glyphs into the
+base, so P3's scaling / centring / italic skew apply unchanged. Advances kept.
 
 Env: KM_DAKUTEN_SCALE (dakuten enlarge factor, 1.3), KM_HANDAKUTEN_SCALE (ring
 enlarge factor, 1.25), KM_DAKUTEN_HALO / KM_HANDAKUTEN_HALO (carved gap as an
@@ -39,6 +50,7 @@ extra fraction of the enlarged mark, 0.48 / 0.36), KM_DAKUTEN_SKIP_INK (1=carve,
 KM_DAKUTEN_OVERRIDES (per-kana JSON, scripts/dakuten_overrides.json).
 """
 import json
+import math
 import os
 import sys
 import unicodedata
@@ -58,7 +70,10 @@ HALO_DAKUTEN = float(os.environ.get("KM_DAKUTEN_HALO", "0.48"))
 HALO_HANDAKUTEN = float(os.environ.get("KM_HANDAKUTEN_HALO", "0.36"))
 SKIP_INK = os.environ.get("KM_DAKUTEN_SKIP_INK", "1") != "0"
 EXCLUDE = set(os.environ.get("KM_DAKUTEN_EXCLUDE", "ゞヾヷヸヹヺ"))
-OVERRIDES_PATH = os.environ.get("KM_DAKUTEN_OVERRIDES", "scripts/dakuten_overrides.json")
+OVERRIDES_PATH = os.environ.get(
+    "KM_DAKUTEN_OVERRIDES",
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "dakuten_overrides.json"))
+STYLE_LAYERS = ("bold", "italic", "bolditalic")
 
 VOICED, SEMI = "゙", "゚"   # combining marks NFD leaves behind
 KAPPA = 0.5522847498307936    # cubic-Bézier circle constant
@@ -198,6 +213,16 @@ def load_overrides(path=None):
         return json.load(f)
 
 
+def resolve_override(entry, style):
+    """Effective per-kana settings for a style: base fields, then the style's
+    own layer on top (Regular = base only; unset fields inherit)."""
+    out = {k: v for k, v in (entry or {}).items() if k not in STYLE_LAYERS}
+    key = style.lower()
+    if key in STYLE_LAYERS:
+        out.update((entry or {}).get(key, {}))
+    return out
+
+
 class DakutenFont:
     """A LINE Seed weight with its voiced kana recovered into body + mark."""
 
@@ -276,10 +301,10 @@ class DakutenFont:
     def recover(self):
         """Recover body + mark for every voiced kana; repair welded rings.
 
-        Returns (kana, fell_back, skipped, repaired) where kana maps char ->
-        {gname, mark, body, mb, is_semi, fallback}. Repairs are geometry fixes
-        independent of the tuning parameters, so they live here, not in
-        compose()."""
+        Returns (kana, fell_back, skipped, repaired, rebuilt) where kana maps
+        char -> {gname, mark, body, mb, is_semi, fallback}. Repairs are
+        geometry fixes independent of the tuning parameters, so they live
+        here, not in compose()."""
         kana, fell_back, skipped = {}, [], []
         ring_dims = []                 # (w, h, hole_r) from clean rings, for repair
         for ch, gname, bname, is_semi in self.targets():
@@ -337,18 +362,92 @@ class DakutenFont:
                 # ring's disc out of the body before carving.
                 d["body"] = op("difference", d["body"], circle(cx, cy, r_out * 1.06))
             repaired.append(d["gname"])
-        return kana, fell_back, skipped, repaired
+
+        rebuilt = self._rebuild_broken_dakuten(kana)
+        return kana, fell_back, skipped, repaired, rebuilt
+
+    def _rebuild_broken_dakuten(self, kana):
+        """Replace broken dakuten with the cleanest same-script two-dot mark.
+
+        A dakuten can come out of recovery with only one dot (the other welded
+        into a body contour: グ ゴ ゾ ダ ブ) or with a dot bitten by the weld
+        (ぼ) — those can't move or carve as a pair. Anchor the template on the
+        intact top-right dot and drop it in; for contour-split bodies also
+        scrub the welded dot's leftover ink."""
+        top_right = lambda cts: max((b for _, b in cts), key=lambda b: b[0] + b[2] + b[1] + b[3])
+        center = lambda b: ((b[0] + b[2]) / 2, (b[1] + b[3]) / 2)
+        script = lambda ch: "hira" if ord(ch) < 0x30A0 else "kata"
+
+        templates = {}
+        for ch, d in kana.items():
+            if d["is_semi"] or d["fallback"]:
+                continue
+            cts = path_contours(d["mark"])
+            if len(cts) != 2:
+                continue
+            areas = sorted(contour_area(v) for v, _ in cts)
+            ratio = areas[0] / areas[1]
+            if ratio >= 0.85 and (script(ch) not in templates or ratio > templates[script(ch)][0]):
+                templates[script(ch)] = (ratio, d["mark"])
+
+        rebuilt = []
+        for ch, d in kana.items():
+            if d["is_semi"] or script(ch) not in templates:
+                continue
+            tmark = templates[script(ch)][1]
+            tb = pbounds(tmark)
+            cts = path_contours(d["mark"])
+            areas = [contour_area(v) for v, _ in cts]
+            broken = (
+                (len(cts) == 1 and (d["mb"][2] - d["mb"][0]) < 0.75 * (tb[2] - tb[0]))
+                or (len(cts) == 2 and min(areas) / max(areas) < 0.7)
+                or len(cts) > 2)
+            if not broken:
+                continue
+            fx, fy = center(top_right(cts))
+            tx, ty = center(top_right(path_contours(tmark)))
+            d["mark"] = xform(tmark, Transform().translate(round(fx - tx), round(fy - ty)))
+            d["mb"] = pbounds(d["mark"])
+            if d["fallback"]:
+                # the welded dot's ink is still part of the body — scrub around
+                # the rebuilt mark (the intact dot's region holds no body ink,
+                # so only the weld leftovers go)
+                mcx, mcy = center(d["mb"])
+                d["body"] = op("difference", d["body"],
+                               scaled_about(d["mark"], 1.12, mcx, mcy))
+            rebuilt.append(d["gname"])
+        return rebuilt
 
     @staticmethod
-    def compose(d, scale, halo_frac, skip_ink, dx=0, dy=0):
-        """The tuned glyph: enlarged (and moved) mark unioned onto the carved body."""
+    def compose(d, scale, halo_frac, skip_ink, dx=0, dy=0, rot=0, pads=(0, 0, 0, 0)):
+        """The tuned glyph: enlarged / moved / tilted mark on the carved body.
+
+        pads = [left, right, top, bottom] widen the carved halo per side, in
+        font units, applied to the un-rotated halo whose bbox is analytically
+        mb×K — the tuner's SVG preview repeats the same closed-form transforms,
+        so both always agree. Rotation comes last, about the mark centre."""
         mark, body, mb = d["mark"], d["body"], d["mb"]
         if dx or dy:
             mark = xform(mark, Transform().translate(dx, dy))
         mcx, mcy = (mb[0] + mb[2]) / 2 + dx, (mb[1] + mb[3]) / 2 + dy
         mark_big = scaled_about(mark, scale, mcx, mcy)
+        halo = None
         if skip_ink:
-            halo = scaled_about(mark, scale * (1 + halo_frac), mcx, mcy)
+            K = scale * (1 + halo_frac)
+            halo = scaled_about(mark, K, mcx, mcy)
+            l, r, t, b = pads
+            if l or r or t or b:
+                w, h = (mb[2] - mb[0]) * K, (mb[3] - mb[1]) * K
+                halo = xform(halo, Transform()
+                             .translate(mcx + (r - l) / 2, mcy + (t - b) / 2)
+                             .scale((w + l + r) / w, (h + t + b) / h)
+                             .translate(-mcx, -mcy))
+        if rot:
+            spin = (Transform().translate(mcx, mcy)
+                    .rotate(math.radians(rot)).translate(-mcx, -mcy))
+            mark_big = xform(mark_big, spin)
+            halo = xform(halo, spin) if halo is not None else None
+        if halo is not None:
             body = op("difference", body, halo)
         return op("union", body, mark_big)
 
@@ -363,13 +462,14 @@ class DakutenFont:
 
 def main():
     src, out = sys.argv[1], sys.argv[2]
+    style = sys.argv[3] if len(sys.argv) > 3 else "Regular"
     font = DakutenFont(src)
-    kana, fell_back, skipped, repaired = font.recover()
+    kana, fell_back, skipped, repaired, rebuilt = font.recover()
     overrides = load_overrides()
 
     done, tuned, excluded = 0, 0, []
     for ch, d in kana.items():
-        o = overrides.get(ch, {})
+        o = resolve_override(overrides.get(ch), style)
         if o.get("exclude"):
             excluded.append(ch)
             continue
@@ -381,18 +481,21 @@ def main():
             o.get("halo", default_halo(d["is_semi"])),
             o.get("skip_ink", SKIP_INK),
             o.get("dx", 0), o.get("dy", 0),
+            o.get("rot", 0), o.get("halo_pad", (0, 0, 0, 0)),
         )
         font.write_glyph(d["gname"], final)
         done += 1
 
     font.tt.save(out)
-    msg = (f"[enlarge_dakuten] enlarged {done} kana "
+    msg = (f"[enlarge_dakuten] {style}: enlarged {done} kana "
            f"(dakuten={SCALE_DAKUTEN} handakuten={SCALE_HANDAKUTEN} "
            f"halo={HALO_DAKUTEN}/{HALO_HANDAKUTEN} skip_ink={int(SKIP_INK)}) -> {out}")
     if tuned or excluded:
         msg += f"; overrides: {tuned} tuned, {len(excluded)} excluded ({OVERRIDES_PATH})"
     if repaired:
         msg += f"; rebuilt welded rings: {' '.join(repaired)}"
+    if rebuilt:
+        msg += f"; rebuilt broken dakuten: {' '.join(rebuilt)}"
     if fell_back:
         msg += f"; contour-split fallback: {' '.join(fell_back)}"
     if skipped:
