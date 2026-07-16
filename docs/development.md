@@ -89,6 +89,14 @@ up; logs to `build/sfms/dakuten.<weight>.log`:
 - The enlarged mark is unioned back, and a slightly larger copy is first carved out of the body, leaving a white gap where they overlap — the skip-ink look
 - `KM_DAKUTEN_SCALE` / `KM_HANDAKUTEN_SCALE` size the marks (1.3 / 1.25), `KM_DAKUTEN_HALO` / `KM_HANDAKUTEN_HALO` the carved gap (0.48 / 0.36), `KM_DAKUTEN_SKIP_INK=0` disables the carve, `KM_DAKUTEN_EXCLUDE` lists kana to leave untouched (default ゞヾヷヸヹヺ)
 
+Per-kana tuning on top of the globals: `uv run scripts/dakuten_tuner.py` (from
+the repo root) serves a visual editor at `http://localhost:8765` — every voiced
+kana in a grid, per-kana sliders for mark size and gap, drag to move the mark,
+an exclude toggle. Saving writes `scripts/dakuten_overrides.json`
+(char → `scale` / `halo` / `dx` / `dy` / `skip_ink` / `exclude`, font units),
+which the build applies on the next run; the preview paints the halo in paper
+colour over the body, which is visually identical to the boolean carve.
+
 ### P3 Japanese swap
 
 Kana, katakana, kanji, and CJK punctuation present in both the base and

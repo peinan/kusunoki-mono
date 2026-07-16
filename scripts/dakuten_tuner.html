@@ -1,0 +1,271 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>濁点チューナー — Kusunoki Mono</title>
+<style>
+:root { --paper:#ffffff; --bg:#f2f3f5; --ink:#1a1a1a; --mut:#8a8f98; --acc:#d97706; --ghost:#e0447a; }
+* { margin:0; padding:0; box-sizing:border-box; }
+[hidden] { display:none !important; }
+body { background:var(--bg); color:var(--ink); font-family:-apple-system,"Hiragino Sans",sans-serif; }
+header { display:flex; align-items:center; gap:16px; padding:14px 22px; background:var(--paper);
+         border-bottom:1px solid #e2e4e8; position:sticky; top:0; z-index:2; }
+header h1 { font-size:16px; font-weight:700; }
+header .path { font-size:12px; color:var(--mut); }
+#status { margin-left:auto; font-size:13px; color:var(--mut); }
+#status.dirty { color:var(--acc); font-weight:600; }
+button { font:inherit; font-size:13px; padding:7px 14px; border:1px solid #d4d7dc; border-radius:8px;
+         background:var(--paper); cursor:pointer; }
+button:hover { border-color:#aab0b9; }
+button.primary { background:var(--ink); color:#fff; border-color:var(--ink); }
+.glyph { color:var(--ink); display:block; }
+#list { display:grid; grid-template-columns:repeat(auto-fill, minmax(104px,1fr)); gap:10px; padding:18px 22px; }
+.cell { background:var(--paper); border:1px solid #e2e4e8; border-radius:10px; padding:8px 6px 6px;
+        text-align:center; cursor:pointer; position:relative; }
+.cell:hover { border-color:#aab0b9; }
+.cell svg { width:100%; height:auto; }
+.cell .lbl { font-size:13px; color:var(--mut); margin-top:2px; }
+.cell .dot { position:absolute; top:7px; right:9px; width:9px; height:9px; border-radius:50%; background:var(--acc); }
+.cell.excl svg { opacity:.35; }
+.cell.excl .dot { background:#98a1ad; }
+#editor { display:flex; gap:22px; padding:20px 22px; align-items:flex-start; }
+#edLeft { flex:none; }
+#edCanvas { background:var(--paper); border:1px solid #e2e4e8; border-radius:12px; }
+#edSvg { display:block; width:520px; height:auto; color:var(--ink); touch-action:none; cursor:grab; }
+#edSvg.drag { cursor:grabbing; }
+#strip { display:flex; gap:26px; margin-top:14px; align-items:flex-end; }
+.sset { background:var(--paper); border:1px solid #e2e4e8; border-radius:10px; padding:8px 12px; }
+.sset .cap { font-size:11px; color:var(--mut); margin-bottom:4px; }
+.sset .row { display:flex; align-items:flex-end; gap:2px; }
+#edRight { flex:1; max-width:430px; display:flex; flex-direction:column; gap:14px; }
+#edTitle { font-size:42px; font-weight:700; line-height:1; }
+#edTitle small { font-size:13px; color:var(--mut); font-weight:400; margin-left:10px; }
+.ctl { background:var(--paper); border:1px solid #e2e4e8; border-radius:10px; padding:12px 14px; }
+.ctl label { display:block; font-size:13px; color:var(--mut); margin-bottom:6px; }
+.ctl .val { float:right; color:var(--ink); font-variant-numeric:tabular-nums; }
+.ctl input[type=range] { width:100%; }
+.ctl.checks { display:flex; gap:18px; }
+.ctl.checks label { margin:0; color:var(--ink); display:flex; gap:6px; align-items:center; font-size:13px; }
+#vPos { font-size:13px; color:var(--mut); font-variant-numeric:tabular-nums; }
+.btnrow { display:flex; gap:10px; flex-wrap:wrap; }
+#edNote { font-size:12px; color:var(--mut); line-height:1.6; }
+kbd { background:#eceef1; border-radius:4px; padding:1px 5px; font-size:11px; }
+</style>
+<header>
+  <h1>濁点チューナー</h1>
+  <span class="path" id="hPath"></span>
+  <span id="status"></span>
+  <button id="saveBtn" class="primary">保存</button>
+</header>
+<main id="list"></main>
+<main id="editor" hidden>
+  <div id="edLeft">
+    <div id="edCanvas"><svg id="edSvg"></svg></div>
+    <div id="strip"></div>
+  </div>
+  <div id="edRight">
+    <div><button id="bBack">← 一覧へ</button></div>
+    <div id="edTitle"></div>
+    <div class="ctl">
+      <label>マーク倍率 <span class="val" id="vScale"></span></label>
+      <input type="range" id="sScale" min="0.7" max="2.0" step="0.01">
+    </div>
+    <div class="ctl">
+      <label>skip ink (削りギャップ) <span class="val" id="vHalo"></span></label>
+      <input type="range" id="sHalo" min="0" max="0.9" step="0.01">
+    </div>
+    <div class="ctl checks">
+      <label><input type="checkbox" id="cSkip"> 削りを有効</label>
+      <label><input type="checkbox" id="cExcl"> この字は加工しない</label>
+    </div>
+    <div class="ctl">
+      <div id="vPos"></div>
+      <div style="font-size:12px;color:var(--mut);margin-top:6px">
+        グリフ上をドラッグでマーク移動 / 矢印キーで 1 unit (<kbd>Shift</kbd> で 10)
+      </div>
+    </div>
+    <div class="btnrow">
+      <button id="bResetPos">位置リセット</button>
+      <button id="bResetAll">この字のオーバーライドを削除</button>
+    </div>
+    <div id="edNote"></div>
+  </div>
+</main>
+<script>
+"use strict";
+let data, ov = {}, byChar = {}, cur = null, dirty = false;
+const $ = id => document.getElementById(id);
+
+init();
+async function init() {
+  data = await (await fetch("/data")).json();
+  for (const k of data.kana) byChar[k.char] = k;
+  ov = JSON.parse(JSON.stringify(data.overrides || {}));
+  $("hPath").textContent = `${data.font} → ${data.overrides_path}`;
+  renderList();
+  $("saveBtn").onclick = save;
+  $("bBack").onclick = () => { $("editor").hidden = true; $("list").hidden = false; cur = null; renderList(); };
+  $("sScale").oninput = e => { ensure(cur).scale = +e.target.value; touch(); paint(); };
+  $("sHalo").oninput  = e => { ensure(cur).halo  = +e.target.value; touch(); paint(); };
+  $("cSkip").onchange = e => { ensure(cur).skip_ink = e.target.checked; touch(); paint(); };
+  $("cExcl").onchange = e => { const o = ensure(cur); if (e.target.checked) o.exclude = true; else delete o.exclude; touch(); paint(); };
+  $("bResetPos").onclick = () => { const o = ensure(cur); delete o.dx; delete o.dy; touch(); paint(); };
+  $("bResetAll").onclick = () => { delete ov[cur]; touch(); syncControls(); paint(); };
+  document.addEventListener("keydown", nudge);
+  dragSetup();
+}
+
+const defs = k => data.defaults[k.is_semi ? "handakuten" : "dakuten"];
+function eff(ch) {
+  const k = byChar[ch], d = defs(k), o = ov[ch] || {};
+  return { scale: o.scale ?? d.scale, halo: o.halo ?? d.halo,
+           skip: o.skip_ink ?? data.skip_ink, dx: o.dx ?? 0, dy: o.dy ?? 0,
+           excl: !!o.exclude };
+}
+const ensure = ch => (ov[ch] = ov[ch] || {});
+function pruneOne(ch) {
+  const k = byChar[ch], d = defs(k), o = ov[ch];
+  if (!o) return null;
+  const e = {};
+  if (o.exclude) e.exclude = true;
+  else {
+    if (o.scale != null && Math.abs(o.scale - d.scale) > 1e-6) e.scale = +(+o.scale).toFixed(2);
+    if (o.halo  != null && Math.abs(o.halo  - d.halo)  > 1e-6) e.halo  = +(+o.halo).toFixed(2);
+    if (Math.round(o.dx || 0)) e.dx = Math.round(o.dx);
+    if (Math.round(o.dy || 0)) e.dy = Math.round(o.dy);
+    if (o.skip_ink != null && o.skip_ink !== data.skip_ink) e.skip_ink = o.skip_ink;
+  }
+  return Object.keys(e).length ? e : null;
+}
+function touch() { dirty = true; $("status").textContent = "未保存の変更あり"; $("status").className = "dirty"; }
+
+// ---- glyph rendering: body → halo painted paper-colour → mark (exact skip ink) ----
+function tf(k, K, dx, dy) {
+  const [x0, y0, x1, y1] = k.mb, cx = (x0 + x1) / 2 + dx, cy = (y0 + y1) / 2 + dy;
+  return `translate(${cx} ${cy}) scale(${K}) translate(${-cx} ${-cy}) translate(${dx} ${dy})`;
+}
+const vb = k => `-60 ${-(data.upm + 40)} ${k.adv + 120} ${data.upm + 180}`;
+function inner(k, e, ghost, bodyOnly) {
+  let s = `<path d="${k.body}" fill="currentColor"/>`;
+  if (!bodyOnly) {
+    if (!e.excl && e.skip)
+      s += `<path d="${k.mark}" transform="${tf(k, e.scale * (1 + e.halo), e.dx, e.dy)}" fill="var(--paper)"/>`;
+    s += `<path d="${k.mark}"${e.excl ? "" : ` transform="${tf(k, e.scale, e.dx, e.dy)}"`} fill="currentColor"/>`;
+    if (ghost && !e.excl)
+      s += `<path d="${k.mark}" fill="none" stroke="var(--ghost)" stroke-width="5" stroke-dasharray="14 10" opacity="0.5"/>`;
+  }
+  return `<g transform="scale(1,-1)">${s}</g>`;
+}
+const svgFor = (k, e, h, opts = {}) =>
+  `<svg class="glyph" viewBox="${vb(k)}" height="${h}">${inner(k, e, opts.ghost, opts.bodyOnly)}</svg>`;
+
+// ---- list ----
+function renderList() {
+  $("list").innerHTML = data.kana.map(k => {
+    const p = pruneOne(k.char);
+    const cls = "cell" + (p && p.exclude ? " excl" : "");
+    return `<div class="${cls}" data-ch="${k.char}">${p ? '<span class="dot"></span>' : ""}` +
+           `${svgFor(k, eff(k.char), 84)}<div class="lbl">${k.char}</div></div>`;
+  }).join("");
+  for (const el of document.querySelectorAll(".cell"))
+    el.onclick = () => open(el.dataset.ch);
+}
+
+// ---- editor ----
+function open(ch) {
+  cur = ch;
+  $("list").hidden = true;
+  $("editor").hidden = false;
+  const k = byChar[ch];
+  $("edTitle").innerHTML = `${ch}<small>${k.gname} / ${k.is_semi ? "半濁点" : "濁点"}` +
+    `${k.fallback ? " / contour-split fallback" : ""}</small>`;
+  $("edNote").textContent = k.fallback
+    ? "この字は本体が描き直されている(または溶接)ため、マークは右上の輪郭群から分離しています。"
+    : "マーク = グリフ − 清音の親字。破線は元のマーク位置。";
+  syncControls();
+  paint();
+}
+function syncControls() {
+  const e = eff(cur);
+  $("sScale").value = e.scale; $("sHalo").value = e.halo;
+  $("cSkip").checked = e.skip; $("cExcl").checked = e.excl;
+}
+function paint() {
+  const k = byChar[cur], e = eff(cur);
+  const svg = $("edSvg");
+  svg.setAttribute("viewBox", vb(k));
+  svg.innerHTML = inner(k, e, true);
+  $("vScale").textContent = (+e.scale).toFixed(2);
+  $("vHalo").textContent = (+e.halo).toFixed(2);
+  $("vPos").textContent = `位置: dx ${Math.round(e.dx)} / dy ${Math.round(e.dy)} (font units, y は上が正)`;
+  $("strip").innerHTML = [14, 20, 28].map(px => {
+    const h = Math.round(px * 1.18);
+    return `<div class="sset"><div class="cap">${px}px 相当 — 清音 / 元 / 調整後</div><div class="row">` +
+      svgFor(k, e, h, { bodyOnly: true }) +
+      svgFor(k, { scale: 1, halo: 0, skip: false, dx: 0, dy: 0, excl: true }, h) +
+      svgFor(k, e, h) + `</div></div>`;
+  }).join("");
+}
+
+// ---- mark dragging ----
+function dragSetup() {
+  const svg = $("edSvg");
+  let p0 = null, base = null;
+  const pt = ev => {
+    const g = svg.querySelector("g");
+    const m = g.getScreenCTM().inverse();
+    return new DOMPoint(ev.clientX, ev.clientY).matrixTransform(m);
+  };
+  svg.addEventListener("pointerdown", ev => {
+    if (!cur || eff(cur).excl) return;
+    try { svg.setPointerCapture(ev.pointerId); } catch (_) {}
+    svg.classList.add("drag");
+    p0 = pt(ev);
+    const e = eff(cur);
+    base = { dx: e.dx, dy: e.dy };
+  });
+  svg.addEventListener("pointermove", ev => {
+    if (!p0) return;
+    const p = pt(ev), o = ensure(cur);
+    o.dx = base.dx + (p.x - p0.x);
+    o.dy = base.dy + (p.y - p0.y);
+    touch(); paint();
+  });
+  const up = ev => {
+    if (!p0) return;
+    p0 = null; svg.classList.remove("drag");
+    const o = ensure(cur);
+    o.dx = Math.round(o.dx || 0); o.dy = Math.round(o.dy || 0);
+    paint();
+  };
+  svg.addEventListener("pointerup", up);
+  svg.addEventListener("pointercancel", up);
+}
+function nudge(ev) {
+  if (!cur || $("editor").hidden) return;
+  const step = ev.shiftKey ? 10 : 1;
+  const d = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, step], ArrowDown: [0, -step] }[ev.key];
+  if (!d) return;
+  ev.preventDefault();
+  const o = ensure(cur);
+  o.dx = (o.dx || 0) + d[0]; o.dy = (o.dy || 0) + d[1];
+  touch(); paint();
+}
+
+// ---- save ----
+async function save() {
+  const out = {};
+  for (const ch of Object.keys(ov)) {
+    const p = pruneOne(ch);
+    if (p) out[ch] = p;
+  }
+  const res = await fetch("/save", { method: "POST", body: JSON.stringify(out) });
+  if (res.ok) {
+    const r = await res.json();
+    ov = out; dirty = false;
+    $("status").textContent = `保存済み: ${r.count} 字 → ${r.path} (要リビルド)`;
+    $("status").className = "";
+    if (!$("list").hidden) renderList();
+  } else {
+    $("status").textContent = `保存失敗: ${await res.text()}`;
+  }
+}
+</script>
