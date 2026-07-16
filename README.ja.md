@@ -59,7 +59,7 @@ cp dist/KusunokiMono-*.otf ~/Library/Fonts/
 | `ITALIC_INK_OFFSET` | `0.0` | italic 英字のインク位置。セル幅比で `0` は upright と同じ中央、`0.076` は SF Mono 本来の右寄り |
 | `GSC_R` / `GSC_B` | `360` / `650` | 移植する italic 文字の Google Sans Code ウェイト |
 | `KM_DAKUTEN_SCALE` / `KM_HANDAKUTEN_SCALE` | `1.3` / `1.25` | 濁点・半濁点の拡大率 |
-| `KM_DAKUTEN_HALO` / `KM_HANDAKUTEN_HALO` | `0.40` / `0.30` | 拡大したマークの周囲を削る skip ink の幅 (マーク比)。`KM_DAKUTEN_SKIP_INK=0` で削りを無効化 |
+| `KM_DAKUTEN_HALO` / `KM_HANDAKUTEN_HALO` | `0.48` / `0.36` | 拡大したマークの周囲を削る skip ink の幅 (マーク比)。`KM_DAKUTEN_SKIP_INK=0` で削りを無効化 |
 | `KM_AMBIGUOUS_WIDTH` | `narrow` | ※ ★ ℃ など曖昧幅記号のセル数。`narrow` は 1 セルで Ghostty など厳密な端末でも被らず、`wide` は 2 セル |
 | `KM_SFMS_DIR` | `~/Library/Fonts` | アイコンのサイズ合わせに使う `SFMonoSquare-*.otf` の場所。無ければこの工程はスキップ |
 

@@ -60,7 +60,7 @@ cp dist/KusunokiMono-*.otf ~/Library/Fonts/
 | `ITALIC_INK_OFFSET` | `0.0` | Italic Latin ink offset as a fraction of the cell; `0` is centred like the upright, `0.076` is SF Mono's native right-lean |
 | `GSC_R` / `GSC_B` | `360` / `650` | Google Sans Code weights for the grafted italic letters |
 | `KM_DAKUTEN_SCALE` / `KM_HANDAKUTEN_SCALE` | `1.3` / `1.25` | Dakuten / handakuten enlargement on kana |
-| `KM_DAKUTEN_HALO` / `KM_HANDAKUTEN_HALO` | `0.40` / `0.30` | Skip-ink gap carved around the enlarged mark, as a fraction of it; `KM_DAKUTEN_SKIP_INK=0` disables the carve |
+| `KM_DAKUTEN_HALO` / `KM_HANDAKUTEN_HALO` | `0.48` / `0.36` | Skip-ink gap carved around the enlarged mark, as a fraction of it; `KM_DAKUTEN_SKIP_INK=0` disables the carve |
 | `KM_AMBIGUOUS_WIDTH` | `narrow` | Cells for East-Asian-ambiguous symbols like ※ ★ ℃; `narrow` is 1 cell and safe in strict terminals like Ghostty, `wide` is 2 cells |
 | `KM_SFMS_DIR` | `~/Library/Fonts` | Where `SFMonoSquare-*.otf` lives, used to size icons to match; the step is skipped if absent |
 
