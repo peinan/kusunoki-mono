@@ -87,7 +87,7 @@ up; logs to `build/sfms/dakuten.<weight>.log`:
 - Each voiced kana is rebuilt from its NFD parts: the mark is the glyph minus its unvoiced base, the body is the base itself, so welded or fused marks don't need contour guessing; a handakuten ring welded into the body is rebuilt as concentric circles centred on its hole
 - Where the body was redrawn instead of pasted (ヅ デ …), the small top-right contours become the mark
 - The enlarged mark is unioned back, and a slightly larger copy is first carved out of the body, leaving a white gap where they overlap — the skip-ink look
-- `KM_DAKUTEN_SCALE` / `KM_HANDAKUTEN_SCALE` size the marks (1.3 / 1.25), `KM_DAKUTEN_HALO` / `KM_HANDAKUTEN_HALO` the carved gap (0.24 / 0.18), `KM_DAKUTEN_SKIP_INK=0` disables the carve, `KM_DAKUTEN_EXCLUDE` lists kana to leave untouched (default ゞヾヷヸヹヺ)
+- `KM_DAKUTEN_SCALE` / `KM_HANDAKUTEN_SCALE` size the marks (1.3 / 1.25), `KM_DAKUTEN_HALO` / `KM_HANDAKUTEN_HALO` the carved gap (0.40 / 0.30), `KM_DAKUTEN_SKIP_INK=0` disables the carve, `KM_DAKUTEN_EXCLUDE` lists kana to leave untouched (default ゞヾヷヸヹヺ)
 
 ### P3 Japanese swap
 

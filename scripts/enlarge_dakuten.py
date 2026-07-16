@@ -4,7 +4,7 @@
 # ///
 """P2.8: enlarge kana dakuten (゛) / handakuten (゜) and skip-ink the overlap.
 
-    KM_DAKUTEN_SCALE=1.3 KM_HANDAKUTEN_SCALE=1.25 KM_DAKUTEN_HALO=0.24 \\
+    KM_DAKUTEN_SCALE=1.3 KM_HANDAKUTEN_SCALE=1.25 KM_DAKUTEN_HALO=0.40 \\
         uv run scripts/enlarge_dakuten.py <lineseed.ttf> <out.ttf>
 
 Each voiced kana X is rebuilt from its NFD parts as
@@ -29,7 +29,7 @@ base, so P3's scaling / centring / italic skew apply unchanged. Advances kept.
 
 Env: KM_DAKUTEN_SCALE (dakuten enlarge factor, 1.3), KM_HANDAKUTEN_SCALE (ring
 enlarge factor, 1.25), KM_DAKUTEN_HALO / KM_HANDAKUTEN_HALO (carved gap as an
-extra fraction of the enlarged mark, 0.24 / 0.18), KM_DAKUTEN_SKIP_INK (1=carve,
+extra fraction of the enlarged mark, 0.40 / 0.30), KM_DAKUTEN_SKIP_INK (1=carve,
 0=just enlarge), KM_DAKUTEN_EXCLUDE (kana to leave untouched, "ゞヾヷヸヹヺ").
 """
 import os
@@ -48,8 +48,8 @@ from fontTools.ttLib import TTFont
 IN, OUT = sys.argv[1], sys.argv[2]
 SCALE_DAKUTEN = float(os.environ.get("KM_DAKUTEN_SCALE", "1.3"))
 SCALE_HANDAKUTEN = float(os.environ.get("KM_HANDAKUTEN_SCALE", "1.25"))
-HALO_DAKUTEN = float(os.environ.get("KM_DAKUTEN_HALO", "0.24"))
-HALO_HANDAKUTEN = float(os.environ.get("KM_HANDAKUTEN_HALO", "0.18"))
+HALO_DAKUTEN = float(os.environ.get("KM_DAKUTEN_HALO", "0.40"))
+HALO_HANDAKUTEN = float(os.environ.get("KM_HANDAKUTEN_HALO", "0.30"))
 SKIP_INK = os.environ.get("KM_DAKUTEN_SKIP_INK", "1") != "0"
 EXCLUDE = set(os.environ.get("KM_DAKUTEN_EXCLUDE", "ゞヾヷヸヹヺ"))
 
