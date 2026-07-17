@@ -7,6 +7,7 @@
 ![platform](https://img.badges.sh/platform-macOS-b4befe?labelColor=1e1e2e&logo=apple&font=Space+Grotesk&fontWeight=500&labelFontWeight=700&messageFontWeight=700)
 ![version](https://img.badges.sh/version-v0.6.0-a6e3a1?labelColor=1e1e2e&logo=lucide:Tag&font=Space+Grotesk&fontWeight=500&labelFontWeight=700&messageFontWeight=700)
 [![homebrew](https://img.badges.sh/homebrew-peinan%2Fkusunoki--mono-fab387?labelColor=1e1e2e&logo=lucide:Beer&font=Space+Grotesk&fontWeight=500&labelFontWeight=700&messageFontWeight=700)](https://github.com/peinan/homebrew-kusunoki-mono)
+[![web](https://img.badges.sh/web-peinan.github.io-89b4fa?labelColor=1e1e2e&logo=lucide:Globe&font=Space+Grotesk&fontWeight=500&labelFontWeight=700&messageFontWeight=700)](https://peinan.github.io/kusunoki-mono/)
 
 Apple の美しい等幅フォント SF Mono を日本語と揃う正方グリッドに整え、
 小さくても視認性の高い LINE Seed JP を重ねた日本語プログラミングフォント。

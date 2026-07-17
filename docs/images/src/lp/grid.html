@@ -1,0 +1,31 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+@font-face { font-family:"KM"; src:url("../../../../dist/KusunokiMono-Regular.otf"); }
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  width:1240px; height:560px; background:#181825; color:#cdd6f4;
+  padding:48px 56px; font-family:"KM", monospace; overflow:hidden;
+}
+pre {
+  font-family:inherit; white-space:pre; font-feature-settings:"calt" on;
+  font-size:30px; line-height:1.75;
+  display:inline-block;
+  background:repeating-linear-gradient(90deg, rgba(203,166,247,.09) 0 2ch, transparent 2ch 4ch);
+}
+.code { margin-bottom:34px; }
+.c { color:#6c7086; }
+.k { color:#cba6f7; }
+.s { color:#a6e3a1; }
+</style>
+<body>
+<div class="code"><pre><span class="c">// 全角は正確に半角2文字ぶん。コメントも表も揃う</span>
+<span class="k">const</span> 挨拶 = <span class="s">"こんにちは、世界"</span>.repeat(2)</pre></div>
+<div><pre>┌────────────────┬──────────┬────────┐
+│ ステージ       │ 状態     │   行数 │
+├────────────────┼──────────┼────────┤
+│ P1 ベース      │ 完了     │   1024 │
+│ P2.8 濁点      │ 完了     │    512 │
+│ P4 イタリック  │ 実行中   │     64 │
+└────────────────┴──────────┴────────┘</pre></div>
+</body>

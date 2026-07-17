@@ -1,0 +1,23 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+@font-face { font-family:"KM"; src:url("../../../../dist/KusunokiMono-Regular.otf"); }
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  width:1240px; height:420px; background:#181825; color:#cdd6f4;
+  padding:48px 56px; font-family:"KM", monospace; overflow:hidden;
+  display:flex; flex-direction:column; justify-content:center; gap:36px;
+}
+pre { font-family:inherit; white-space:pre; font-feature-settings:"calt" on; }
+body.off pre { font-feature-settings:"calt" 0; }
+.ops { font-size:38px; color:#89b4fa; }
+.code { font-size:30px; line-height:1.7; }
+.k { color:#cba6f7; }
+.c { color:#6c7086; }
+</style>
+<body>
+<script>document.body.className = location.search.slice(1)</script>
+<pre class="ops">-> => >= &lt;= == === != !== :: ... // /* */ &amp;&amp; ||</pre>
+<pre class="code"><span class="k">const</span> ok = list.filter(x => x !== null &amp;&amp; x >= min)
+<span class="c">/* 合成は calt なのでエディタ側で OFF にもできる */</span></pre>
+</body>

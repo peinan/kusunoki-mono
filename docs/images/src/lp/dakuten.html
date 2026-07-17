@@ -1,0 +1,27 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+@font-face { font-family:"KM";    src:url("../../../../dist/KusunokiMono-Regular.otf"); }
+@font-face { font-family:"KMBEF"; src:url("../../../../build/lp-before/KusunokiMono-Regular.otf"); }
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  width:1240px; height:560px; background:#181825; color:#cdd6f4;
+  padding:48px 56px; font-family:"KM", monospace; overflow:hidden;
+  display:flex; flex-direction:column; justify-content:center; gap:26px;
+}
+body.before pre { font-family:"KMBEF", monospace; }
+.row { display:flex; align-items:center; gap:26px; }
+pre { font-family:inherit; white-space:pre; line-height:1.4; }
+.badge {
+  font-family:-apple-system,sans-serif; font-size:17px; font-weight:600;
+  letter-spacing:1px; width:64px; text-align:center; padding:6px 0;
+  border-radius:999px; border:1px solid #45475a; color:#7f849c; flex:none;
+}
+</style>
+<body>
+<script>document.body.className = location.search.slice(1)</script>
+<div class="row"><div class="badge">28</div><pre style="font-size:56px">ばぱ びぴ ぶぷ げご</pre></div>
+<div class="row"><div class="badge">16</div><pre style="font-size:32px">ハバパ ヒビピ フブプ ヘベペ ホボポ</pre></div>
+<div class="row"><div class="badge">13</div><pre style="font-size:26px">ビルド パイプライン デバッグ プレビュー 全部ばっちり</pre></div>
+<div class="row"><div class="badge">11</div><pre style="font-size:22px">ばびぶべぼ ぱぴぷぺぽ バビブベボ パピプペポ がぎぐげご</pre></div>
+</body>

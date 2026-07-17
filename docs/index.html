@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kusunoki Mono — 日本語プログラミング用の等幅フォント</title>
+<meta name="description" content="Apple SF Mono × LINE Seed JP × Google Sans Code。半角1:全角2の固定グリッド、JetBrains Mono リガチャ、トゥルーイタリック、Nerd Fonts を備えた日本語プログラミング用等幅フォント。">
+<link rel="canonical" href="https://peinan.github.io/kusunoki-mono/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Kusunoki Mono">
+<meta property="og:description" content="SF Mono × LINE Seed JP × Google Sans Code。日本語プログラミング用の等幅フォント。">
+<meta property="og:url" content="https://peinan.github.io/kusunoki-mono/">
+<meta property="og:image" content="https://peinan.github.io/kusunoki-mono/images/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='55' dominant-baseline='central' text-anchor='middle' font-size='84' fill='%23cba6f7'%3E楠%3C/text%3E%3C/svg%3E">
+<style>
+:root {
+  --bg: #1e1e2e; --panel: #181825; --surface: #313244; --border: #45475a;
+  --line: #313244; --text: #cdd6f4; --sub: #a6adc8; --faint: #7f849c; --dim: #6c7086;
+  --lavender: #cba6f7; --blue: #89b4fa; --peach: #fab387; --green: #a6e3a1;
+  --sans: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", "Segoe UI", sans-serif;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.8; }
+img { max-width: 100%; height: auto; display: block; }
+a { color: var(--blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+header {
+  position: sticky; top: 0; z-index: 10;
+  background: rgba(30, 30, 46, .82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.hbar { display: flex; align-items: center; gap: 24px; height: 60px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--text); }
+.brand:hover { text-decoration: none; }
+.brand .k {
+  font-size: 24px; font-weight: 800;
+  background: linear-gradient(160deg, var(--lavender), var(--blue));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+nav { margin-left: auto; display: flex; gap: 20px; font-size: 14px; }
+nav a { color: var(--sub); }
+nav a:hover { color: var(--text); text-decoration: none; }
+nav .gh { color: var(--text); border: 1px solid var(--border); border-radius: 999px; padding: 3px 14px; }
+nav .gh:hover { border-color: var(--faint); }
+@media (max-width: 720px) { nav a:not(.gh) { display: none; } }
+
+.hero { padding: 48px 0 26px; }
+.hero .art { border: 1px solid var(--line); border-radius: 16px; }
+.lead { margin: 26px auto 0; max-width: 780px; text-align: center; color: var(--sub); font-size: 15.5px; }
+.cta { margin: 26px auto 0; display: flex; flex-wrap: wrap; justify-content: center; align-items: stretch; gap: 12px; }
+.brew {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 10px 16px;
+  font-family: var(--mono); font-size: 14px;
+}
+.brew .dollar { color: var(--green); user-select: none; }
+.brew button {
+  font-family: var(--sans); font-size: 12.5px; color: var(--sub);
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 4px 12px; cursor: pointer;
+}
+.brew button:hover { color: var(--text); border-color: var(--faint); }
+.btn {
+  display: inline-flex; align-items: center; padding: 10px 22px; border-radius: 12px;
+  font-size: 14px; font-weight: 600; border: 1px solid var(--border); color: var(--text);
+}
+.btn:hover { border-color: var(--faint); text-decoration: none; }
+@media (max-width: 720px) { .brew { font-size: 12px; overflow-x: auto; } }
+
+section { padding: 56px 0 8px; }
+.eyebrow { font-size: 13px; letter-spacing: 3px; color: var(--dim); text-transform: uppercase; font-weight: 600; }
+h2 { font-size: 26px; margin: 4px 0 8px; }
+.sub { color: var(--faint); font-size: 14.5px; max-width: 720px; }
+
+.cards { margin-top: 28px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+@media (max-width: 860px) { .cards { grid-template-columns: 1fr; } }
+.card {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+  overflow: hidden; display: flex; flex-direction: column;
+}
+.card .txt { padding: 20px 22px 14px; }
+.card h3 { font-size: 16.5px; margin-bottom: 4px; }
+.card h3 .tag { color: var(--dim); font-weight: 500; font-size: 12.5px; margin-left: 8px; letter-spacing: 1px; }
+.card p { color: var(--sub); font-size: 13.5px; line-height: 1.75; }
+.card figure { margin-top: auto; }
+.seg { display: inline-flex; align-self: flex-start; gap: 0; margin: 6px 22px 14px; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; }
+.seg button {
+  font-family: var(--sans); font-size: 12.5px; padding: 4px 16px; cursor: pointer;
+  background: transparent; border: 0; color: var(--faint);
+}
+.seg button.on { background: var(--surface); color: var(--text); }
+.cmp img.b { display: none; }
+.cmp.showb img.a { display: none; }
+.cmp.showb img.b { display: block; }
+
+.craft { margin-top: 48px; background: var(--panel); border-block: 1px solid var(--line); padding: 56px 0; }
+.craft .cols { display: grid; grid-template-columns: minmax(280px, 1fr) minmax(0, 1.5fr); gap: 44px; align-items: center; }
+.craft .shot { border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 18px 48px rgba(0, 0, 0, .45); }
+.craft p { color: var(--sub); font-size: 14.5px; margin-top: 10px; }
+.craft .note { color: var(--dim); font-size: 12.5px; margin-top: 14px; }
+@media (max-width: 860px) { .craft .cols { grid-template-columns: 1fr; } }
+
+.shots { margin-top: 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.shots img, .wide img, .spec img { border: 1px solid var(--line); border-radius: 12px; }
+.wide { margin-top: 20px; }
+@media (max-width: 860px) { .shots { grid-template-columns: 1fr; } }
+.spec { margin-top: 28px; }
+
+.steps { margin-top: 24px; max-width: 760px; }
+.codeblock {
+  position: relative; background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+  padding: 18px 20px; font-family: var(--mono); font-size: 13.5px; line-height: 2; overflow-x: auto;
+}
+.codeblock .c { color: var(--dim); }
+.codeblock .dollar { color: var(--green); user-select: none; }
+.codeblock .copy {
+  position: absolute; top: 10px; right: 10px;
+  font-family: var(--sans); font-size: 12px; color: var(--sub);
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 3px 10px; cursor: pointer;
+}
+.codeblock .copy:hover { color: var(--text); border-color: var(--faint); }
+.notes { margin: 18px 0 0 0; color: var(--sub); font-size: 14px; list-style: none; }
+.notes li { padding-left: 1.4em; text-indent: -1.4em; margin-top: 8px; }
+.notes li::before { content: "— "; color: var(--dim); }
+.notes code, td code { font-family: var(--mono); font-size: .92em; background: var(--surface); border-radius: 6px; padding: 1px 7px; }
+
+table { margin-top: 24px; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 9px 28px 9px 0; border-bottom: 1px solid var(--line); }
+th { color: var(--dim); font-weight: 600; font-size: 12.5px; letter-spacing: 1px; text-transform: uppercase; }
+td { color: var(--sub); }
+td:first-child { color: var(--text); }
+
+footer { margin-top: 72px; border-top: 1px solid var(--line); padding: 32px 0 44px; }
+footer .row { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; font-size: 13.5px; color: var(--faint); }
+footer .row a { color: var(--sub); }
+footer .credit { margin-top: 10px; font-size: 12px; color: var(--dim); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap hbar">
+    <a class="brand" href="#"><span class="k">楠</span>Kusunoki Mono</a>
+    <nav>
+      <a href="#features">特徴</a>
+      <a href="#craft">制作の裏側</a>
+      <a href="#screens">画面</a>
+      <a href="#specimen">スペシメン</a>
+      <a href="#install">インストール</a>
+      <a class="gh" href="https://github.com/peinan/kusunoki-mono">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <h1 class="sr">Kusunoki Mono — 日本語プログラミング用の等幅フォント</h1>
+
+  <div class="wrap hero">
+    <img class="art" src="images/hero.png" alt="Kusunoki Mono — SF Mono × LINE Seed JP × Google Sans Code。日本語プログラミング用の等幅フォント" width="1760" height="500" fetchpriority="high">
+    <p class="lead">Apple が磨き上げた SF Mono を日本語の 1:2 グリッドに載せ、小さくても潰れない LINE Seed JP を重ねた、日本語プログラミングのための等幅フォント。イタリックは SF Mono に合う字形だけを Google Sans Code から一字ずつ選んで移植。JetBrains Mono のリガチャと Nerd Fonts のアイコンも入っています。</p>
+    <div class="cta">
+      <div class="brew"><span class="dollar">$</span><code id="brewline">brew tap peinan/kusunoki-mono &amp;&amp; brew install kusunoki-mono</code><button data-copy="#brewline">コピー</button></div>
+      <a class="btn" href="#install">インストール手順</a>
+    </div>
+  </div>
+
+  <section id="features" class="wrap">
+    <div class="eyebrow">Features</div>
+    <h2>特徴</h2>
+    <p class="sub">スクリーンショットはすべて実際のビルド成果物でレンダリングしたものです。</p>
+    <div class="cards">
+
+      <div class="card">
+        <div class="txt">
+          <h3>半角 1 : 全角 2 の固定グリッド<span class="tag">GRID</span></h3>
+          <p>全角はつねに半角ぴったり2文字ぶん。日本語コメントも罫線の表も、ターミナルでもエディタでも崩れません。</p>
+        </div>
+        <figure><img src="images/lp/grid.png" alt="日本語コメント入りのコードと罫線表が2文字グリッドに揃っている例" width="1240" height="560" loading="lazy"></figure>
+      </div>
+
+      <div class="card">
+        <div class="txt">
+          <h3>プログラミングリガチャ<span class="tag">JetBrains Mono</span></h3>
+          <p>=&gt; や !== がひと目で読める JetBrains Mono のリガチャを、セル幅と SF Mono の背丈に合わせて移植。calt 合成なのでエディタ側でオフにもできます。</p>
+        </div>
+        <div class="seg cmp-ctl"><button class="on">ON</button><button>OFF</button></div>
+        <figure class="cmp">
+          <img class="a" src="images/lp/liga-on.png" alt="リガチャ有効時の演算子の表示" width="1240" height="420" loading="lazy">
+          <img class="b" src="images/lp/liga-off.png" alt="リガチャ無効時の演算子の表示" width="1240" height="420">
+        </figure>
+      </div>
+
+      <div class="card">
+        <div class="txt">
+          <h3>トゥルーイタリック<span class="tag">Google Sans Code</span></h3>
+          <p>SF Mono の斜体は直立の字形をそのまま傾けたオブリーク。Kusunoki Mono は a や f など14文字だけを Google Sans Code の本物のイタリック字形に置き換えています(●印)。切り替えて見比べてみてください。</p>
+        </div>
+        <div class="seg cmp-ctl"><button class="on">Kusunoki Mono</button><button>SF Mono (oblique)</button></div>
+        <figure class="cmp">
+          <img class="a" src="images/lp/italic-km.png" alt="Kusunoki Mono のトゥルーイタリック" width="1240" height="420" loading="lazy">
+          <img class="b" src="images/lp/italic-sf.png" alt="SF Mono のオブリック斜体" width="1240" height="420">
+        </figure>
+      </div>
+
+      <div class="card">
+        <div class="txt">
+          <h3>濁点・半濁点の拡大<span class="tag">MigMix 流</span></h3>
+          <p>小さいサイズで潰れがちな濁点・半濁点を拡大し、画と重なるところは skip ink で彫り込み。ば と ぱ が小さくても判別できます。</p>
+        </div>
+        <div class="seg cmp-ctl"><button class="on">調整後</button><button>調整前</button></div>
+        <figure class="cmp">
+          <img class="a" src="images/lp/dakuten-after.png" alt="濁点拡大の調整後の表示" width="1240" height="560" loading="lazy">
+          <img class="b" src="images/lp/dakuten-before.png" alt="濁点拡大の調整前の表示" width="1240" height="560">
+        </figure>
+      </div>
+
+      <div class="card">
+        <div class="txt">
+          <h3>Nerd Fonts 内蔵<span class="tag">Icons</span></h3>
+          <p>Nerd Fonts のアイコンをフルセットで内蔵。プロンプトやファイラー、ステータスラインがそのまま映えます。</p>
+        </div>
+        <figure><img src="images/lp/nerd.png" alt="Nerd Fonts アイコンを使ったプロンプトとファイル一覧の例" width="1240" height="420" loading="lazy"></figure>
+      </div>
+
+      <div class="card">
+        <div class="txt">
+          <h3>小さくても読める日本語<span class="tag">LINE Seed JP</span></h3>
+          <p>日本語は小サイズでの視認性に優れた LINE Seed JP。エディタの現実的なフォントサイズでもくっきり読めます。</p>
+        </div>
+        <figure><img src="images/lp/sizes.png" alt="11pxから20pxまでの日本語表示サイズラダー" width="1240" height="560" loading="lazy"></figure>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="craft" class="craft">
+    <div class="wrap cols">
+      <div>
+        <div class="eyebrow">Behind the scenes</div>
+        <h2>かな、1文字ずつ</h2>
+        <p>濁点・半濁点の大きさと位置は、グローバルな一括処理だけでは決まりません。専用のビジュアルツールを作り、濁点かな52字を1文字ずつ見て、必要なものには個別の調整を入れています。</p>
+        <p class="note">破線が元のマーク位置。倍率・回転・skip ink の彫り幅・位置をかなごとに上書きできます。</p>
+      </div>
+      <img class="shot" src="images/lp/tuner.png" alt="濁点チューナーの編集画面。ぎ の濁点をスライダーとドラッグで調整している" width="2720" height="1620" loading="lazy">
+    </div>
+  </section>
+
+  <section id="screens" class="wrap">
+    <div class="eyebrow">In action</div>
+    <h2>実際の画面</h2>
+    <div class="shots">
+      <img src="images/editor.png" alt="エディタでの表示例" width="1488" height="1754" loading="lazy">
+      <img src="images/gitlog.png" alt="git log の表示例" width="1522" height="1772" loading="lazy">
+    </div>
+    <div class="wide"><img src="images/terminal.png" alt="ターミナルでの表示例" width="5120" height="2832" loading="lazy"></div>
+  </section>
+
+  <section id="specimen" class="wrap">
+    <div class="eyebrow">Specimen</div>
+    <h2>スペシメン</h2>
+    <div class="spec"><img src="images/specimen.png" alt="ウェイト・イタリック・かな・記号・リガチャ・サイズの一覧スペシメン" width="1694" height="1724" loading="lazy"></div>
+  </section>
+
+  <section id="install" class="wrap">
+    <div class="eyebrow">Install</div>
+    <h2>インストール</h2>
+    <div class="steps">
+      <div class="codeblock">
+        <button class="copy" data-copy="#installcmds">コピー</button>
+        <pre id="installcmds"><span class="dollar">$</span> brew tap peinan/kusunoki-mono
+<span class="dollar">$</span> brew install kusunoki-mono
+<span class="dollar">$</span> cp "$(brew --prefix)/share/fonts/KusunokiMono-"*.otf ~/Library/Fonts/</pre>
+      </div>
+      <ul class="notes">
+        <li>ターミナルやエディタのフォントを <code>Kusunoki Mono</code> に設定してください</li>
+        <li>Homebrew 6.0+ では初回のみ <code>brew trust peinan/kusunoki-mono</code> が必要です</li>
+        <li>成果物には Apple SF Mono が埋め込まれるためバイナリ配布はなく、あなたの Mac 上でビルドされます。<code>JP_SCALE</code> などのノブを回して自分でビルドする手順は <a href="https://github.com/peinan/kusunoki-mono#build-with-make">README</a> へ</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="license" class="wrap">
+    <div class="eyebrow">Licensing</div>
+    <h2>ライセンス</h2>
+    <p class="sub">ビルド成果物は Apple SF Mono を含む個人利用の生成物で、再配布はできません。ソースフォントはそれぞれのライセンスに従います。</p>
+    <table>
+      <thead><tr><th>ソース</th><th>ライセンス</th></tr></thead>
+      <tbody>
+        <tr><td>SF Mono</td><td>© Apple</td></tr>
+        <tr><td>LINE Seed JP</td><td>OFL 1.1</td></tr>
+        <tr><td>Google Sans Code</td><td>OFL 1.1</td></tr>
+        <tr><td>JetBrains Mono</td><td>OFL 1.1</td></tr>
+        <tr><td>Migu 1M</td><td>M+ / IPA</td></tr>
+        <tr><td>Nerd Fonts</td><td>MIT + upstream</td></tr>
+      </tbody>
+    </table>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="row">
+      <a href="https://github.com/peinan/kusunoki-mono">GitHub</a>
+      <a href="https://github.com/peinan/kusunoki-mono/issues">Issues</a>
+      <a href="https://github.com/peinan/kusunoki-mono#readme">README (English)</a>
+      <span>© 2026 Peinan</span>
+    </div>
+    <p class="credit">SF Mono / LINE Seed JP / Google Sans Code / JetBrains Mono / Migu 1M / Nerd Fonts の上に成り立っています。</p>
+  </div>
+</footer>
+
+<script>
+for (const ctl of document.querySelectorAll(".cmp-ctl")) {
+  const cmp = ctl.nextElementSibling;
+  const [a, b] = ctl.querySelectorAll("button");
+  a.onclick = () => { cmp.classList.remove("showb"); a.classList.add("on"); b.classList.remove("on"); };
+  b.onclick = () => { cmp.classList.add("showb"); b.classList.add("on"); a.classList.remove("on"); };
+}
+for (const btn of document.querySelectorAll("[data-copy]")) {
+  btn.onclick = async () => {
+    const text = document.querySelector(btn.dataset.copy).innerText.replace(/^\$ /gm, "");
+    try { await navigator.clipboard.writeText(text); } catch {}
+    const old = btn.textContent;
+    btn.textContent = "コピーしました";
+    setTimeout(() => { btn.textContent = old; }, 1400);
+  };
+}
+</script>
+</body>
+</html>
