@@ -46,6 +46,7 @@ button:disabled { opacity:.6; cursor:default; }
 #edTitle { font-size:40px; font-weight:700; line-height:1; }
 #edTitle small { font-size:13px; color:var(--mut); font-weight:400; margin-left:10px; }
 .ctl { background:var(--paper); border:1px solid #e2e4e8; border-radius:10px; padding:11px 14px; }
+.ctl.dim { opacity:.45; }
 .ctl label { display:block; font-size:13px; color:var(--mut); margin-bottom:5px; }
 .ctl .val { float:right; color:var(--ink); font-variant-numeric:tabular-nums; }
 .ctl input[type=range] { width:100%; }
@@ -88,7 +89,7 @@ kbd { background:#eceef1; border-radius:4px; padding:1px 5px; font-size:11px; }
       <label>回転 (度、反時計回りが正) <span class="val" id="vRot"></span></label>
       <input type="range" id="sRot" min="-30" max="30" step="0.5">
     </div>
-    <div class="ctl">
+    <div class="ctl" id="haloCtl">
       <label>skip ink 全体 <span class="val" id="vHalo"></span></label>
       <input type="range" id="sHalo" min="0" max="0.9" step="0.01">
       <div class="pads">
@@ -139,9 +140,9 @@ async function init() {
   $("bBack").onclick = () => { $("editor").hidden = true; $("list").hidden = false; cur = null; renderList(); };
   $("sScale").oninput = e => setF("scale", +e.target.value);
   $("sRot").oninput   = e => setF("rot", +e.target.value);
-  $("sHalo").oninput  = e => setF("halo", +e.target.value);
+  $("sHalo").oninput  = e => { ensureSkip(); setF("halo", +e.target.value); };
   for (const [i, id] of ["sPadL", "sPadR", "sPadT", "sPadB"].entries())
-    $(id).oninput = e => { const p = eff(cur).pads.slice(); p[i] = +e.target.value; setF("halo_pad", p); };
+    $(id).oninput = e => { ensureSkip(); const p = eff(cur).pads.slice(); p[i] = +e.target.value; setF("halo_pad", p); };
   $("cSkip").onchange = e => setF("skip_ink", e.target.checked);
   $("cExcl").onchange = e => setF("exclude", e.target.checked);
   $("bResetPos").onclick = () => { const o = layer(cur); delete o.dx; delete o.dy; touch(); paint(); };
@@ -176,6 +177,10 @@ function eff(ch) {
            excl: !!o.exclude };
 }
 const ensure = ch => (ov[ch] = ov[ch] || {});
+function ensureSkip() {
+  // moving a gap slider means the user wants the carve — flip it back on
+  if (cur && !eff(cur).skip) { layer(cur).skip_ink = true; $("cSkip").checked = true; }
+}
 function layer(ch) {
   const e = ensure(ch);
   if (style === "regular") return e;
@@ -314,6 +319,7 @@ function paint() {
   const vids = ["vPadL", "vPadR", "vPadT", "vPadB"];
   vids.forEach((id, i) => $(id).textContent = Math.round(e.pads[i]));
   $("vPos").textContent = `位置: dx ${Math.round(e.dx)} / dy ${Math.round(e.dy)} (font units, y は上が正)`;
+  $("haloCtl").classList.toggle("dim", !e.skip || e.excl);
   $("strip").innerHTML = [14, 20, 28].map(px => {
     const h = Math.round(px * 1.18);
     return `<div class="sset"><div class="cap">${px}px 相当 — 清音 / 元 / 調整後</div><div class="row">` +
