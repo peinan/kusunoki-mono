@@ -34,6 +34,7 @@ venv の準備は要らない。
 | P2 | nerd-fonts `font-patcher` | アイコンを本来の幅のまま追加 |
 | P2.5 | `plan_icon_scale.py` `apply_icon_scale.py` | SF Mono Square より大きいアイコンを縮小 |
 | P2.6 | `instance_vf.py` `add_ligatures.py` | JetBrains Mono のリガチャを移植 |
+| P2.8 | `enlarge_dakuten.py` | 濁点・半濁点を拡大し skip ink で削る |
 | P3 | `swap_lineseed.py` | 仮名と漢字を LINE Seed JP に差し替え |
 | P4 | `graft_italic.py` `center_italic.py` | true italic の小文字を移植。イタリックのみ |
 | P5 | `finalize.py` | name テーブル、OS/2、メトリクス |
@@ -76,6 +77,17 @@ wght 400 と 700 でインスタンス化して使う。
 - コピーは非等方スケール。横はセル比 1024/600、縦は `LIG_YSCALE`
 - スクリプト既定は x ハイト合わせ、ビルドは `1.478` に固定。`//` など背の高い演算子が SF Mono の `/` に揃う値で、issue #7 を解消
 - イタリックではリガチャもフォントの角度に傾ける
+
+### P2.8 濁点・半濁点の拡大
+
+MigMix 1P のように濁点・半濁点を大きくして、小さいサイズでも ば/ぱ を
+見分けやすくする。issue #6 の対応。P3 が拾う前に LINE Seed の
+ウェイトごとに 1 回走り、ログは `build/sfms/dakuten.<weight>.log`。
+
+- 濁音かなを NFD で分解して再構築する。マークは「グリフ − 清音の親字」、本体は親字そのもの。本体に溶接・融合したマークでも輪郭の推測が要らない。溶接で欠けた半濁点の輪は、穴の輪郭を中心に同心円で復元する
+- 本体が貼り付けではなく描き直されている字（ヅ デ など）は、右上の小さい輪郭群をマークとして扱う
+- 拡大したマークを合成し直す前に、少し大きいコピーで本体を削る。重なる部分に白いギャップが残る skip ink の見た目になる
+- `KM_DAKUTEN_SCALE` / `KM_HANDAKUTEN_SCALE` がマークの倍率 (1.3 / 1.25)、`KM_DAKUTEN_HALO` / `KM_HANDAKUTEN_HALO` が削りギャップ (0.48 / 0.36)、`KM_DAKUTEN_SKIP_INK=0` で削りを無効化、`KM_DAKUTEN_EXCLUDE` が対象外の字 (既定 ゞヾヷヸヹヺ)
 
 ### P3 和文の差し替え
 

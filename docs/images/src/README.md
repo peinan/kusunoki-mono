@@ -6,7 +6,7 @@ Rendered with the built font. After `make build`, regenerate with:
 CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 cd docs/images/src
 "$CHROME" --headless=new --hide-scrollbars --window-size=1760,500  --screenshot=../hero.png     hero.html
-"$CHROME" --headless=new --hide-scrollbars --window-size=1694,1668 --screenshot=../specimen.png specimen.html
+"$CHROME" --headless=new --hide-scrollbars --window-size=1694,1724 --screenshot=../specimen.png specimen.html
 "$CHROME" --headless=new --hide-scrollbars --window-size=2560,1280 --screenshot=../og.png       og.html
 ```
 
