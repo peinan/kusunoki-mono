@@ -530,12 +530,17 @@ brew install --cask font-kusunoki-mono">コピー</button>
   'use strict';
   const $ = s => document.querySelector(s);
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const track = (name, params) => { if (typeof gtag === 'function') gtag('event', name, params); };
 
   // ---- copy buttons (event delegation so history clones work too) ----
   document.addEventListener('click', e => {
     const b = e.target.closest('[data-copy]');
     if (!b) return;
     const t = b.dataset.copy;
+    track('copy_install_command', {
+      location: b.closest('.side') ? 'sidebar' : b.closest('.menu') ? 'menu'
+        : b.closest('.about-card') ? 'about' : 'install_output'
+    });
     try {
       navigator.clipboard.writeText(t).catch(() => {
         const ta = document.createElement('textarea');
@@ -555,7 +560,14 @@ brew install --cask font-kusunoki-mono">コピー</button>
   menuBtn.onclick = () => {
     const open = document.body.classList.toggle('menu-open');
     menuBtn.setAttribute('aria-expanded', String(open));
+    track('menu_toggle', { state: open ? 'open' : 'close' });
   };
+  document.addEventListener('click', e => {
+    const a = e.target.closest('.sess a');
+    if (a) track('nav_click', { target: a.getAttribute('href').slice(1), location: a.closest('.side') ? 'sidebar' : 'menu' });
+    const ext = e.target.closest('a[href^="http"]');
+    if (ext && ext.hostname !== location.hostname) track('outbound_click', { domain: ext.hostname });
+  });
   document.querySelectorAll('.menu .sess a').forEach(a => {
     a.addEventListener('click', () => {
       document.body.classList.remove('menu-open');
@@ -568,6 +580,7 @@ brew install --cask font-kusunoki-mono">コピー</button>
   const openLightbox = src => {
     lightbox.querySelector('.img').style.backgroundImage = "url('" + src + "')";
     document.body.classList.add('lightbox-open');
+    track('lightbox_open', { image: src.split('/').pop() });
   };
   const closeLightbox = () => document.body.classList.remove('lightbox-open');
   lightbox.addEventListener('click', closeLightbox);
@@ -610,9 +623,11 @@ brew install --cask font-kusunoki-mono">コピー</button>
       };
       w.raf = requestAnimationFrame(step);
     };
+    const wid = root.id ? root.id.replace('wipe-', '') : 'hist';
     range.addEventListener('input', () => { cancelAnimationFrame(w.raf); w.v = +range.value; render(); });
-    w.toA = () => animTo(100 - SNAP);
-    w.toB = () => animTo(SNAP);
+    range.addEventListener('change', () => track('wipe_compare', { wipe: wid, method: 'drag', value: Math.round(w.v) }));
+    w.toA = () => { track('wipe_compare', { wipe: wid, method: 'button', side: 'right' }); animTo(100 - SNAP); };
+    w.toB = () => { track('wipe_compare', { wipe: wid, method: 'button', side: 'left' }); animTo(SNAP); };
     pillL.onclick = w.toB;
     pillR.onclick = w.toA;
     render();
@@ -730,9 +745,13 @@ brew install --cask font-kusunoki-mono">コピー</button>
     requestAnimationFrame(() => window.scrollTo({ top: document.body.scrollHeight, behavior: reduceMotion ? 'auto' : 'smooth' }));
   };
 
+  const KNOWN = ['help', '--help', '-h', 'about', '--about', 'sources', 'license', 'dakuten', 'italic',
+    'ligatures', 'liga', 'grid', 'nerd-fonts', 'nerd', 'jp-sizes', 'sizes', 'craft', 'specimen',
+    'screenshots', 'author', 'install', 'brew', 'clear'];
   const run = typed => {
     const c = typed.replace(/^(kusunoki-mono|km)(\s+|$)/, '').trim();
     const w = c.split(/\s+/)[0] || 'about';
+    track('prompt_command', { command: KNOWN.includes(w) ? w : 'unknown' });
     if (w === 'clear') { hist.replaceChildren(); return; }
     const echo = ('kusunoki-mono ' + c).trim();
     const has = f => c.includes(f);
