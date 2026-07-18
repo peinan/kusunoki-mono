@@ -118,10 +118,12 @@ Apple の DMG を hdiutil と pkgutil で展開するため macOS 専用。
 
 formula は [peinan/homebrew-kusunoki-mono][tap] にある。
 固定した同じソースを `sources/` へ配置して `scripts/build.sh` を無改変で実行するので、`brew install` と `make build` の成果物は同じになる。
+tap には formula のフォントを `~/Library/Fonts` へ配置する `font-kusunoki-mono` cask も同梱している。
 リリースの流れ:
 
 - このリポジトリで `vX.Y.Z` タグを打つ
 - formula の `url` と `sha256` をそのタグの tarball に向ける
+- cask の `version` と `sha256` も同じタグへ上げる
 - 最初のタグを打つまで formula は head-only なので、インストールには `--HEAD` が要る
 
 ## メトリクス早見
