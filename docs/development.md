@@ -81,13 +81,28 @@ JetBrains Mono, instanced at wght 400 and 700, provides the ligatures:
 ### P2.8 dakuten enlargement
 
 The voiced marks on kana grow MigMix-1P-style so ば/ぱ stay apart at small
-sizes — issue #6. Runs once per LINE Seed weight, before P3 picks the glyphs
-up; logs to `build/sfms/dakuten.<weight>.log`:
+sizes — issue #6. Runs once per style (italics share their weight's source
+font but may carry their own overrides), before P3 picks the glyphs up; logs
+to `build/sfms/dakuten.<style>.log`:
 
 - Each voiced kana is rebuilt from its NFD parts: the mark is the glyph minus its unvoiced base, the body is the base itself, so welded or fused marks don't need contour guessing; a handakuten ring welded into the body is rebuilt as concentric circles centred on its hole
 - Where the body was redrawn instead of pasted (ヅ デ …), the small top-right contours become the mark
+- A dakuten left broken by welds — one dot inside a body contour (グ ゴ ゾ ダ ブ) or bitten by it (ぼ) — is rebuilt whole from the cleanest same-script two-dot mark, anchored on the intact dot, so both dots always move and carve together
 - The enlarged mark is unioned back, and a slightly larger copy is first carved out of the body, leaving a white gap where they overlap — the skip-ink look
 - `KM_DAKUTEN_SCALE` / `KM_HANDAKUTEN_SCALE` size the marks (1.3 / 1.25), `KM_DAKUTEN_HALO` / `KM_HANDAKUTEN_HALO` the carved gap (0.48 / 0.36), `KM_DAKUTEN_SKIP_INK=0` disables the carve, `KM_DAKUTEN_EXCLUDE` lists kana to leave untouched (default ゞヾヷヸヹヺ)
+
+Per-kana tuning on top of the globals: `uv run scripts/dakuten_tuner.py`
+serves a visual editor at `http://localhost:8765` — every voiced kana in a
+grid, per-kana sliders for mark size, rotation, and the skip-ink gap (uniform
+plus per-side left / right / top / bottom), drag to move the mark, an exclude
+toggle. Style tabs cover Regular / Bold / Italic / BoldItalic: every style
+inherits the Regular values, and a change made on another tab is stored as
+that style's own diff. Saving writes `scripts/dakuten_overrides.json`
+(char → `scale` / `halo` / `rot` / `halo_pad` / `dx` / `dy` / `skip_ink` /
+`exclude`, plus optional `bold` / `italic` / `bolditalic` sub-objects; font
+units), which the build applies on the next run; the preview paints the halo
+in paper colour over the body, which is visually identical to the boolean
+carve, through the same code path the build runs.
 
 ### P3 Japanese swap
 
