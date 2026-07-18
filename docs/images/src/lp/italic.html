@@ -1,0 +1,28 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+@font-face { font-family:"KM";   src:url("../../../../dist/KusunokiMono-Regular.otf"); }
+@font-face { font-family:"KMI";  src:url("../../../../dist/KusunokiMono-Italic.otf"); }
+@font-face { font-family:"SFIT"; src:url("../../../../sources/sf-mono/SF-Mono-RegularItalic.otf"); }
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  width:1240px; height:420px; background:#181825; color:#cdd6f4;
+  padding:48px 56px; font-family:"KM", monospace; overflow:hidden;
+  display:flex; flex-direction:column; justify-content:center; gap:44px;
+}
+pre { font-family:inherit; white-space:pre; }
+.up { font-size:30px; color:#585b70; }
+.it { font-size:42px; font-family:"KMI", monospace; }
+/* raw SF Mono is pre-squaring; ×0.809 matches the squared KM's optical size */
+body.sf .it { font-family:"SFIT", monospace; font-size:34px; }
+.m { position:relative; }
+.m::after {
+  content:""; position:absolute; left:50%; transform:translateX(-50%);
+  bottom:-20px; width:9px; height:9px; border-radius:50%; background:#fab387;
+}
+</style>
+<body>
+<script>document.body.className = location.search.slice(1)</script>
+<pre class="up">quick brown fox jumps over the lazy dog</pre>
+<pre class="it">qu<span class="m">i</span>ck <span class="m">b</span>rown <span class="m">f</span>ox <span class="m">j</span>umps ov<span class="m">e</span>r the <span class="m">l</span><span class="m">a</span><span class="m">z</span><span class="m">y</span> dog</pre>
+</body>

@@ -1,0 +1,866 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kusunoki Mono — 日本語プログラミング用の等幅フォント</title>
+<meta name="description" content="Apple SF Mono × LINE Seed JP × Google Sans Code。半角1:全角2の固定グリッド、JetBrains Mono リガチャ、トゥルーイタリック、Nerd Fonts を備えた日本語プログラミング用等幅フォント。">
+<link rel="canonical" href="https://peinan.github.io/kusunoki-mono/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Kusunoki Mono">
+<meta property="og:description" content="SF Mono × LINE Seed JP × Google Sans Code。日本語プログラミング用の等幅フォント。">
+<meta property="og:url" content="https://peinan.github.io/kusunoki-mono/">
+<meta property="og:image" content="https://peinan.github.io/kusunoki-mono/images/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='55' dominant-baseline='central' text-anchor='middle' font-size='84' fill='%23cba6f7'%3E楠%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=LINE+Seed+JP:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Code:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; background: #11111b; color: #cdd6f4; line-height: 1.8;
+  font-family: 'LINE Seed JP', 'Hiragino Sans', 'Noto Sans JP', system-ui, sans-serif;
+}
+a { color: #89b4fa; text-decoration: none; }
+a:hover { text-decoration: underline; }
+img { display: block; width: 100%; height: auto; }
+button { font: inherit; }
+input::placeholder { color: #45475a; }
+.mono { font-family: 'Google Sans Code', monospace; }
+@keyframes kmBlink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0; } }
+@keyframes kmBlinkOff { 0%, 55% { opacity: 0; } 56%, 100% { opacity: 1; } }
+
+.layout { display: grid; grid-template-columns: 264px 1fr; min-height: 100vh; }
+
+/* ---- sidebar (wide) ---- */
+.side {
+  border-right: 1px solid #313244; background: #0e0e17; position: sticky; top: 0;
+  height: 100vh; overflow: auto; padding: 28px 22px 24px;
+  display: flex; flex-direction: column; box-sizing: border-box;
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.glyph {
+  font-weight: 700; background: linear-gradient(160deg, #cba6f7, #89b4fa);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.side .glyph { font-size: 34px; }
+.brand .bt { font-family: 'Google Sans Code', monospace; font-size: 13px; line-height: 1.4; }
+.brand .bv { color: #6c7086; font-size: 11px; }
+.slabel { font-family: 'Google Sans Code', monospace; font-size: 11px; letter-spacing: 2px; color: #585b70; }
+.side .slabel { margin-top: 30px; }
+.sess { margin-top: 10px; display: flex; flex-direction: column; gap: 2px; font-family: 'Google Sans Code', monospace; font-size: 12.5px; }
+.sess a { display: flex; gap: 10px; padding: 5px 10px; border-radius: 7px; color: #7f849c; }
+.sess a span { color: #585b70; }
+.sess a:hover { background: #181825; color: #cdd6f4; text-decoration: none; }
+.side .bottom { margin-top: auto; padding-top: 26px; }
+.installbox {
+  margin-top: 8px; background: #11111b; border: 1px solid #313244; border-radius: 9px;
+  padding: 10px 12px; font-family: 'Google Sans Code', monospace; font-size: 10.5px; line-height: 1.9; color: #cdd6f4;
+}
+.installbox .lines { overflow-x: auto; }
+.installbox .lines div { white-space: nowrap; }
+.dollar { color: #a6e3a1; user-select: none; }
+.copybtn {
+  font-family: 'LINE Seed JP', 'Hiragino Sans', sans-serif; font-size: 11px; color: #a6adc8;
+  background: #313244; border: 1px solid #45475a; border-radius: 7px; padding: 4px 0;
+  cursor: pointer; margin-top: 8px; width: 100%;
+}
+.copybtn:hover { color: #cdd6f4; border-color: #7f849c; }
+.icons { margin-top: 14px; display: flex; gap: 6px; justify-content: center; }
+.icons a { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #7f849c; }
+.icons a:hover { color: #cdd6f4; background: #181825; text-decoration: none; }
+
+/* ---- topbar (narrow) ---- */
+.topbar {
+  display: none; position: sticky; top: 0; z-index: 40; background: rgba(14, 14, 23, .96);
+  border-bottom: 1px solid #313244; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.topbar .row { display: flex; align-items: center; gap: 10px; height: 54px; padding: 4px 16px 0; box-sizing: border-box; }
+.topbar .glyph { font-size: 24px; }
+.topbar .bt { font-family: 'Google Sans Code', monospace; font-size: 13px; }
+.topbar .bv { color: #6c7086; font-size: 11px; }
+#menuBtn {
+  margin-left: auto; width: 38px; height: 38px; padding: 0; box-sizing: border-box; line-height: 0;
+  background: transparent; border: 1px solid #313244; border-radius: 8px; color: #a6adc8;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; flex: none;
+}
+#menuBtn .ic-close { display: none; }
+body.menu-open #menuBtn .ic-open { display: none; }
+body.menu-open #menuBtn .ic-close { display: block; }
+.menu {
+  display: none; position: absolute; top: 100%; left: 0; right: 0; background: rgba(14, 14, 23, .97);
+  border-bottom: 1px solid #313244; padding: 14px 16px 18px; max-height: 72vh; overflow: auto;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+body.menu-open .menu { display: block; }
+.menu .sess { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 14px; margin-top: 8px; }
+.menu .sess a { padding: 6px 10px; }
+.menu .install { margin-top: 14px; border-top: 1px solid #313244; padding-top: 12px; }
+.menu .icons { margin-top: 12px; }
+
+/* ---- main column ---- */
+.col { padding: 0 48px 20px; min-width: 0; max-width: 1120px; box-sizing: border-box; }
+.sec { margin-top: 52px; }
+.sec:first-child { margin-top: 40px; }
+.cmdline { font-family: 'Google Sans Code', monospace; font-size: 14px; display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.cmdline .c { white-space: nowrap; }
+.pr { color: #cba6f7; }
+.flag { color: #89b4fa; }
+.cap { color: #a6adc8; font-size: 13.5px; margin: 10px 0 0; }
+.frame { border: 1px solid #313244; border-radius: 12px; margin-top: 14px; }
+.todo { margin: 8px 0 0; font-size: 11.5px; color: #585b70; font-family: 'Google Sans Code', monospace; }
+.todo em { font-style: normal; color: #f9e2af; }
+
+.card { background: #181825; border: 1px solid #313244; border-radius: 12px; }
+.about-card { margin-top: 14px; padding: 30px 36px; }
+.about-head { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.about-head .glyph { font-size: 84px; line-height: 1; flex: none; }
+.about-head .title { font-family: 'Google Sans Code', monospace; font-size: 40px; font-weight: 700; letter-spacing: -1px; line-height: 1.2; min-width: 0; }
+.about-card p.desc { color: #a6adc8; font-size: 14px; margin: 16px 0 0; }
+.brewline {
+  margin-top: 16px; font-family: 'Google Sans Code', monospace; font-size: 13px; line-height: 1.9;
+  background: #11111b; border: 1px solid #313244; border-radius: 10px; padding: 14px 18px;
+  display: flex; align-items: center; gap: 14px;
+}
+.brewline .cmd { min-width: 0; overflow-x: auto; white-space: nowrap; }
+.brewline .copybtn { margin: 0 0 0 auto; flex: none; width: auto; padding: 4px 12px; font-size: 11.5px; }
+.note { margin: 8px 0 0; font-size: 11.5px; color: #585b70; font-family: 'Google Sans Code', monospace; }
+
+.srcwrap { margin-top: 14px; font-family: 'Google Sans Code', monospace; font-size: 12.5px; line-height: 2; }
+.srchead {
+  display: grid; grid-template-columns: 100px 170px 110px 1fr; gap: 0 16px;
+  border-bottom: 1px solid #313244; padding: 6px 0; color: #585b70; letter-spacing: 1px;
+}
+.srcrow { display: grid; grid-template-columns: 100px 170px 110px 1fr; gap: 0 16px; border-bottom: 1px solid #1e1e2e; padding: 7px 0; }
+.srcrow .role { color: #89b4fa; }
+.srcrow .role.dim { color: #585b70; }
+.srcrow .lic, .srcrow .fname.dim { color: #a6adc8; }
+.srcrow .snote { color: #a6adc8; font-family: 'LINE Seed JP', 'Hiragino Sans', sans-serif; font-size: 12px; }
+.srcfoot { margin-top: 10px; color: #6c7086; }
+
+.wipe { position: relative; margin-top: 14px; border: 1px solid #313244; border-radius: 12px; overflow: hidden; cursor: ew-resize; }
+.wipe img.top { position: absolute; inset: 0; }
+.wipe .bar { position: absolute; top: 0; bottom: 0; width: 2px; background: #cba6f7; transform: translateX(-1px); }
+.wipe .knob {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 26px; height: 26px;
+  border-radius: 50%; background: #cba6f7; color: #11111b; display: flex; align-items: center; justify-content: center;
+}
+.wipe .pill {
+  position: absolute; top: 12px; font-family: 'Google Sans Code', monospace; font-size: 11px; letter-spacing: 1px;
+  border-radius: 999px; padding: 3px 12px; cursor: pointer; z-index: 2;
+}
+.wipe .pill.l { left: 14px; color: #a6adc8; background: rgba(17, 17, 27, .78); border: 1px solid #45475a; }
+.wipe .pill.l:hover { color: #cdd6f4; border-color: #7f849c; }
+.wipe .pill.r { right: 14px; color: #cba6f7; background: rgba(203, 166, 247, .14); border: 1px solid rgba(203, 166, 247, .5); }
+.wipe input[type="range"] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; margin: 0; }
+.flagbtn {
+  font-family: 'Google Sans Code', monospace; font-size: 12px; padding: 2px 10px; cursor: pointer;
+  background: transparent; border: 1px solid #313244; border-radius: 6px; color: #585b70;
+}
+.flagbtn.on { background: #313244; color: #cdd6f4; border-color: #585b70; }
+
+.craft-card { margin-top: 14px; padding: 28px 32px; display: grid; grid-template-columns: 300px 1fr; gap: 32px; align-items: center; }
+.craft-card h3 { font-size: 18px; font-weight: 700; margin: 0; }
+.craft-card p { color: #a6adc8; font-size: 13px; margin: 10px 0 0; }
+.craft-card img { border: 1px solid #45475a; border-radius: 10px; }
+
+.shot { margin-top: 12px; }
+.shot.mw { max-width: 720px; }
+.zoomable { cursor: zoom-in; }
+
+.authwrap { margin-top: 14px; max-width: 640px; font-family: 'Google Sans Code', monospace; font-size: 12.5px; line-height: 2; }
+.authhead { display: grid; grid-template-columns: 110px 1fr; border-bottom: 1px solid #313244; padding: 6px 0; color: #585b70; }
+.authrow { display: grid; grid-template-columns: 110px 1fr; border-bottom: 1px solid #1e1e2e; padding: 6px 0; }
+.authrow .ch { color: #89b4fa; }
+.authrow a { color: #a6adc8; }
+.authname { color: #cdd6f4; }
+.authname span { color: #585b70; }
+
+.termout { margin-top: 8px; font-family: 'Google Sans Code', monospace; font-size: 12.5px; line-height: 2; }
+.termout div { white-space: pre-wrap; }
+.install-card {
+  margin-top: 14px; padding: 20px 110px 20px 24px; font-family: 'Google Sans Code', monospace;
+  font-size: 13px; line-height: 2.1; position: relative; box-sizing: border-box;
+}
+.install-card .copybtn { position: absolute; top: 12px; right: 12px; width: auto; margin: 0; padding: 3px 11px; font-size: 11.5px; }
+.install-card .cmt { color: #6c7086; }
+.install-card .lines { overflow-x: auto; }
+.install-card .lines > div { white-space: nowrap; }
+
+#prompt {
+  margin-top: 44px; position: relative; font-family: 'Google Sans Code', monospace; font-size: 14px;
+  display: flex; align-items: center; cursor: text;
+}
+#prompt .pr { margin-right: 10px; }
+#prompt .fixed, #prompt .seg { white-space: pre; color: #cdd6f4; }
+#prompt .curwrap { position: relative; display: inline-block; min-width: 9px; height: 19px; flex: none; }
+#prompt .curwrap .m { visibility: hidden; display: inline-block; white-space: pre; line-height: 19px; }
+#prompt .curwrap .blk { position: absolute; inset: 0; background: #cdd6f4; animation: kmBlink 1.1s steps(1) infinite; }
+#prompt .curwrap .chon { position: absolute; left: 0; top: 0; white-space: pre; line-height: 19px; color: #11111b; animation: kmBlink 1.1s steps(1) infinite; }
+#prompt .curwrap .choff { position: absolute; left: 0; top: 0; white-space: pre; line-height: 19px; animation: kmBlinkOff 1.1s steps(1) infinite; }
+#prompt .sugg { white-space: pre; color: #585b70; }
+#prompt .ghost { white-space: pre; color: #45475a; }
+#termInput {
+  position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; background: transparent;
+  border: 0; outline: none; padding: 0; margin: 0; cursor: text; font-family: 'Google Sans Code', monospace;
+}
+
+footer { margin: 96px 0 0; text-align: center; font-size: 11.5px; color: #585b70; font-family: 'Google Sans Code', monospace; line-height: 2.1; }
+
+#lightbox {
+  display: none; position: fixed; inset: 0; z-index: 100; background: rgba(14, 14, 23, .9);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); cursor: zoom-out;
+}
+body.lightbox-open #lightbox { display: block; }
+#lightbox .img { position: absolute; inset: 28px; background-size: contain; background-position: center; background-repeat: no-repeat; }
+#lightbox button {
+  position: absolute; top: 16px; right: 16px; width: 40px; height: 40px; border-radius: 10px;
+  background: #181825; border: 1px solid #45475a; color: #a6adc8; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+
+@media (max-width: 899px) {
+  html { scroll-padding-top: 66px; }
+  .layout { grid-template-columns: 1fr; }
+  .side { display: none; }
+  .topbar { display: block; }
+  .col { padding: 0 20px 20px; }
+  .about-card { padding: 22px 18px; }
+  .about-head .glyph { font-size: 54px; }
+  .about-head .title { font-size: 26px; }
+  .srchead { display: none; }
+  .srcrow { grid-template-columns: 130px 1fr; grid-template-rows: repeat(3, auto); grid-auto-flow: column; gap: 2px 14px; padding: 10px 0; }
+  .srcrow .snote { grid-area: 1 / 2 / 4 / 3; }
+  .craft-card { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  #prompt .curwrap .blk, #prompt .curwrap .chon { animation: none; }
+  #prompt .curwrap .choff { animation: none; opacity: 0; }
+}
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <aside class="side">
+    <div class="brand">
+      <span class="glyph">楠</span>
+      <span class="bt">Kusunoki Mono<br><span class="bv">v0.6.0 · macOS</span></span>
+    </div>
+    <div class="slabel">SESSIONS</div>
+    <nav class="sess">
+      <a href="#s-about"><span>00</span>about</a>
+      <a href="#s-specimen"><span>01</span>specimen</a>
+      <a href="#s-sources"><span>02</span>sources</a>
+      <a href="#s-dakuten"><span>03</span>dakuten</a>
+      <a href="#s-italic"><span>04</span>italic</a>
+      <a href="#s-ligatures"><span>05</span>ligatures</a>
+      <a href="#s-grid"><span>06</span>grid</a>
+      <a href="#s-nerd"><span>07</span>nerd-fonts</a>
+      <a href="#s-sizes"><span>08</span>jp-sizes</a>
+      <a href="#s-craft"><span>09</span>craft</a>
+      <a href="#s-screens"><span>10</span>screenshots</a>
+      <a href="#s-author"><span>11</span>author</a>
+    </nav>
+    <div class="bottom">
+      <div class="slabel">INSTALL</div>
+      <div class="installbox">
+        <div class="lines">
+          <div><span class="dollar">$ </span>brew tap peinan/kusunoki-mono</div>
+          <div><span class="dollar">$ </span>brew install --cask font-kusunoki-mono</div>
+        </div>
+        <button class="copybtn" data-copy="brew tap peinan/kusunoki-mono
+brew install --cask font-kusunoki-mono">コピー</button>
+      </div>
+    </div>
+    <div class="icons">
+      <a href="https://github.com/peinan/kusunoki-mono" title="GitHub — リポジトリ" aria-label="GitHub"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg></a>
+      <a href="https://peinan.cc" title="peinan.cc — 作者サイト" aria-label="作者サイト"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></a>
+      <a href="https://x.com/so1owingpixy" title="X — @so1owingpixy" aria-label="X"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg></a>
+    </div>
+  </aside>
+
+  <div class="topbar">
+    <div class="row">
+      <span class="glyph">楠</span>
+      <span class="bt">kusunoki-mono <span class="bv">v0.6.0 · macOS</span></span>
+      <button id="menuBtn" aria-label="メニュー" aria-expanded="false">
+        <svg class="ic-open" width="16" height="16" viewBox="0 0 16 16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"><path d="M2.5 4.5h11"/><path d="M2.5 8h11"/><path d="M2.5 11.5h11"/></svg>
+        <svg class="ic-close" width="16" height="16" viewBox="0 0 16 16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"><path d="M3.5 3.5l9 9"/><path d="M12.5 3.5l-9 9"/></svg>
+      </button>
+    </div>
+    <div class="menu">
+      <div class="slabel">SESSIONS</div>
+      <nav class="sess">
+        <a href="#s-about"><span>00</span>about</a>
+        <a href="#s-specimen"><span>01</span>specimen</a>
+        <a href="#s-sources"><span>02</span>sources</a>
+        <a href="#s-dakuten"><span>03</span>dakuten</a>
+        <a href="#s-italic"><span>04</span>italic</a>
+        <a href="#s-ligatures"><span>05</span>ligatures</a>
+        <a href="#s-grid"><span>06</span>grid</a>
+        <a href="#s-nerd"><span>07</span>nerd-fonts</a>
+        <a href="#s-sizes"><span>08</span>jp-sizes</a>
+        <a href="#s-craft"><span>09</span>craft</a>
+        <a href="#s-screens"><span>10</span>screenshots</a>
+        <a href="#s-author"><span>11</span>author</a>
+      </nav>
+      <div class="install">
+        <div class="slabel">INSTALL</div>
+        <div class="installbox">
+          <div class="lines">
+            <div><span class="dollar">$ </span>brew tap peinan/kusunoki-mono</div>
+            <div><span class="dollar">$ </span>brew install --cask font-kusunoki-mono</div>
+          </div>
+          <button class="copybtn" data-copy="brew tap peinan/kusunoki-mono
+brew install --cask font-kusunoki-mono">コピー</button>
+        </div>
+      </div>
+      <div class="icons">
+        <a href="https://github.com/peinan/kusunoki-mono" title="GitHub — リポジトリ" aria-label="GitHub"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg></a>
+        <a href="https://peinan.cc" title="peinan.cc — 作者サイト" aria-label="作者サイト"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></a>
+        <a href="https://x.com/so1owingpixy" title="X — @so1owingpixy" aria-label="X"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg></a>
+      </div>
+    </div>
+  </div>
+
+  <main class="col">
+
+    <section class="sec" id="s-about">
+      <div class="cmdline"><span class="c"><span class="pr">❯</span> kusunoki-mono about</span></div>
+      <div class="card about-card">
+        <div class="about-head">
+          <span class="glyph">楠</span>
+          <div class="title">Kusunoki Mono</div>
+        </div>
+        <p class="desc">SF Mono を半角1:全角2に整え、LINE Seed JP を重ねた日本語プログラミングフォント。真のイタリック、JetBrains Mono リガチャ、Nerd Fonts 内蔵。</p>
+        <div class="brewline">
+          <div class="cmd"><span class="dollar">$ </span>brew tap peinan/kusunoki-mono &amp;&amp; brew install --cask font-kusunoki-mono</div>
+          <button class="copybtn" data-copy="brew tap peinan/kusunoki-mono &amp;&amp; brew install --cask font-kusunoki-mono">コピー</button>
+        </div>
+        <p class="note"># Homebrew 6.0+ 初回のみ: brew trust peinan/kusunoki-mono</p>
+      </div>
+    </section>
+
+    <section class="sec" id="s-specimen">
+      <div class="cmdline"><span class="c"><span class="pr">❯</span> kusunoki-mono specimen</span></div>
+      <img class="frame" src="images/specimen.png" alt="字形見本" width="1694" height="1724" loading="lazy">
+    </section>
+
+    <section class="sec" id="s-sources">
+      <div class="cmdline"><span class="c"><span class="pr">❯</span> kusunoki-mono sources</span></div>
+      <p class="cap">5つの素材と1つのフォールバック。それぞれの得意なところだけを合成しています。</p>
+      <div class="srcwrap">
+        <div class="srchead"><span>ROLE</span><span>FONT</span><span>LICENSE</span><span>NOTE</span></div>
+        <div class="srcrow"><span class="role">latin</span><span class="fname">SF Mono</span><span class="lic">© Apple</span><span class="snote">Apple 純正の端正な等幅。字幅を半角1:全角2に整えて全体の土台に</span></div>
+        <div class="srcrow"><span class="role">japanese</span><span class="fname">LINE Seed JP</span><span class="lic">OFL 1.1</span><span class="snote">11px でも潰れない和文。エディタの現実サイズで読める — このページの本文もこれ</span></div>
+        <div class="srcrow"><span class="role">italic</span><span class="fname">Google Sans Code</span><span class="lic">OFL 1.1</span><span class="snote">傾きではなく字形から違う真のイタリック。馴染む14字だけを一字ずつ確かめて移植</span></div>
+        <div class="srcrow"><span class="role">ligatures</span><span class="fname">JetBrains Mono</span><span class="lic">OFL 1.1</span><span class="snote">=&gt; や !== がひと繋がりになるリガチャ。セル幅と SF Mono の背丈に合わせて移植</span></div>
+        <div class="srcrow"><span class="role">icons</span><span class="fname">Nerd Fonts</span><span class="lic">MIT + upstream</span><span class="snote">プロンプトやファイラーを彩るアイコンを内蔵。バラつく大小は手で揃えてある</span></div>
+        <div class="srcrow"><span class="role dim">fallback</span><span class="fname dim">Migu 1M</span><span class="lic">M+ / IPA</span><span class="snote">収録外の文字を受け止める和文フォールバック</span></div>
+        <div class="srcfoot">ビルド成果物 = Apple SF Mono を含む個人利用の生成物 (再配布不可)</div>
+      </div>
+    </section>
+
+    <section class="sec" id="s-dakuten">
+      <div class="cmdline">
+        <span class="c"><span class="pr">❯</span> kusunoki-mono dakuten <span class="flag">--compare</span></span>
+        <button class="flagbtn" data-wipe="daku" data-dir="b">--before</button>
+        <button class="flagbtn" data-wipe="daku" data-dir="a">--after</button>
+      </div>
+      <p class="cap">小サイズで潰れがちな濁点・半濁点を MigMix の流儀で拡大し、画に重なる部分は skip ink で彫り込み。濁点かな52字を1文字ずつ調整。ば と ぱ が 11px でも見分けられます。</p>
+      <div class="wipe" id="wipe-daku" data-labl="調整前" data-labr="調整後">
+        <img src="images/lp/dakuten-after.png" alt="濁点調整後" width="1240" height="560">
+        <img class="top" src="images/lp/dakuten-before.png" alt="濁点調整前" width="1240" height="560">
+      </div>
+    </section>
+
+    <section class="sec" id="s-italic">
+      <div class="cmdline">
+        <span class="c"><span class="pr">❯</span> kusunoki-mono italic <span class="flag">--vs</span> sf-mono</span>
+        <button class="flagbtn" data-wipe="ita" data-dir="b">--sf-mono</button>
+        <button class="flagbtn" data-wipe="ita" data-dir="a">--kusunoki</button>
+      </div>
+      <p class="cap">SF Mono の斜体は直立字形を傾けたオブリーク。Google Sans Code の真のイタリックから、馴染む14文字だけを一字ずつ確かめて移植しました。</p>
+      <div class="wipe" id="wipe-ita" data-labl="sf mono — oblique" data-labr="kusunoki — true italic">
+        <img src="images/lp/italic-km.png" alt="Kusunoki Mono 真のイタリック" width="1240" height="420">
+        <img class="top" src="images/lp/italic-sf.png" alt="SF Mono オブリーク" width="1240" height="420">
+      </div>
+    </section>
+
+    <section class="sec" id="s-ligatures">
+      <div class="cmdline">
+        <span class="c"><span class="pr">❯</span> kusunoki-mono ligatures</span>
+        <button class="flagbtn" data-wipe="liga" data-dir="b">--off</button>
+        <button class="flagbtn" data-wipe="liga" data-dir="a">--on</button>
+      </div>
+      <p class="cap">JetBrains Mono のリガチャを、セル幅と SF Mono の背丈に合わせて移植。calt 合成なのでエディタ側でオフにもできます。</p>
+      <div class="wipe" id="wipe-liga" data-labl="liga off" data-labr="liga on">
+        <img src="images/lp/liga-on.png" alt="リガチャON" width="1240" height="420">
+        <img class="top" src="images/lp/liga-off.png" alt="リガチャOFF" width="1240" height="420">
+      </div>
+    </section>
+
+    <section class="sec" id="s-grid">
+      <div class="cmdline"><span class="c"><span class="pr">❯</span> kusunoki-mono grid</span></div>
+      <p class="cap">全角はつねに半角ちょうど2文字ぶん。日本語コメントも罫線の表も、ターミナルでもエディタでも崩れません。</p>
+      <img class="frame" src="images/lp/grid.png" alt="1:2グリッド" width="1240" height="560" loading="lazy">
+      <p class="todo"># <em>TODO</em>(拡張): diff・表・エディタ実画面など実例を追加</p>
+    </section>
+
+    <section class="sec" id="s-nerd">
+      <div class="cmdline"><span class="c"><span class="pr">❯</span> kusunoki-mono nerd-fonts</span></div>
+      <p class="cap">Nerd Fonts のアイコンを標準装備。既定のパッチでは大小が揃わないため、サイズは手で細かく調整しています。</p>
+      <img class="frame" src="images/lp/nerd.png" alt="Nerd Fonts" width="1240" height="420" loading="lazy">
+      <p class="todo"># <em>TODO</em>(拡張): アイコン一覧と調整前後のサイズ比較を追加</p>
+    </section>
+
+    <section class="sec" id="s-sizes">
+      <div class="cmdline"><span class="c"><span class="pr">❯</span> kusunoki-mono jp-sizes</span></div>
+      <p class="cap">和文は小サイズの視認性に優れた LINE Seed JP。エディタで現実的な 11–14px でもくっきり読めます。</p>
+      <img class="frame" src="images/lp/sizes.png" alt="サイズラダー" width="1240" height="560" loading="lazy">
+      <p class="todo"># <em>TODO</em>: 左のサイズバッジをその行の表示サイズに合わせる (画像を再生成)</p>
+    </section>
+
+    <section class="sec" id="s-craft">
+      <div class="cmdline"><span class="c"><span class="pr">❯</span> kusunoki-mono craft <span class="flag">--tuner</span></span></div>
+      <div class="card craft-card">
+        <div>
+          <h3>かな、1文字ずつ</h3>
+          <p>一括処理では決まらないので、専用ツールを作って濁点かな52字を目視で調整。破線が元のマーク位置。倍率・回転・彫り幅をかなごとに上書きできます。</p>
+        </div>
+        <img src="images/lp/tuner.png" alt="濁点チューナー" width="2720" height="1620" loading="lazy">
+      </div>
+      <p class="todo"># <em>TODO</em>: 静止画 → チューナー操作の画面収録 (gif / mp4) に差し替え</p>
+    </section>
+
+    <section class="sec" id="s-screens">
+      <div class="cmdline"><span class="c"><span class="pr">❯</span> kusunoki-mono screenshots <span class="flag">--vscode</span></span></div>
+      <img class="frame shot mw" src="images/editor.png" alt="エディタ (VS Code)" width="1488" height="1754" loading="lazy">
+      <div class="cmdline" style="margin-top:36px"><span class="c"><span class="pr">❯</span> kusunoki-mono screenshots <span class="flag">--keifu</span></span></div>
+      <img class="frame shot mw" src="images/gitlog.png" alt="git log (keifu)" width="1522" height="1772" loading="lazy">
+      <div class="cmdline" style="margin-top:36px"><span class="c"><span class="pr">❯</span> kusunoki-mono screenshots <span class="flag">--herdr</span></span></div>
+      <img class="frame shot zoomable" src="images/terminal.png" alt="ターミナル (herdr)" title="クリックで拡大" width="5120" height="2832" loading="lazy" data-zoom="images/terminal.png">
+    </section>
+
+    <section class="sec" id="s-author">
+      <div class="cmdline"><span class="c"><span class="pr">❯</span> kusunoki-mono author</span></div>
+      <div class="authwrap">
+        <div class="authname">Peinan Zhang <span>— Kusunoki Mono の作者</span></div>
+        <div class="authhead"><span>CHANNEL</span><span>WHERE</span></div>
+        <div class="authrow"><span class="ch">github</span><a href="https://github.com/peinan">github.com/peinan</a></div>
+        <div class="authrow"><span class="ch">web</span><a href="https://peinan.cc">peinan.cc</a></div>
+        <div class="authrow"><span class="ch">x</span><a href="https://x.com/so1owingpixy">@so1owingpixy</a></div>
+      </div>
+    </section>
+
+    <div id="hist"></div>
+
+    <div id="prompt">
+      <span class="pr">❯</span>
+      <span class="fixed">kusunoki-mono </span>
+      <span class="seg" id="tBefore"></span>
+      <span class="curwrap"><span class="m" id="tMeasure"></span><span class="blk"></span><span class="chon" id="tChOn"></span><span class="choff" id="tChOff"></span></span>
+      <span class="seg" id="tAfter"></span>
+      <span class="sugg" id="tSugg"></span>
+      <span class="ghost" id="tGhost"></span>
+      <input id="termInput" type="text" spellcheck="false" autocomplete="off" aria-label="コマンド入力">
+    </div>
+
+    <footer>© 2026 Peinan Zhang</footer>
+
+    <div id="lightbox">
+      <div class="img" role="img" aria-label="拡大表示"></div>
+      <button aria-label="閉じる"><svg width="14" height="14" viewBox="0 0 16 16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"><path d="M3 3l10 10"/><path d="M13 3L3 13"/></svg></button>
+    </div>
+
+  </main>
+
+</div>
+
+<template id="tpl-install">
+  <div class="card install-card">
+    <button class="copybtn" data-copy="brew tap peinan/kusunoki-mono
+brew install --cask font-kusunoki-mono">コピー</button>
+    <div class="lines">
+      <div><span class="cmt"># SF Mono を埋め込むため配布はなし。手元でビルドされます</span></div>
+      <div><span class="dollar">$ </span>brew tap peinan/kusunoki-mono</div>
+      <div><span class="dollar">$ </span>brew install --cask font-kusunoki-mono</div>
+      <div><span class="cmt"># 初回のみ: brew trust peinan/kusunoki-mono / フォントを Kusunoki Mono に設定</span></div>
+    </div>
+  </div>
+</template>
+
+<script>
+(() => {
+  'use strict';
+  const $ = s => document.querySelector(s);
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---- copy buttons (event delegation so history clones work too) ----
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-copy]');
+    if (!b) return;
+    const t = b.dataset.copy;
+    try {
+      navigator.clipboard.writeText(t).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); } catch (err) {}
+        ta.remove();
+      });
+    } catch (err) {}
+    const o = b.textContent;
+    b.textContent = 'コピーしました';
+    setTimeout(() => { b.textContent = o; }, 1400);
+  });
+
+  // ---- narrow menu ----
+  const menuBtn = $('#menuBtn');
+  menuBtn.onclick = () => {
+    const open = document.body.classList.toggle('menu-open');
+    menuBtn.setAttribute('aria-expanded', String(open));
+  };
+  document.querySelectorAll('.menu .sess a').forEach(a => {
+    a.addEventListener('click', () => {
+      document.body.classList.remove('menu-open');
+      menuBtn.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  // ---- lightbox ----
+  const lightbox = $('#lightbox');
+  const openLightbox = src => {
+    lightbox.querySelector('.img').style.backgroundImage = "url('" + src + "')";
+    document.body.classList.add('lightbox-open');
+  };
+  const closeLightbox = () => document.body.classList.remove('lightbox-open');
+  lightbox.addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+  document.addEventListener('click', e => {
+    const z = e.target.closest('[data-zoom]');
+    if (z) openLightbox(z.dataset.zoom);
+  });
+
+  // ---- wipe comparisons ----
+  const SNAP = 98, ANIM_MS = 600;
+  const wipes = {};
+  const initWipe = (root, v0) => {
+    const top = root.querySelector('img.top, .imgtop');
+    const bar = document.createElement('div'); bar.className = 'bar';
+    bar.innerHTML = '<div class="knob"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 7-5 5 5 5"/><path d="m15 7 5 5-5 5"/></svg></div>';
+    const pillL = document.createElement('span'); pillL.className = 'pill l'; pillL.textContent = root.dataset.labl;
+    const pillR = document.createElement('span'); pillR.className = 'pill r'; pillR.textContent = root.dataset.labr;
+    const range = document.createElement('input');
+    range.type = 'range'; range.min = '0'; range.max = '100';
+    range.setAttribute('aria-label', root.dataset.labl + ' / ' + root.dataset.labr + ' の比較スライダー');
+    root.append(bar, pillL, pillR, range);
+    const w = { v: v0, raf: 0, btns: [] };
+    const render = () => {
+      top.style.clipPath = 'inset(0 ' + (100 - w.v) + '% 0 0)';
+      bar.style.left = w.v + '%';
+      range.value = String(Math.round(w.v));
+      w.btns.forEach(b => b.classList.toggle('on', b.dataset.dir === 'a' ? w.v <= 40 : w.v >= 60));
+    };
+    const animTo = target => {
+      cancelAnimationFrame(w.raf);
+      if (reduceMotion) { w.v = target; render(); return; }
+      const start = w.v, t0 = performance.now();
+      const ease = t => 1 - Math.pow(1 - t, 3);
+      const step = now => {
+        const p = Math.min(1, (now - t0) / ANIM_MS);
+        w.v = start + (target - start) * ease(p);
+        render();
+        if (p < 1) w.raf = requestAnimationFrame(step);
+      };
+      w.raf = requestAnimationFrame(step);
+    };
+    range.addEventListener('input', () => { cancelAnimationFrame(w.raf); w.v = +range.value; render(); });
+    w.toA = () => animTo(100 - SNAP);
+    w.toB = () => animTo(SNAP);
+    pillL.onclick = w.toB;
+    pillR.onclick = w.toA;
+    render();
+    return w;
+  };
+  document.querySelectorAll('.sec .wipe').forEach(root => {
+    wipes[root.id.replace('wipe-', '')] = initWipe(root, 50);
+  });
+  document.querySelectorAll('.flagbtn[data-wipe]').forEach(b => {
+    const w = wipes[b.dataset.wipe];
+    w.btns.push(b);
+    b.onclick = () => (b.dataset.dir === 'a' ? w.toA() : w.toB());
+  });
+
+  // ---- terminal ----
+  const hist = $('#hist');
+  const input = $('#termInput');
+  const elBefore = $('#tBefore'), elAfter = $('#tAfter'), elSugg = $('#tSugg'),
+        elGhost = $('#tGhost'), elMeasure = $('#tMeasure'), elChOn = $('#tChOn'), elChOff = $('#tChOff');
+  const DIM = '#585b70', SUB = '#a6adc8', TXT = '#cdd6f4', GRN = '#a6e3a1', RED = '#f38ba8';
+  const cmdHist = [];
+  let histIdx = null, stash = '';
+
+  const HELP = [
+    [TXT, 'Usage: kusunoki-mono <command> [flags]'],
+    [DIM, ' '],
+    [DIM, 'Commands:'],
+    [TXT, '  about                                    このフォントについて'],
+    [TXT, '  specimen                                 字形見本'],
+    [TXT, '  sources                                  素材フォントとライセンス'],
+    [TXT, '  dakuten      [--after|--before]          濁点・半濁点の比較'],
+    [TXT, '  italic       [--kusunoki|--sf-mono]      真のイタリック vs オブリーク'],
+    [TXT, '  ligatures    [--on|--off]                リガチャの切り替え'],
+    [TXT, '  grid                                     半角1:全角2 グリッド'],
+    [TXT, '  nerd-fonts                               Nerd Fonts アイコン'],
+    [TXT, '  jp-sizes                                 小サイズの日本語'],
+    [TXT, '  craft        [--tuner]                   制作の裏側'],
+    [TXT, '  screenshots  [--vscode|--keifu|--herdr]  実際の画面'],
+    [TXT, '  install                                  インストール方法'],
+    [TXT, '  author                                   作者について'],
+    [TXT, '  help                                     このヘルプ'],
+    [TXT, '  clear                                    出力を消去']
+  ];
+  const CANDS = [
+    'about', 'sources', 'dakuten', 'italic', 'ligatures', 'grid', 'nerd-fonts', 'jp-sizes', 'install',
+    'craft --tuner', 'screenshots --vscode', 'screenshots --keifu', 'screenshots --herdr',
+    'specimen', 'author', 'help', 'clear',
+    'dakuten --after', 'dakuten --before', 'italic --kusunoki', 'italic --sf-mono',
+    'ligatures --on', 'ligatures --off', 'brew install --cask font-kusunoki-mono', 'brew tap peinan/kusunoki-mono'
+  ];
+
+  const entry = cmd => {
+    const box = document.createElement('div');
+    box.style.marginTop = '32px';
+    const line = document.createElement('div');
+    line.className = 'cmdline';
+    const c = document.createElement('span'); c.className = 'c';
+    const pr = document.createElement('span'); pr.className = 'pr'; pr.textContent = '❯';
+    c.append(pr, document.createTextNode(' ' + cmd));
+    line.append(c);
+    box.append(line);
+    return box;
+  };
+  const outText = (cmd, lines) => {
+    const box = entry(cmd);
+    const t = document.createElement('div'); t.className = 'termout';
+    for (const [col, txt] of lines) {
+      const d = document.createElement('div');
+      d.style.color = col; d.textContent = txt;
+      t.append(d);
+    }
+    box.append(t);
+    return box;
+  };
+  const outImg = (cmd, { src, w, h, mw, zoom, cap }) => {
+    const box = entry(cmd);
+    if (cap) { const p = document.createElement('p'); p.className = 'cap'; p.textContent = cap; box.append(p); }
+    const img = document.createElement('img');
+    img.className = 'frame shot' + (mw ? ' mw' : '') + (zoom ? ' zoomable' : '');
+    img.src = src; img.width = w; img.height = h; img.alt = cap || cmd;
+    if (zoom) { img.dataset.zoom = zoom; img.title = 'クリックで拡大'; }
+    box.append(img);
+    return box;
+  };
+  const outWipe = (cmd, { bot, top, w, h, labL, labR, cap, v0 }) => {
+    const box = entry(cmd);
+    if (cap) { const p = document.createElement('p'); p.className = 'cap'; p.textContent = cap; box.append(p); }
+    const root = document.createElement('div');
+    root.className = 'wipe'; root.dataset.labl = labL; root.dataset.labr = labR;
+    const mk = (s, cls) => { const i = document.createElement('img'); i.src = s; i.width = w; i.height = h; if (cls) i.className = cls; i.alt = cls ? labL : labR; return i; };
+    root.append(mk(bot, ''), mk(top, 'top'));
+    box.append(root);
+    initWipe(root, v0);
+    return box;
+  };
+  const outClone = (cmd, sel) => {
+    const box = entry(cmd);
+    const src = document.querySelector(sel);
+    for (const child of src.children) {
+      if (child.classList.contains('cmdline')) continue;
+      const cl = child.cloneNode(true);
+      cl.querySelectorAll('[id]').forEach(n => n.removeAttribute('id'));
+      box.append(cl);
+    }
+    return box;
+  };
+  const outInstall = cmd => {
+    const box = entry(cmd);
+    box.append($('#tpl-install').content.cloneNode(true));
+    return box;
+  };
+
+  const push = box => {
+    hist.append(box);
+    requestAnimationFrame(() => window.scrollTo({ top: document.body.scrollHeight, behavior: reduceMotion ? 'auto' : 'smooth' }));
+  };
+
+  const run = typed => {
+    const c = typed.replace(/^(kusunoki-mono|km)(\s+|$)/, '').trim();
+    const w = c.split(/\s+/)[0] || 'about';
+    if (w === 'clear') { hist.replaceChildren(); return; }
+    const echo = ('kusunoki-mono ' + c).trim();
+    const has = f => c.includes(f);
+    const snapA = 100 - SNAP, snapB = SNAP;
+    if (w === 'brew') {
+      push(outText(echo, [
+        [GRN, '==> Tapping peinan/kusunoki-mono'],
+        [GRN, '==> Installing font-kusunoki-mono — SF Mono を埋め込むため、あなたの Mac 上でビルドします'],
+        [SUB, 'make build → dist/KusunokiMono-{Regular,Bold,Italic,BoldItalic}.otf'],
+        [DIM, '# 初回のみ: brew trust peinan/kusunoki-mono / フォントを Kusunoki Mono に設定']
+      ]));
+    } else if (w === 'help' || w === '--help' || w === '-h') {
+      push(outText(echo, HELP));
+    } else if (w === 'about' || w === '--about') {
+      push(outClone(echo, '#s-about'));
+    } else if (w === 'sources' || w === 'license') {
+      push(outClone(echo, '#s-sources'));
+    } else if (w === 'dakuten') {
+      push(outWipe(echo, {
+        bot: 'images/lp/dakuten-after.png', top: 'images/lp/dakuten-before.png', w: 1240, h: 560,
+        labL: '調整前', labR: '調整後',
+        cap: '小サイズで潰れがちな濁点・半濁点を MigMix の流儀で拡大し、画に重なる部分は skip ink で彫り込み。濁点かな52字を1文字ずつ調整。',
+        v0: has('--after') ? snapA : has('--before') ? snapB : 50
+      }));
+    } else if (w === 'italic') {
+      push(outWipe(echo, {
+        bot: 'images/lp/italic-km.png', top: 'images/lp/italic-sf.png', w: 1240, h: 420,
+        labL: 'sf mono — oblique', labR: 'kusunoki — true italic',
+        cap: 'SF Mono の斜体は直立字形を傾けたオブリーク。真のイタリックから馴染む14文字だけを移植。●印が移植字形。',
+        v0: has('--kusunoki') ? snapA : has('--sf-mono') ? snapB : 50
+      }));
+    } else if (w === 'ligatures' || w === 'liga') {
+      push(outWipe(echo, {
+        bot: 'images/lp/liga-on.png', top: 'images/lp/liga-off.png', w: 1240, h: 420,
+        labL: 'liga off', labR: 'liga on',
+        cap: 'JetBrains Mono のリガチャを、セル幅と SF Mono の背丈に合わせて移植。calt 合成なのでオフにもできます。',
+        v0: has('--on') ? snapA : has('--off') ? snapB : 50
+      }));
+    } else if (w === 'grid') {
+      push(outImg(echo, { src: 'images/lp/grid.png', w: 1240, h: 560, cap: '全角はつねに半角ちょうど2文字ぶん。日本語コメントも罫線の表も、ターミナルでもエディタでも崩れません。薄い縞は2桁ごとのセル。' }));
+    } else if (w === 'nerd-fonts' || w === 'nerd') {
+      push(outImg(echo, { src: 'images/lp/nerd.png', w: 1240, h: 420, cap: 'Nerd Fonts のアイコンを標準装備。既定のパッチでは大小が揃わないため、サイズは SF Mono Square に合わせて手で調整しています。' }));
+    } else if (w === 'jp-sizes' || w === 'sizes') {
+      push(outImg(echo, { src: 'images/lp/sizes.png', w: 1240, h: 560, cap: '和文は小サイズの視認性に優れた LINE Seed JP。エディタで現実的な 11–14px でもくっきり読めます。' }));
+    } else if (w === 'craft') {
+      push(outImg(echo, { src: 'images/lp/tuner.png', w: 2720, h: 1620, cap: '一括処理では決まらないので、専用ツールを作って濁点かな52字を目視で調整。破線が元のマーク位置。倍率・回転・彫り幅をかなごとに上書きできます。' }));
+    } else if (w === 'specimen') {
+      push(outImg(echo, { src: 'images/specimen.png', w: 1694, h: 1724 }));
+    } else if (w === 'screenshots') {
+      if (has('--vscode')) push(outImg(echo, { src: 'images/editor.png', w: 1488, h: 1754, mw: true }));
+      else if (has('--keifu')) push(outImg(echo, { src: 'images/gitlog.png', w: 1522, h: 1772, mw: true }));
+      else if (has('--herdr')) push(outImg(echo, { src: 'images/terminal.png', w: 5120, h: 2832, zoom: 'images/terminal.png' }));
+      else push(outText(echo, [[DIM, 'usage: kusunoki-mono screenshots [--vscode | --keifu | --herdr]']]));
+    } else if (w === 'author') {
+      push(outClone(echo, '#s-author'));
+    } else if (w === 'install') {
+      push(outInstall(echo));
+    } else {
+      push(outText(echo, [
+        [RED, 'zsh: command not found: ' + w],
+        [DIM, '`help` でコマンド一覧']
+      ]));
+    }
+  };
+
+  // prompt rendering
+  const suggFull = () => {
+    const t = input.value;
+    if (!t) return '';
+    const cands = [...cmdHist].reverse().concat(CANDS);
+    return cands.find(x => x.startsWith(t) && x !== t) || '';
+  };
+  let ghost = '';
+  const renderPrompt = () => {
+    const term = input.value;
+    const sel = Math.min(input.selectionStart ?? term.length, term.length);
+    const full = suggFull();
+    const suffix = full ? full.slice(term.length) : '';
+    const atEnd = sel === term.length;
+    elBefore.textContent = term.slice(0, sel);
+    const under = atEnd ? (suffix ? suffix[0] : '') : term[sel];
+    elMeasure.textContent = under;
+    elChOn.textContent = under;
+    elChOff.textContent = under;
+    elChOff.style.color = atEnd ? '#585b70' : '#cdd6f4';
+    elAfter.textContent = atEnd ? '' : term.slice(sel + 1);
+    elSugg.textContent = atEnd && suffix ? suffix.slice(1) : '';
+    elGhost.textContent = ghost;
+  };
+
+  // idle ghost typing
+  const GTEXTS = ['help', 'dakuten --compare', 'italic --kusunoki', 'specimen', 'install'];
+  const g = { ti: 0, ci: 0, mode: 'type', hold: 0 };
+  let focused = false;
+  if (!reduceMotion) {
+    setInterval(() => {
+      if (focused || input.value !== '' || document.body.classList.contains('lightbox-open')) {
+        if (ghost !== '') { g.ci = 0; g.mode = 'type'; g.hold = 0; ghost = ''; renderPrompt(); }
+        return;
+      }
+      const t = GTEXTS[g.ti];
+      if (g.mode === 'type') { g.ci++; if (g.ci >= t.length) { g.ci = t.length; g.mode = 'hold'; g.hold = 0; } }
+      else if (g.mode === 'hold') { g.hold++; if (g.hold > 13) g.mode = 'del'; }
+      else { g.ci -= 2; if (g.ci <= 0) { g.ci = 0; g.mode = 'type'; g.ti = (g.ti + 1) % GTEXTS.length; } }
+      ghost = t.slice(0, Math.max(0, g.ci));
+      renderPrompt();
+    }, 110);
+  }
+
+  const setCaret = n => { input.setSelectionRange(n, n); renderPrompt(); };
+  const setTerm = t => { input.value = t; setCaret(t.length); };
+  const histStep = dir => {
+    if (!cmdHist.length) return;
+    let i = histIdx;
+    if (i === null) {
+      if (dir === 1) return;
+      stash = input.value;
+      i = cmdHist.length - 1;
+    } else i += dir;
+    if (i >= cmdHist.length) { histIdx = null; setTerm(stash); return; }
+    if (i < 0) i = 0;
+    histIdx = i;
+    setTerm(cmdHist[i]);
+  };
+
+  $('#prompt').addEventListener('click', () => input.focus());
+  input.addEventListener('input', () => { histIdx = null; renderPrompt(); });
+  input.addEventListener('focus', () => { focused = true; ghost = ''; renderPrompt(); });
+  input.addEventListener('blur', () => { focused = false; });
+  document.addEventListener('selectionchange', () => { if (document.activeElement === input) renderPrompt(); });
+  input.addEventListener('keydown', e => {
+    const k = e.key.toLowerCase();
+    if (e.key === 'Enter') {
+      const t = input.value.trim();
+      if (t && cmdHist[cmdHist.length - 1] !== t) cmdHist.push(t);
+      histIdx = null;
+      run(t);
+      input.value = '';
+      renderPrompt();
+    } else if (e.key === 'ArrowUp' || (e.ctrlKey && k === 'p')) {
+      e.preventDefault(); histStep(-1);
+    } else if (e.key === 'ArrowDown' || (e.ctrlKey && k === 'n')) {
+      e.preventDefault(); histStep(1);
+    } else if (e.key === 'Tab' || (e.ctrlKey && k === 'e')) {
+      e.preventDefault();
+      const s = suggFull();
+      if (s) { histIdx = null; setTerm(s); }
+      else setCaret(input.value.length);
+    } else if (e.ctrlKey && k === 'a') {
+      e.preventDefault(); setCaret(0);
+    }
+  });
+
+  // initial history: help
+  hist.append(outText('kusunoki-mono help', HELP));
+  renderPrompt();
+})();
+</script>
+<noscript><style>#prompt { display: none; }</style></noscript>
+</body>
+</html>
