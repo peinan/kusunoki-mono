@@ -7,11 +7,37 @@
 <meta name="description" content="Apple SF Mono × LINE Seed JP × Google Sans Code。半角1:全角2の固定グリッド、JetBrains Mono リガチャ、トゥルーイタリック、Nerd Fonts を備えた日本語プログラミング用等幅フォント。">
 <link rel="canonical" href="https://peinan.github.io/kusunoki-mono/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Kusunoki Mono">
+<meta property="og:title" content="Kusunoki Mono — 日本語プログラミング用の等幅フォント">
 <meta property="og:description" content="SF Mono × LINE Seed JP × Google Sans Code。日本語プログラミング用の等幅フォント。">
 <meta property="og:url" content="https://peinan.github.io/kusunoki-mono/">
+<meta property="og:site_name" content="Kusunoki Mono">
+<meta property="og:locale" content="ja_JP">
 <meta property="og:image" content="https://peinan.github.io/kusunoki-mono/images/og.png">
+<meta property="og:image:width" content="2560">
+<meta property="og:image:height" content="1280">
+<meta property="og:image:alt" content="Kusunoki Mono — SF Mono × LINE Seed JP × Google Sans Code">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@so1owingpixy">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Kusunoki Mono",
+  "description": "Apple SF Mono × LINE Seed JP × Google Sans Code。半角1:全角2の固定グリッド、JetBrains Mono リガチャ、トゥルーイタリック、Nerd Fonts を備えた日本語プログラミング用等幅フォント。",
+  "url": "https://peinan.github.io/kusunoki-mono/",
+  "image": "https://peinan.github.io/kusunoki-mono/images/og.png",
+  "operatingSystem": "macOS",
+  "applicationCategory": "DeveloperApplication",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "author": {
+    "@type": "Person",
+    "name": "Peinan Zhang",
+    "url": "https://peinan.cc",
+    "sameAs": ["https://github.com/peinan", "https://x.com/so1owingpixy"]
+  },
+  "sameAs": ["https://github.com/peinan/kusunoki-mono"]
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='55' dominant-baseline='central' text-anchor='middle' font-size='84' fill='%23cba6f7'%3E楠%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -105,7 +131,7 @@ body.menu-open .menu { display: block; }
 .sec { margin-top: 52px; }
 .sec:first-child { margin-top: 40px; }
 .cmdline { font-family: 'Google Sans Code', monospace; font-size: 14px; display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
-.cmdline .c { white-space: nowrap; }
+.cmdline .c { white-space: nowrap; font-size: inherit; font-weight: inherit; }
 .pr { color: #cba6f7; }
 .flag { color: #89b4fa; }
 .cap { color: #a6adc8; font-size: 13.5px; margin: 10px 0 0; }
@@ -329,11 +355,11 @@ brew install --cask font-kusunoki-mono">コピー</button>
   <main class="col">
 
     <section class="sec" id="s-about">
-      <div class="cmdline"><span class="c"><span class="pr">❯</span> kusunoki-mono about</span></div>
+      <div class="cmdline"><span class="c"><span class="pr" aria-hidden="true">❯</span> kusunoki-mono about</span></div>
       <div class="card about-card">
         <div class="about-head">
           <span class="glyph">楠</span>
-          <div class="title">Kusunoki Mono</div>
+          <h1 class="title">Kusunoki Mono</h1>
         </div>
         <p class="desc">SF Mono を半角1:全角2に整え、LINE Seed JP を重ねた日本語プログラミングフォント。真のイタリック、JetBrains Mono リガチャ、Nerd Fonts 内蔵。</p>
         <div class="brewline">
@@ -345,12 +371,12 @@ brew install --cask font-kusunoki-mono">コピー</button>
     </section>
 
     <section class="sec" id="s-specimen">
-      <div class="cmdline"><span class="c"><span class="pr">❯</span> kusunoki-mono specimen</span></div>
+      <div class="cmdline"><h2 class="c"><span class="pr" aria-hidden="true">❯</span> kusunoki-mono specimen</h2></div>
       <img class="frame" src="images/specimen.png" alt="字形見本" width="1694" height="1724" loading="lazy">
     </section>
 
     <section class="sec" id="s-sources">
-      <div class="cmdline"><span class="c"><span class="pr">❯</span> kusunoki-mono sources</span></div>
+      <div class="cmdline"><h2 class="c"><span class="pr" aria-hidden="true">❯</span> kusunoki-mono sources</h2></div>
       <p class="cap">5つの素材と1つのフォールバック。それぞれの得意なところだけを合成しています。</p>
       <div class="srcwrap">
         <div class="srchead"><span>ROLE</span><span>FONT</span><span>LICENSE</span><span>NOTE</span></div>
@@ -366,7 +392,7 @@ brew install --cask font-kusunoki-mono">コピー</button>
 
     <section class="sec" id="s-dakuten">
       <div class="cmdline">
-        <span class="c"><span class="pr">❯</span> kusunoki-mono dakuten <span class="flag">--compare</span></span>
+        <h2 class="c"><span class="pr" aria-hidden="true">❯</span> kusunoki-mono dakuten <span class="flag">--compare</span></h2>
         <button class="flagbtn" data-wipe="daku" data-dir="b">--before</button>
         <button class="flagbtn" data-wipe="daku" data-dir="a">--after</button>
       </div>
@@ -379,7 +405,7 @@ brew install --cask font-kusunoki-mono">コピー</button>
 
     <section class="sec" id="s-italic">
       <div class="cmdline">
-        <span class="c"><span class="pr">❯</span> kusunoki-mono italic <span class="flag">--vs</span> sf-mono</span>
+        <h2 class="c"><span class="pr" aria-hidden="true">❯</span> kusunoki-mono italic <span class="flag">--vs</span> sf-mono</h2>
         <button class="flagbtn" data-wipe="ita" data-dir="b">--sf-mono</button>
         <button class="flagbtn" data-wipe="ita" data-dir="a">--kusunoki</button>
       </div>
@@ -392,7 +418,7 @@ brew install --cask font-kusunoki-mono">コピー</button>
 
     <section class="sec" id="s-ligatures">
       <div class="cmdline">
-        <span class="c"><span class="pr">❯</span> kusunoki-mono ligatures</span>
+        <h2 class="c"><span class="pr" aria-hidden="true">❯</span> kusunoki-mono ligatures</h2>
         <button class="flagbtn" data-wipe="liga" data-dir="b">--off</button>
         <button class="flagbtn" data-wipe="liga" data-dir="a">--on</button>
       </div>
@@ -404,25 +430,25 @@ brew install --cask font-kusunoki-mono">コピー</button>
     </section>
 
     <section class="sec" id="s-grid">
-      <div class="cmdline"><span class="c"><span class="pr">❯</span> kusunoki-mono grid</span></div>
+      <div class="cmdline"><h2 class="c"><span class="pr" aria-hidden="true">❯</span> kusunoki-mono grid</h2></div>
       <p class="cap">全角はつねに半角ちょうど2文字ぶん。日本語コメントも罫線の表も、ターミナルでもエディタでも崩れません。</p>
       <img class="frame" src="images/lp/grid.png" alt="1:2グリッド" width="1240" height="560" loading="lazy">
     </section>
 
     <section class="sec" id="s-nerd">
-      <div class="cmdline"><span class="c"><span class="pr">❯</span> kusunoki-mono nerd-fonts</span></div>
+      <div class="cmdline"><h2 class="c"><span class="pr" aria-hidden="true">❯</span> kusunoki-mono nerd-fonts</h2></div>
       <p class="cap">Nerd Fonts のアイコンを標準装備。既定のパッチでは大小が揃わないため、サイズは手で細かく調整しています。</p>
       <img class="frame" src="images/lp/nerd.png" alt="Nerd Fonts" width="1240" height="420" loading="lazy">
     </section>
 
     <section class="sec" id="s-sizes">
-      <div class="cmdline"><span class="c"><span class="pr">❯</span> kusunoki-mono jp-sizes</span></div>
+      <div class="cmdline"><h2 class="c"><span class="pr" aria-hidden="true">❯</span> kusunoki-mono jp-sizes</h2></div>
       <p class="cap">和文は小サイズの視認性に優れた LINE Seed JP。エディタで現実的な 11–14px でもくっきり読めます。</p>
       <img class="frame" src="images/lp/sizes.png" alt="サイズラダー" width="1240" height="560" loading="lazy">
     </section>
 
     <section class="sec" id="s-craft">
-      <div class="cmdline"><span class="c"><span class="pr">❯</span> kusunoki-mono craft <span class="flag">--tuner</span></span></div>
+      <div class="cmdline"><h2 class="c"><span class="pr" aria-hidden="true">❯</span> kusunoki-mono craft <span class="flag">--tuner</span></h2></div>
       <div class="card craft-card">
         <div>
           <h3>かな、1文字ずつ</h3>
@@ -433,16 +459,16 @@ brew install --cask font-kusunoki-mono">コピー</button>
     </section>
 
     <section class="sec" id="s-screens">
-      <div class="cmdline"><span class="c"><span class="pr">❯</span> kusunoki-mono screenshots <span class="flag">--vscode</span></span></div>
+      <div class="cmdline"><h2 class="c"><span class="pr" aria-hidden="true">❯</span> kusunoki-mono screenshots <span class="flag">--vscode</span></h2></div>
       <img class="frame shot mw" src="images/editor.png" alt="エディタ (VS Code)" width="1488" height="1754" loading="lazy">
-      <div class="cmdline" style="margin-top:36px"><span class="c"><span class="pr">❯</span> kusunoki-mono screenshots <span class="flag">--keifu</span></span></div>
+      <div class="cmdline" style="margin-top:36px"><h2 class="c"><span class="pr" aria-hidden="true">❯</span> kusunoki-mono screenshots <span class="flag">--keifu</span></h2></div>
       <img class="frame shot mw" src="images/gitlog.png" alt="git log (keifu)" width="1522" height="1772" loading="lazy">
-      <div class="cmdline" style="margin-top:36px"><span class="c"><span class="pr">❯</span> kusunoki-mono screenshots <span class="flag">--herdr</span></span></div>
+      <div class="cmdline" style="margin-top:36px"><h2 class="c"><span class="pr" aria-hidden="true">❯</span> kusunoki-mono screenshots <span class="flag">--herdr</span></h2></div>
       <img class="frame shot zoomable" src="images/terminal.png" alt="ターミナル (herdr)" title="クリックで拡大" width="5120" height="2832" loading="lazy" data-zoom="images/terminal.png">
     </section>
 
     <section class="sec" id="s-author">
-      <div class="cmdline"><span class="c"><span class="pr">❯</span> kusunoki-mono author</span></div>
+      <div class="cmdline"><h2 class="c"><span class="pr" aria-hidden="true">❯</span> kusunoki-mono author</h2></div>
       <div class="authwrap">
         <div class="authname">Peinan Zhang <span>— Kusunoki Mono の作者</span></div>
         <div class="authhead"><span>CHANNEL</span><span>WHERE</span></div>
@@ -455,7 +481,7 @@ brew install --cask font-kusunoki-mono">コピー</button>
     <div id="hist"></div>
 
     <div id="prompt">
-      <span class="pr">❯</span>
+      <span class="pr" aria-hidden="true">❯</span>
       <span class="fixed">kusunoki-mono </span>
       <span class="seg" id="tBefore"></span>
       <span class="curwrap"><span class="m" id="tMeasure"></span><span class="blk"></span><span class="chon" id="tChOn"></span><span class="choff" id="tChOff"></span></span>
