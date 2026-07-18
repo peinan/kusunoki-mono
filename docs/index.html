@@ -271,12 +271,10 @@ body.lightbox-open #lightbox { display: block; }
       <div class="installbox">
         <div class="lines">
           <div><span class="dollar">$ </span>brew tap peinan/kusunoki-mono</div>
-          <div><span class="dollar">$ </span>brew install kusunoki-mono</div>
-          <div><span class="dollar">$ </span>cp "$(brew --prefix)/share/fonts/KusunokiMono-"*.otf ~/Library/Fonts/</div>
+          <div><span class="dollar">$ </span>brew install --cask font-kusunoki-mono</div>
         </div>
         <button class="copybtn" data-copy="brew tap peinan/kusunoki-mono
-brew install kusunoki-mono
-cp &quot;$(brew --prefix)/share/fonts/KusunokiMono-&quot;*.otf ~/Library/Fonts/">コピー</button>
+brew install --cask font-kusunoki-mono">コピー</button>
       </div>
     </div>
     <div class="icons">
@@ -316,12 +314,10 @@ cp &quot;$(brew --prefix)/share/fonts/KusunokiMono-&quot;*.otf ~/Library/Fonts/"
         <div class="installbox">
           <div class="lines">
             <div><span class="dollar">$ </span>brew tap peinan/kusunoki-mono</div>
-            <div><span class="dollar">$ </span>brew install kusunoki-mono</div>
-            <div><span class="dollar">$ </span>cp "$(brew --prefix)/share/fonts/KusunokiMono-"*.otf ~/Library/Fonts/</div>
+            <div><span class="dollar">$ </span>brew install --cask font-kusunoki-mono</div>
           </div>
           <button class="copybtn" data-copy="brew tap peinan/kusunoki-mono
-brew install kusunoki-mono
-cp &quot;$(brew --prefix)/share/fonts/KusunokiMono-&quot;*.otf ~/Library/Fonts/">コピー</button>
+brew install --cask font-kusunoki-mono">コピー</button>
         </div>
       </div>
       <div class="icons">
@@ -343,8 +339,8 @@ cp &quot;$(brew --prefix)/share/fonts/KusunokiMono-&quot;*.otf ~/Library/Fonts/"
         </div>
         <p class="desc">SF Mono を半角1:全角2に整え、LINE Seed JP を重ねた日本語プログラミングフォント。真のイタリック、JetBrains Mono リガチャ、Nerd Fonts 内蔵。</p>
         <div class="brewline">
-          <div class="cmd"><span class="dollar">$ </span>brew tap peinan/kusunoki-mono &amp;&amp; brew install kusunoki-mono &amp;&amp; cp "$(brew --prefix)/share/fonts/KusunokiMono-"*.otf ~/Library/Fonts/</div>
-          <button class="copybtn" data-copy="brew tap peinan/kusunoki-mono &amp;&amp; brew install kusunoki-mono &amp;&amp; cp &quot;$(brew --prefix)/share/fonts/KusunokiMono-&quot;*.otf ~/Library/Fonts/">コピー</button>
+          <div class="cmd"><span class="dollar">$ </span>brew tap peinan/kusunoki-mono &amp;&amp; brew install --cask font-kusunoki-mono</div>
+          <button class="copybtn" data-copy="brew tap peinan/kusunoki-mono &amp;&amp; brew install --cask font-kusunoki-mono">コピー</button>
         </div>
         <p class="note"># Homebrew 6.0+ 初回のみ: brew trust peinan/kusunoki-mono</p>
       </div>
@@ -489,13 +485,11 @@ cp &quot;$(brew --prefix)/share/fonts/KusunokiMono-&quot;*.otf ~/Library/Fonts/"
 <template id="tpl-install">
   <div class="card install-card">
     <button class="copybtn" data-copy="brew tap peinan/kusunoki-mono
-brew install kusunoki-mono
-cp &quot;$(brew --prefix)/share/fonts/KusunokiMono-&quot;*.otf ~/Library/Fonts/">コピー</button>
+brew install --cask font-kusunoki-mono">コピー</button>
     <div class="lines">
       <div><span class="cmt"># SF Mono を埋め込むため配布はなし。手元でビルドされます</span></div>
       <div><span class="dollar">$ </span>brew tap peinan/kusunoki-mono</div>
-      <div><span class="dollar">$ </span>brew install kusunoki-mono</div>
-      <div><span class="dollar">$ </span>cp "$(brew --prefix)/share/fonts/KusunokiMono-"*.otf ~/Library/Fonts/</div>
+      <div><span class="dollar">$ </span>brew install --cask font-kusunoki-mono</div>
       <div><span class="cmt"># 初回のみ: brew trust peinan/kusunoki-mono / フォントを Kusunoki Mono に設定</span></div>
     </div>
   </div>
@@ -637,7 +631,7 @@ cp &quot;$(brew --prefix)/share/fonts/KusunokiMono-&quot;*.otf ~/Library/Fonts/"
     'craft --tuner', 'screenshots --vscode', 'screenshots --keifu', 'screenshots --herdr',
     'specimen', 'author', 'help', 'clear',
     'dakuten --after', 'dakuten --before', 'italic --kusunoki', 'italic --sf-mono',
-    'ligatures --on', 'ligatures --off', 'brew install kusunoki-mono', 'brew tap peinan/kusunoki-mono'
+    'ligatures --on', 'ligatures --off', 'brew install --cask font-kusunoki-mono', 'brew tap peinan/kusunoki-mono'
   ];
 
   const entry = cmd => {
@@ -716,7 +710,7 @@ cp &quot;$(brew --prefix)/share/fonts/KusunokiMono-&quot;*.otf ~/Library/Fonts/"
     if (w === 'brew') {
       push(outText(echo, [
         [GRN, '==> Tapping peinan/kusunoki-mono'],
-        [GRN, '==> Installing kusunoki-mono — SF Mono を埋め込むため、あなたの Mac 上でビルドします'],
+        [GRN, '==> Installing font-kusunoki-mono — SF Mono を埋め込むため、あなたの Mac 上でビルドします'],
         [SUB, 'make build → dist/KusunokiMono-{Regular,Bold,Italic,BoldItalic}.otf'],
         [DIM, '# 初回のみ: brew trust peinan/kusunoki-mono / フォントを Kusunoki Mono に設定']
       ]));
