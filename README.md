@@ -31,9 +31,10 @@ The output embeds Apple SF Mono, so no binaries are distributed — it builds on
 
 ```sh
 brew tap peinan/kusunoki-mono
-brew install kusunoki-mono
-cp "$(brew --prefix)/share/fonts/KusunokiMono-"*.otf ~/Library/Fonts/
+brew install --cask font-kusunoki-mono
 ```
+
+The fonts land in `~/Library/Fonts` and stay in sync across `brew upgrade`.
 
 On Homebrew 6.0+, third-party taps must be trusted once before the first
 install: `brew trust peinan/kusunoki-mono`.

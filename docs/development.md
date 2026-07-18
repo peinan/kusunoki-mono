@@ -119,10 +119,13 @@ macOS-only, because Apple's DMG is extracted with hdiutil and pkgutil.
 
 The formula lives in [peinan/homebrew-kusunoki-mono][tap]: it stages the same
 pinned sources into `sources/` and runs `scripts/build.sh` unchanged, so
-`brew install` and `make build` produce the same fonts. Release flow:
+`brew install` and `make build` produce the same fonts. The tap also ships a
+`font-kusunoki-mono` cask that copies the formula's fonts into
+`~/Library/Fonts`. Release flow:
 
 - tag `vX.Y.Z` in this repo
 - point the formula's `url` and `sha256` at that tag's tarball
+- bump the cask's `version` and `sha256` to the same tag
 - until the first tag the formula is head-only, so install needs `--HEAD`
 
 ## Metrics cheat sheet
