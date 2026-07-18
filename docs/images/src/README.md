@@ -12,6 +12,8 @@ cd docs/images/src
 
 `editor-sample.py` is not a page: open it in a real editor and screenshot it
 (turn on `editor.fontLigatures` and an italic-comments theme first).
+Quantize heavy captures before committing — text and flat UI survive it
+untouched: `pngquant --quality=85-98 --speed 1 --ext .png --force <file>`.
 
 ## Landing page images (`lp/` → `../lp/`)
 
