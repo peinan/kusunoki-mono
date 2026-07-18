@@ -1,0 +1,24 @@
+# Kusunoki Mono
+
+> Kusunoki Mono (楠) is a Japanese programming monospace font for macOS: Apple SF Mono squared onto a half-width : full-width = 1:2 grid, layered with LINE Seed JP for Japanese that stays crisp at small sizes, with Google Sans Code true italics (14 letterforms hand-picked to sit well with SF Mono), JetBrains Mono ligatures, and Nerd Fonts icons built in.
+
+Key facts:
+
+- Install: `brew tap peinan/kusunoki-mono && brew install --cask font-kusunoki-mono` — the fonts land in `~/Library/Fonts` and follow `brew upgrade`
+- On Homebrew 6.0+, trust the tap once before the first install: `brew trust peinan/kusunoki-mono`
+- The build embeds Apple SF Mono, so no binaries are distributed anywhere — the Homebrew cask builds the font on the user's own Mac
+- Kana dakuten / handakuten are enlarged MigMix-style with a skip-ink carve and hand-tuned per kana (52 characters) for small-size legibility
+- A full-width CJK glyph is exactly two columns, so Japanese comments, tables, and box-drawing stay aligned in terminals and editors
+- Sources and licenses: SF Mono (© Apple), LINE Seed JP (OFL 1.1), Google Sans Code (OFL 1.1), JetBrains Mono (OFL 1.1), Migu 1M (M+ / IPA, fallback), Nerd Fonts (MIT + upstream)
+
+## Docs
+
+- [Landing page (Japanese)](https://peinan.github.io/kusunoki-mono/): visual overview, before/after comparisons, install
+- [README (English)](https://github.com/peinan/kusunoki-mono#readme): features, install, build knobs
+- [README (Japanese)](https://github.com/peinan/kusunoki-mono/blob/main/README.ja.md)
+- [Build pipeline internals](https://github.com/peinan/kusunoki-mono/blob/main/docs/development.md)
+
+## Repository
+
+- [peinan/kusunoki-mono](https://github.com/peinan/kusunoki-mono): build scripts and this site
+- [peinan/homebrew-kusunoki-mono](https://github.com/peinan/homebrew-kusunoki-mono): Homebrew tap (formula and cask)
