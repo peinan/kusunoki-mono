@@ -87,7 +87,7 @@ to `build/sfms/dakuten.<style>.log`:
 
 - Each voiced kana is rebuilt from its NFD parts: the mark is the glyph minus its unvoiced base, the body is the base itself, so welded or fused marks don't need contour guessing; a handakuten ring welded into the body is rebuilt as concentric circles centred on its hole
 - Where the body was redrawn instead of pasted (ヅ デ …), the small top-right contours become the mark
-- A dakuten left broken by welds — one dot inside a body contour (グ ゴ ゾ ダ ブ) or bitten by it (ぼ) — is rebuilt whole from the cleanest same-script two-dot mark, anchored on the intact dot, so both dots always move and carve together
+- A dakuten the welds left broken — a dot inside a body contour (グ ゴ ゾ ダ ブ), or bitten where it touched the body (frequent in Bold; detected by body contact or convexity loss) — is repaired so both dots always move and carve together: the bitten dot is replaced by a clone of the glyph's own intact dot, or the whole mark by the cleanest same-script one when nothing intact remains
 - The enlarged mark is unioned back, and a slightly larger copy is first carved out of the body, leaving a white gap where they overlap — the skip-ink look
 - `KM_DAKUTEN_SCALE` / `KM_HANDAKUTEN_SCALE` size the marks (1.3 / 1.25), `KM_DAKUTEN_HALO` / `KM_HANDAKUTEN_HALO` the carved gap (0.48 / 0.36), `KM_DAKUTEN_SKIP_INK=0` disables the carve, `KM_DAKUTEN_EXCLUDE` lists kana to leave untouched (default ゞヾヷヸヹヺ)
 

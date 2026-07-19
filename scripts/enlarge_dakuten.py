@@ -191,6 +191,34 @@ def align_base(b_cts, x_cts):
     return p
 
 
+def hull_deficiency(value):
+    """1 − ink/convex-hull area of one contour. A clean dakuten dot sits under
+    ~10% (control points inflate the hull a little); a dot the body diff bit
+    into — including concave wrap-around bites — jumps past 20%."""
+    pts = sorted({p for cmd, args in value for p in (args if cmd != "closePath" else ())
+                  if p is not None})
+    if len(pts) < 3:
+        return 0.0
+    cross = lambda o, a, b: (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+
+    def half(points):
+        h = []
+        for p in points:
+            while len(h) >= 2 and cross(h[-2], h[-1], p) <= 0:
+                h.pop()
+            h.append(p)
+        return h
+
+    hull = half(pts)[:-1] + half(pts[::-1])[:-1]
+    a = 0.0
+    for i in range(len(hull)):
+        x1, y1 = hull[i]
+        x2, y2 = hull[(i + 1) % len(hull)]
+        a += x1 * y2 - x2 * y1
+    hull_a = abs(a) / 2
+    return 1 - contour_area(value) / hull_a if hull_a else 0.0
+
+
 def contour_area(value):
     """Approximate contour ink area (shoelace over on-curve + control points).
     Exactness doesn't matter: hairline grid-fit crescents measure in the hundreds
@@ -279,6 +307,16 @@ class DakutenFont:
             return "mark-bounds"          # diff is body slivers, not a mark
         return mark, B, mb
 
+    def _contact(self, piece, body, f=1.08):
+        """Ink area the slightly-grown piece shares with the body — recovery
+        guarantees mark ∩ body = ∅, so any overlap after growing means the
+        piece sits ON the body boundary, i.e. the diff bit a chunk out of it."""
+        b = pbounds(piece)
+        if not b:
+            return 0.0
+        grown = scaled_about(piece, f, (b[0] + b[2]) / 2, (b[1] + b[3]) / 2)
+        return sum(contour_area(v) for v, _ in path_contours(op("intersection", grown, body)))
+
     def _contour_split(self, xg, adv):
         """Method 2: mark = the small top-right contours of X, body = the rest."""
         cts = self.contours(xg)
@@ -334,10 +372,13 @@ class DakutenFont:
         ref = ring_dims[len(ring_dims) // 2] if ring_dims else None
 
         repaired = []
+        eps = 150 * (self.upm / 1000) ** 2
         for ch, d in list(kana.items()):
             mb = d["mb"]
             w, h = mb[2] - mb[0], mb[3] - mb[1]
-            if not (d["is_semi"] and ref and (w < 0.95 * ref[0] or h < 0.95 * ref[1])):
+            low = ref and (w < 0.95 * ref[0] or h < 0.95 * ref[1])
+            touching = ref and self._contact(d["mark"], d["body"], 1.06) > eps
+            if not (d["is_semi"] and (low or touching)):
                 continue
             # ring welded into the body: the recovered mark lost a chunk. Rebuild
             # it as concentric circles centred on the hole contour (interior, so
@@ -390,6 +431,7 @@ class DakutenFont:
             if ratio >= 0.85 and (script(ch) not in templates or ratio > templates[script(ch)][0]):
                 templates[script(ch)] = (ratio, d["mark"])
 
+        eps = 50 * (self.upm / 1000) ** 2
         rebuilt = []
         for ch, d in kana.items():
             if d["is_semi"] or script(ch) not in templates:
@@ -402,6 +444,29 @@ class DakutenFont:
                 (len(cts) == 1 and (d["mb"][2] - d["mb"][0]) < 0.75 * (tb[2] - tb[0]))
                 or (len(cts) == 2 and min(areas) / max(areas) < 0.7)
                 or len(cts) > 2)
+            if not broken and len(cts) == 2:
+                # weld bite: a dot sits on the body boundary and the diff shaved
+                # its flank, or a stroke end pokes into it (concave wrap-around,
+                # caught by hull deficiency) — common in Bold. Replace the
+                # bitten dot with a clone of the intact top-right one, aligned
+                # by the top-right bbox corner: the bite is always on the body
+                # (lower-left) side, so that corner is trustworthy. Keeps the
+                # glyph's own dot design, unlike the template path below.
+                bitten = [self._contact(to_path([v]), d["body"]) > eps
+                          or hull_deficiency(v) > 0.15 for v, _ in cts]
+                if any(bitten):
+                    tr = max(range(2), key=lambda i: cts[i][1][0] + cts[i][1][2]
+                             + cts[i][1][1] + cts[i][1][3])
+                    if not bitten[tr]:
+                        src_v, src_b = cts[tr]
+                        _, dst_b = cts[1 - tr]
+                        clone = xform(to_path([src_v]), Transform().translate(
+                            round(dst_b[2] - src_b[2]), round(dst_b[3] - src_b[3])))
+                        d["mark"] = op("union", to_path([src_v]), clone)
+                        d["mb"] = pbounds(d["mark"])
+                        rebuilt.append(d["gname"])
+                        continue
+                    broken = True        # the top-right dot is bitten too: template
             if not broken:
                 continue
             fx, fy = center(top_right(cts))
