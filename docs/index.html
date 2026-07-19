@@ -90,6 +90,8 @@ input::placeholder { color: #45475a; }
 .sess a { display: flex; gap: 10px; padding: 5px 10px; border-radius: 7px; color: #7f849c; }
 .sess a span { color: #585b70; }
 .sess a:hover { background: #181825; color: #cdd6f4; text-decoration: none; }
+.sess a[aria-current] { background: #181825; color: #cdd6f4; }
+.sess a[aria-current] span { color: #cba6f7; }
 .side .bottom { margin-top: auto; padding-top: 26px; }
 .installbox {
   margin-top: 8px; background: #11111b; border: 1px solid #313244; border-radius: 9px;
@@ -137,7 +139,7 @@ body.menu-open .menu { display: block; }
 .menu .icons { margin-top: 12px; }
 
 /* ---- main column ---- */
-.col { padding: 0 48px 20px; min-width: 0; max-width: 1120px; box-sizing: border-box; }
+.col { padding: 0 48px 20px; margin: 0 auto; min-width: 0; max-width: 1120px; box-sizing: border-box; }
 .sec { margin-top: 52px; }
 .sec:first-child { margin-top: 40px; }
 .cmdline { font-family: 'Google Sans Code', monospace; font-size: 14px; display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
@@ -193,6 +195,7 @@ body.menu-open .menu { display: block; }
   font-family: 'Google Sans Code', monospace; font-size: 12px; padding: 2px 10px; cursor: pointer;
   background: transparent; border: 1px solid #313244; border-radius: 6px; color: #585b70;
 }
+.flagbtn:hover { color: #cdd6f4; border-color: #7f849c; }
 .flagbtn.on { background: #313244; color: #cdd6f4; border-color: #585b70; }
 
 .craft-card { margin-top: 14px; padding: 28px 32px; display: grid; grid-template-columns: 300px 1fr; gap: 32px; align-items: center; }
@@ -574,6 +577,28 @@ brew install --cask font-kusunoki-mono">コピー</button>
       menuBtn.setAttribute('aria-expanded', 'false');
     });
   });
+
+  // ---- scroll spy ----
+  const spySecs = [...document.querySelectorAll('.sec[id]')];
+  const spyLinks = [...document.querySelectorAll('.sess a[href^="#"]')];
+  let spyCur = '';
+  const spy = () => {
+    const line = window.scrollY + window.innerHeight * 0.3;
+    let cur = spySecs[0].id;
+    for (const s of spySecs) {
+      if (s.getBoundingClientRect().top + window.scrollY <= line) cur = s.id;
+      else break;
+    }
+    if (cur === spyCur) return;
+    spyCur = cur;
+    spyLinks.forEach(a => {
+      if (a.getAttribute('href') === '#' + cur) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
+    });
+  };
+  window.addEventListener('scroll', spy, { passive: true });
+  window.addEventListener('resize', spy, { passive: true });
+  spy();
 
   // ---- lightbox ----
   const lightbox = $('#lightbox');
