@@ -188,7 +188,12 @@ function layer(ch) {
 }
 function setF(field, value) {
   const o = layer(cur);
-  if (field === "exclude" && !value) delete o.exclude;
+  if (field === "exclude" && !value) {
+    // on a style tab an inherited (Regular) exclude can't be deleted away —
+    // it needs an explicit per-style exclude:false to override it
+    if (style !== "regular" && resolved(cur, "regular").exclude) o.exclude = false;
+    else delete o.exclude;
+  }
   else o[field] = value;
   touch();
   if (field === "exclude" || field === "skip_ink") syncControls();
