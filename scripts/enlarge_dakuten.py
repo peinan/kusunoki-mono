@@ -419,6 +419,10 @@ class DakutenFont:
         center = lambda b: ((b[0] + b[2]) / 2, (b[1] + b[3]) / 2)
         script = lambda ch: "hira" if ord(ch) < 0x30A0 else "kata"
 
+        # template = the cleanest same-script two-dot mark. Cleanliness is a hard
+        # requirement — a template with even a shallow weld bite replicates the
+        # notch onto every rebuilt glyph (Bold ザ/ぞ did exactly that).
+        clean_eps = 30 * (self.upm / 1000) ** 2
         templates = {}
         for ch, d in kana.items():
             if d["is_semi"] or d["fallback"]:
@@ -426,10 +430,17 @@ class DakutenFont:
             cts = path_contours(d["mark"])
             if len(cts) != 2:
                 continue
+            if any(self._contact(to_path([v]), d["body"]) > clean_eps
+                   or hull_deficiency(v) > 0.12 for v, _ in cts):
+                continue
             areas = sorted(contour_area(v) for v, _ in cts)
             ratio = areas[0] / areas[1]
             if ratio >= 0.85 and (script(ch) not in templates or ratio > templates[script(ch)][0]):
-                templates[script(ch)] = (ratio, d["mark"])
+                tr_b = top_right(cts)
+                bl_b = next(b for _, b in cts if b is not tr_b)
+                delta = (round(center(bl_b)[0] - center(tr_b)[0]),
+                         round(center(bl_b)[1] - center(tr_b)[1]))
+                templates[script(ch)] = (ratio, d["mark"], delta)
 
         eps = 50 * (self.upm / 1000) ** 2
         rebuilt = []
@@ -448,9 +459,10 @@ class DakutenFont:
                 # weld bite: a dot sits on the body boundary and the diff shaved
                 # its flank, or a stroke end pokes into it (concave wrap-around,
                 # caught by hull deficiency) — common in Bold. Replace the
-                # bitten dot with a clone of the intact top-right one, aligned
-                # by the top-right bbox corner: the bite is always on the body
-                # (lower-left) side, so that corner is trustworthy. Keeps the
+                # bitten dot with a clone of the intact top-right one, placed at
+                # the template's inter-dot offset from the intact dot's centre —
+                # never at the bitten ink's bbox, which a wrap-around bite
+                # inflates (Bold ぞ sat ~40 units high that way). Keeps the
                 # glyph's own dot design, unlike the template path below.
                 bitten = [self._contact(to_path([v]), d["body"]) > eps
                           or hull_deficiency(v) > 0.15 for v, _ in cts]
@@ -458,10 +470,9 @@ class DakutenFont:
                     tr = max(range(2), key=lambda i: cts[i][1][0] + cts[i][1][2]
                              + cts[i][1][1] + cts[i][1][3])
                     if not bitten[tr]:
-                        src_v, src_b = cts[tr]
-                        _, dst_b = cts[1 - tr]
-                        clone = xform(to_path([src_v]), Transform().translate(
-                            round(dst_b[2] - src_b[2]), round(dst_b[3] - src_b[3])))
+                        src_v = cts[tr][0]
+                        dxy = templates[script(ch)][2]
+                        clone = xform(to_path([src_v]), Transform().translate(*dxy))
                         d["mark"] = op("union", to_path([src_v]), clone)
                         d["mb"] = pbounds(d["mark"])
                         rebuilt.append(d["gname"])
