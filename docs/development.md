@@ -98,7 +98,7 @@ plus per-side left / right / top / bottom), drag to move the mark, an exclude
 toggle. Style tabs cover Regular / Bold / Italic / BoldItalic: every style
 inherits the Regular values, and a change made on another tab is stored as
 that style's own diff. Saving writes `scripts/dakuten_overrides.json`
-(char → `scale` / `halo` / `rot` / `halo_pad` / `dx` / `dy` / `skip_ink` /
+(char → `scale` / `aspect` / `halo` / `rot` / `halo_pad` / `dx` / `dy` / `skip_ink` /
 `exclude`, plus optional `bold` / `italic` / `bolditalic` sub-objects; font
 units), which the build applies on the next run; the preview paints the halo
 in paper colour over the body, which is visually identical to the boolean

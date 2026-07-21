@@ -86,6 +86,10 @@ kbd { background:#eceef1; border-radius:4px; padding:1px 5px; font-size:11px; }
       <input type="range" id="sScale" min="0.7" max="2.0" step="0.01">
     </div>
     <div class="ctl">
+      <label>縦横比 (縦の伸び) <span class="val" id="vAspect"></span></label>
+      <input type="range" id="sAspect" min="0.7" max="1.5" step="0.01">
+    </div>
+    <div class="ctl">
       <label>回転 (度、反時計回りが正) <span class="val" id="vRot"></span></label>
       <input type="range" id="sRot" min="-30" max="30" step="0.5">
     </div>
@@ -138,8 +142,9 @@ async function init() {
     b.onclick = () => setStyle(b.dataset.st);
   $("saveBtn").onclick = save;
   $("bBack").onclick = () => { $("editor").hidden = true; $("list").hidden = false; cur = null; renderList(); };
-  $("sScale").oninput = e => setF("scale", +e.target.value);
-  $("sRot").oninput   = e => setF("rot", +e.target.value);
+  $("sScale").oninput  = e => setF("scale", +e.target.value);
+  $("sAspect").oninput = e => setF("aspect", +e.target.value);
+  $("sRot").oninput    = e => setF("rot", +e.target.value);
   $("sHalo").oninput  = e => { ensureSkip(); setF("halo", +e.target.value); };
   for (const [i, id] of ["sPadL", "sPadR", "sPadT", "sPadB"].entries())
     $(id).oninput = e => { ensureSkip(); const p = eff(cur).pads.slice(); p[i] = +e.target.value; setF("halo_pad", p); };
@@ -171,7 +176,8 @@ function resolved(ch, st) {
 }
 function eff(ch) {
   const k = kOf(ch), d = defs(k), o = resolved(ch, style);
-  return { scale: o.scale ?? d.scale, halo: o.halo ?? d.halo, rot: o.rot ?? 0,
+  return { scale: o.scale ?? d.scale, aspect: o.aspect ?? 1,
+           halo: o.halo ?? d.halo, rot: o.rot ?? 0,
            pads: o.halo_pad ?? [0, 0, 0, 0],
            skip: o.skip_ink ?? data.skip_ink, dx: o.dx ?? 0, dy: o.dy ?? 0,
            excl: !!o.exclude };
@@ -206,7 +212,8 @@ function setStatus(t, cls) { $("status").textContent = t; $("status").className 
 const near = (a, b) => Math.abs((+a) - (+b)) <= 1e-6;
 function effOf(vals, k) {
   const d = defs(k);
-  return { scale: vals.scale ?? d.scale, halo: vals.halo ?? d.halo, rot: vals.rot ?? 0,
+  return { scale: vals.scale ?? d.scale, aspect: vals.aspect ?? 1,
+           halo: vals.halo ?? d.halo, rot: vals.rot ?? 0,
            halo_pad: vals.halo_pad ?? [0, 0, 0, 0], skip_ink: vals.skip_ink ?? data.skip_ink,
            dx: vals.dx ?? 0, dy: vals.dy ?? 0, exclude: !!vals.exclude };
 }
@@ -217,6 +224,7 @@ function diffFields(vals, ref) {
   } else {
     if (vals.exclude === false && ref.exclude) out.exclude = false;
     if (vals.scale != null && !near(vals.scale, ref.scale)) out.scale = +(+vals.scale).toFixed(2);
+    if (vals.aspect != null && !near(vals.aspect, ref.aspect)) out.aspect = +(+vals.aspect).toFixed(2);
     if (vals.halo  != null && !near(vals.halo,  ref.halo))  out.halo  = +(+vals.halo).toFixed(2);
     if (vals.rot   != null && !near(vals.rot,   ref.rot))   out.rot   = +(+vals.rot).toFixed(1);
     if (vals.dx != null && Math.round(vals.dx) !== Math.round(ref.dx)) out.dx = Math.round(vals.dx);
@@ -234,7 +242,7 @@ function pruneOne(ch) {
   const base = {};
   for (const [key, v] of Object.entries(e)) if (!LAYERS.includes(key)) base[key] = v;
   const d = defs(k);
-  const defRef = { scale: d.scale, halo: d.halo, rot: 0, halo_pad: [0, 0, 0, 0],
+  const defRef = { scale: d.scale, aspect: 1, halo: d.halo, rot: 0, halo_pad: [0, 0, 0, 0],
                    skip_ink: data.skip_ink, dx: 0, dy: 0, exclude: false };
   const out = diffFields(base, defRef);
   const baseEff = effOf(base, k);
@@ -249,17 +257,18 @@ function pruneOne(ch) {
 // ---- glyph rendering: body → halo painted paper-colour → mark (exact skip ink) ----
 function markTf(k, e) {
   const [x0, y0, x1, y1] = k.mb, cx = (x0 + x1) / 2 + e.dx, cy = (y0 + y1) / 2 + e.dy;
-  return `rotate(${e.rot} ${cx} ${cy}) translate(${cx} ${cy}) scale(${e.scale}) translate(${-cx} ${-cy}) translate(${e.dx} ${e.dy})`;
+  const sy = e.scale * e.aspect;
+  return `rotate(${e.rot} ${cx} ${cy}) translate(${cx} ${cy}) scale(${e.scale} ${sy}) translate(${-cx} ${-cy}) translate(${e.dx} ${e.dy})`;
 }
 function haloTf(k, e) {
   const [x0, y0, x1, y1] = k.mb, cx = (x0 + x1) / 2 + e.dx, cy = (y0 + y1) / 2 + e.dy;
-  const K = e.scale * (1 + e.halo);
+  const kx = e.scale * (1 + e.halo), ky = e.scale * e.aspect * (1 + e.halo);
   const [l, r, t, b] = e.pads;
-  const w = (x1 - x0) * K, h = (y1 - y0) * K;
+  const w = (x1 - x0) * kx, h = (y1 - y0) * ky;
   const sx = (w + l + r) / w, sy = (h + t + b) / h;
   return `rotate(${e.rot} ${cx} ${cy}) ` +
          `translate(${cx + (r - l) / 2} ${cy + (t - b) / 2}) scale(${sx} ${sy}) translate(${-cx} ${-cy}) ` +
-         `translate(${cx} ${cy}) scale(${K}) translate(${-cx} ${-cy}) translate(${e.dx} ${e.dy})`;
+         `translate(${cx} ${cy}) scale(${kx} ${ky}) translate(${-cx} ${-cy}) translate(${e.dx} ${e.dy})`;
 }
 function vb(k) {
   const u = data.upm, extra = isItalic(style) ? 200 : 0;
@@ -308,7 +317,8 @@ function syncControls() {
   $("edNote").textContent = k.rebuilt
     ? "このマークは溶接で欠けていたため、同スクリプトのきれいなマークから再構築されています。"
     : "マーク = グリフ − 清音の親字。破線は元のマーク位置。";
-  $("sScale").value = e.scale; $("sRot").value = e.rot; $("sHalo").value = e.halo;
+  $("sScale").value = e.scale; $("sAspect").value = e.aspect;
+  $("sRot").value = e.rot; $("sHalo").value = e.halo;
   const ids = ["sPadL", "sPadR", "sPadT", "sPadB"];
   ids.forEach((id, i) => $(id).value = e.pads[i]);
   $("cSkip").checked = e.skip; $("cExcl").checked = e.excl;
@@ -319,6 +329,7 @@ function paint() {
   svg.setAttribute("viewBox", vb(k));
   svg.innerHTML = inner(k, e, true);
   $("vScale").textContent = (+e.scale).toFixed(2);
+  $("vAspect").textContent = (+e.aspect).toFixed(2);
   $("vRot").textContent = (+e.rot).toFixed(1) + "°";
   $("vHalo").textContent = (+e.halo).toFixed(2);
   const vids = ["vPadL", "vPadR", "vPadT", "vPadB"];
@@ -329,7 +340,7 @@ function paint() {
     const h = Math.round(px * 1.18);
     return `<div class="sset"><div class="cap">${px}px 相当 — 清音 / 元 / 調整後</div><div class="row">` +
       svgFor(k, e, h, { bodyOnly: true }) +
-      svgFor(k, { scale: 1, halo: 0, rot: 0, pads: [0, 0, 0, 0], skip: false, dx: 0, dy: 0, excl: true }, h) +
+      svgFor(k, { scale: 1, aspect: 1, halo: 0, rot: 0, pads: [0, 0, 0, 0], skip: false, dx: 0, dy: 0, excl: true }, h) +
       svgFor(k, e, h) + `</div></div>`;
   }).join("");
 }

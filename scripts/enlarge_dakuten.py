@@ -30,10 +30,11 @@ of the same script, anchored on the intact top-right dot, so both dots always
 move, scale, and carve together.
 
 Per-character tuning: scripts/dakuten_overrides.json (or KM_DAKUTEN_OVERRIDES)
-maps a kana to {"scale", "halo", "dx", "dy", "rot", "halo_pad", "skip_ink",
-"exclude"} — values replace the global defaults for that kana. dx/dy move the
-mark in font units, rot tilts it (degrees, CCW), halo_pad = [left, right, top,
-bottom] widens the carved gap per side in font units, exclude leaves the glyph
+maps a kana to {"scale", "aspect", "halo", "dx", "dy", "rot", "halo_pad",
+"skip_ink", "exclude"} — values replace the global defaults for that kana.
+dx/dy move the mark in font units, aspect stretches it vertically on top of
+scale, rot tilts it (degrees, CCW), halo_pad = [left, right, top, bottom]
+widens the carved gap per side in font units, exclude leaves the glyph
 untouched. Optional "bold" / "italic" / "bolditalic" sub-objects override those
 base values per style (unset fields inherit). scripts/dakuten_tuner.py edits
 the file visually. The stage runs once per style:
@@ -495,25 +496,32 @@ class DakutenFont:
         return rebuilt
 
     @staticmethod
-    def compose(d, scale, halo_frac, skip_ink, dx=0, dy=0, rot=0, pads=(0, 0, 0, 0)):
+    def compose(d, scale, halo_frac, skip_ink, dx=0, dy=0, rot=0, pads=(0, 0, 0, 0),
+                aspect=1.0):
         """The tuned glyph: enlarged / moved / tilted mark on the carved body.
 
-        pads = [left, right, top, bottom] widen the carved halo per side, in
-        font units, applied to the un-rotated halo whose bbox is analytically
-        mb×K — the tuner's SVG preview repeats the same closed-form transforms,
-        so both always agree. Rotation comes last, about the mark centre."""
+        aspect multiplies the vertical enlargement only (sy = scale × aspect) so
+        a mark can grow longer without growing wider — Bold dots widen by design
+        and read squat otherwise. pads = [left, right, top, bottom] widen the
+        carved halo per side, in font units, applied to the un-rotated halo
+        whose bbox is analytically mb×K — the tuner's SVG preview repeats the
+        same closed-form transforms, so both always agree. Rotation comes last,
+        about the mark centre, and carries the stretch with it."""
         mark, body, mb = d["mark"], d["body"], d["mb"]
         if dx or dy:
             mark = xform(mark, Transform().translate(dx, dy))
         mcx, mcy = (mb[0] + mb[2]) / 2 + dx, (mb[1] + mb[3]) / 2 + dy
-        mark_big = scaled_about(mark, scale, mcx, mcy)
+        sy = scale * aspect
+        mark_big = xform(mark, Transform().translate(mcx, mcy)
+                         .scale(scale, sy).translate(-mcx, -mcy))
         halo = None
         if skip_ink:
-            K = scale * (1 + halo_frac)
-            halo = scaled_about(mark, K, mcx, mcy)
+            kx, ky = scale * (1 + halo_frac), sy * (1 + halo_frac)
+            halo = xform(mark, Transform().translate(mcx, mcy)
+                         .scale(kx, ky).translate(-mcx, -mcy))
             l, r, t, b = pads
             if l or r or t or b:
-                w, h = (mb[2] - mb[0]) * K, (mb[3] - mb[1]) * K
+                w, h = (mb[2] - mb[0]) * kx, (mb[3] - mb[1]) * ky
                 halo = xform(halo, Transform()
                              .translate(mcx + (r - l) / 2, mcy + (t - b) / 2)
                              .scale((w + l + r) / w, (h + t + b) / h)
@@ -558,6 +566,7 @@ def main():
             o.get("skip_ink", SKIP_INK),
             o.get("dx", 0), o.get("dy", 0),
             o.get("rot", 0), o.get("halo_pad", (0, 0, 0, 0)),
+            o.get("aspect", 1),
         )
         font.write_glyph(d["gname"], final)
         done += 1
