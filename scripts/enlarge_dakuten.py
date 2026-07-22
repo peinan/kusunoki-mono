@@ -30,10 +30,11 @@ of the same script, anchored on the intact top-right dot, so both dots always
 move, scale, and carve together.
 
 Per-character tuning: scripts/dakuten_overrides.json (or KM_DAKUTEN_OVERRIDES)
-maps a kana to {"scale", "aspect", "halo", "dx", "dy", "rot", "halo_pad",
-"skip_ink", "exclude"} — values replace the global defaults for that kana.
-dx/dy move the mark in font units, aspect stretches it vertically on top of
-scale, rot tilts it (degrees, CCW), halo_pad = [left, right, top, bottom]
+maps a kana to {"scale", "aspect", "spread", "halo", "dx", "dy", "rot",
+"halo_pad", "skip_ink", "exclude"} — values replace the global defaults for
+that kana. dx/dy move the mark in font units, aspect stretches it vertically
+on top of scale, spread slides the two dakuten dots apart (>1) or together
+(<1), rot tilts it (degrees, CCW), halo_pad = [left, right, top, bottom]
 widens the carved gap per side in font units, exclude leaves the glyph
 untouched. Optional "bold" / "italic" / "bolditalic" sub-objects override those
 base values per style (unset fields inherit). scripts/dakuten_tuner.py edits
@@ -497,7 +498,7 @@ class DakutenFont:
 
     @staticmethod
     def compose(d, scale, halo_frac, skip_ink, dx=0, dy=0, rot=0, pads=(0, 0, 0, 0),
-                aspect=1.0):
+                aspect=1.0, spread=1.0):
         """The tuned glyph: enlarged / moved / tilted mark on the carved body.
 
         aspect multiplies the vertical enlargement only (sy = scale × aspect) so
@@ -506,8 +507,20 @@ class DakutenFont:
         carved halo per side, in font units, applied to the un-rotated halo
         whose bbox is analytically mb×K — the tuner's SVG preview repeats the
         same closed-form transforms, so both always agree. Rotation comes last,
-        about the mark centre, and carries the stretch with it."""
+        about the mark centre, and carries the stretch with it. spread slides
+        the two dakuten dots apart (>1) or together (<1) along the line through
+        the mark centre — each dot only translates, its shape stays."""
         mark, body, mb = d["mark"], d["body"], d["mb"]
+        if spread != 1 and not d["is_semi"]:
+            cts = path_contours(mark)
+            if len(cts) == 2:
+                ccx, ccy = (mb[0] + mb[2]) / 2, (mb[1] + mb[3]) / 2
+                parts = []
+                for v, b in cts:
+                    px, py = (b[0] + b[2]) / 2, (b[1] + b[3]) / 2
+                    parts.append(xform(to_path([v]), Transform().translate(
+                        (spread - 1) * (px - ccx), (spread - 1) * (py - ccy))))
+                mark = op("union", parts[0], parts[1])
         if dx or dy:
             mark = xform(mark, Transform().translate(dx, dy))
         mcx, mcy = (mb[0] + mb[2]) / 2 + dx, (mb[1] + mb[3]) / 2 + dy
@@ -566,7 +579,7 @@ def main():
             o.get("skip_ink", SKIP_INK),
             o.get("dx", 0), o.get("dy", 0),
             o.get("rot", 0), o.get("halo_pad", (0, 0, 0, 0)),
-            o.get("aspect", 1),
+            o.get("aspect", 1), o.get("spread", 1),
         )
         font.write_glyph(d["gname"], final)
         done += 1

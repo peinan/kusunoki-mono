@@ -45,6 +45,14 @@ def weight_data(path):
     kana, fell_back, skipped, repaired, rebuilt = font.recover()
     items = []
     for ch, d in kana.items():
+        cts = ed.path_contours(d["mark"])
+        if not d["is_semi"] and len(cts) == 2:
+            # per-dot pieces so the client can slide them apart (spread)
+            parts = [svg_d(ed.to_path([v])) for v, _ in cts]
+            part_centers = [[(b[0] + b[2]) / 2, (b[1] + b[3]) / 2] for _, b in cts]
+        else:
+            parts = [svg_d(d["mark"])]
+            part_centers = [[(d["mb"][0] + d["mb"][2]) / 2, (d["mb"][1] + d["mb"][3]) / 2]]
         items.append({
             "char": ch,
             "base": unicodedata.normalize("NFD", ch)[0],
@@ -55,6 +63,8 @@ def weight_data(path):
             "adv": font.hmtx[d["gname"]][0],
             "body": svg_d(d["body"]),
             "mark": svg_d(d["mark"]),
+            "parts": parts,
+            "part_centers": part_centers,
             "mb": list(d["mb"]),
         })
     return {"kana": items, "upm": font.upm,
