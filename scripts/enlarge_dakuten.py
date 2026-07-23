@@ -30,10 +30,12 @@ of the same script, anchored on the intact top-right dot, so both dots always
 move, scale, and carve together.
 
 Per-character tuning: scripts/dakuten_overrides.json (or KM_DAKUTEN_OVERRIDES)
-maps a kana to {"scale", "halo", "dx", "dy", "rot", "halo_pad", "skip_ink",
-"exclude"} — values replace the global defaults for that kana. dx/dy move the
-mark in font units, rot tilts it (degrees, CCW), halo_pad = [left, right, top,
-bottom] widens the carved gap per side in font units, exclude leaves the glyph
+maps a kana to {"scale", "aspect", "spread", "halo", "dx", "dy", "rot",
+"halo_pad", "skip_ink", "exclude"} — values replace the global defaults for
+that kana. dx/dy move the mark in font units, aspect stretches it vertically
+on top of scale, spread slides the two dakuten dots apart (>1) or together
+(<1), rot tilts it (degrees, CCW), halo_pad = [left, right, top, bottom]
+widens the carved gap per side in font units, exclude leaves the glyph
 untouched. Optional "bold" / "italic" / "bolditalic" sub-objects override those
 base values per style (unset fields inherit). scripts/dakuten_tuner.py edits
 the file visually. The stage runs once per style:
@@ -191,6 +193,34 @@ def align_base(b_cts, x_cts):
     return p
 
 
+def hull_deficiency(value):
+    """1 − ink/convex-hull area of one contour. A clean dakuten dot sits under
+    ~10% (control points inflate the hull a little); a dot the body diff bit
+    into — including concave wrap-around bites — jumps past 20%."""
+    pts = sorted({p for cmd, args in value for p in (args if cmd != "closePath" else ())
+                  if p is not None})
+    if len(pts) < 3:
+        return 0.0
+    cross = lambda o, a, b: (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+
+    def half(points):
+        h = []
+        for p in points:
+            while len(h) >= 2 and cross(h[-2], h[-1], p) <= 0:
+                h.pop()
+            h.append(p)
+        return h
+
+    hull = half(pts)[:-1] + half(pts[::-1])[:-1]
+    a = 0.0
+    for i in range(len(hull)):
+        x1, y1 = hull[i]
+        x2, y2 = hull[(i + 1) % len(hull)]
+        a += x1 * y2 - x2 * y1
+    hull_a = abs(a) / 2
+    return 1 - contour_area(value) / hull_a if hull_a else 0.0
+
+
 def contour_area(value):
     """Approximate contour ink area (shoelace over on-curve + control points).
     Exactness doesn't matter: hairline grid-fit crescents measure in the hundreds
@@ -279,6 +309,16 @@ class DakutenFont:
             return "mark-bounds"          # diff is body slivers, not a mark
         return mark, B, mb
 
+    def _contact(self, piece, body, f=1.08):
+        """Ink area the slightly-grown piece shares with the body — recovery
+        guarantees mark ∩ body = ∅, so any overlap after growing means the
+        piece sits ON the body boundary, i.e. the diff bit a chunk out of it."""
+        b = pbounds(piece)
+        if not b:
+            return 0.0
+        grown = scaled_about(piece, f, (b[0] + b[2]) / 2, (b[1] + b[3]) / 2)
+        return sum(contour_area(v) for v, _ in path_contours(op("intersection", grown, body)))
+
     def _contour_split(self, xg, adv):
         """Method 2: mark = the small top-right contours of X, body = the rest."""
         cts = self.contours(xg)
@@ -334,10 +374,13 @@ class DakutenFont:
         ref = ring_dims[len(ring_dims) // 2] if ring_dims else None
 
         repaired = []
+        eps = 150 * (self.upm / 1000) ** 2
         for ch, d in list(kana.items()):
             mb = d["mb"]
             w, h = mb[2] - mb[0], mb[3] - mb[1]
-            if not (d["is_semi"] and ref and (w < 0.95 * ref[0] or h < 0.95 * ref[1])):
+            low = ref and (w < 0.95 * ref[0] or h < 0.95 * ref[1])
+            touching = ref and self._contact(d["mark"], d["body"], 1.06) > eps
+            if not (d["is_semi"] and (low or touching)):
                 continue
             # ring welded into the body: the recovered mark lost a chunk. Rebuild
             # it as concentric circles centred on the hole contour (interior, so
@@ -378,6 +421,10 @@ class DakutenFont:
         center = lambda b: ((b[0] + b[2]) / 2, (b[1] + b[3]) / 2)
         script = lambda ch: "hira" if ord(ch) < 0x30A0 else "kata"
 
+        # template = the cleanest same-script two-dot mark. Cleanliness is a hard
+        # requirement — a template with even a shallow weld bite replicates the
+        # notch onto every rebuilt glyph (Bold ザ/ぞ did exactly that).
+        clean_eps = 30 * (self.upm / 1000) ** 2
         templates = {}
         for ch, d in kana.items():
             if d["is_semi"] or d["fallback"]:
@@ -385,11 +432,19 @@ class DakutenFont:
             cts = path_contours(d["mark"])
             if len(cts) != 2:
                 continue
+            if any(self._contact(to_path([v]), d["body"]) > clean_eps
+                   or hull_deficiency(v) > 0.12 for v, _ in cts):
+                continue
             areas = sorted(contour_area(v) for v, _ in cts)
             ratio = areas[0] / areas[1]
             if ratio >= 0.85 and (script(ch) not in templates or ratio > templates[script(ch)][0]):
-                templates[script(ch)] = (ratio, d["mark"])
+                tr_b = top_right(cts)
+                bl_b = next(b for _, b in cts if b is not tr_b)
+                delta = (round(center(bl_b)[0] - center(tr_b)[0]),
+                         round(center(bl_b)[1] - center(tr_b)[1]))
+                templates[script(ch)] = (ratio, d["mark"], delta)
 
+        eps = 50 * (self.upm / 1000) ** 2
         rebuilt = []
         for ch, d in kana.items():
             if d["is_semi"] or script(ch) not in templates:
@@ -402,6 +457,29 @@ class DakutenFont:
                 (len(cts) == 1 and (d["mb"][2] - d["mb"][0]) < 0.75 * (tb[2] - tb[0]))
                 or (len(cts) == 2 and min(areas) / max(areas) < 0.7)
                 or len(cts) > 2)
+            if not broken and len(cts) == 2:
+                # weld bite: a dot sits on the body boundary and the diff shaved
+                # its flank, or a stroke end pokes into it (concave wrap-around,
+                # caught by hull deficiency) — common in Bold. Replace the
+                # bitten dot with a clone of the intact top-right one, placed at
+                # the template's inter-dot offset from the intact dot's centre —
+                # never at the bitten ink's bbox, which a wrap-around bite
+                # inflates (Bold ぞ sat ~40 units high that way). Keeps the
+                # glyph's own dot design, unlike the template path below.
+                bitten = [self._contact(to_path([v]), d["body"]) > eps
+                          or hull_deficiency(v) > 0.15 for v, _ in cts]
+                if any(bitten):
+                    tr = max(range(2), key=lambda i: cts[i][1][0] + cts[i][1][2]
+                             + cts[i][1][1] + cts[i][1][3])
+                    if not bitten[tr]:
+                        src_v = cts[tr][0]
+                        dxy = templates[script(ch)][2]
+                        clone = xform(to_path([src_v]), Transform().translate(*dxy))
+                        d["mark"] = op("union", to_path([src_v]), clone)
+                        d["mb"] = pbounds(d["mark"])
+                        rebuilt.append(d["gname"])
+                        continue
+                    broken = True        # the top-right dot is bitten too: template
             if not broken:
                 continue
             fx, fy = center(top_right(cts))
@@ -419,25 +497,44 @@ class DakutenFont:
         return rebuilt
 
     @staticmethod
-    def compose(d, scale, halo_frac, skip_ink, dx=0, dy=0, rot=0, pads=(0, 0, 0, 0)):
+    def compose(d, scale, halo_frac, skip_ink, dx=0, dy=0, rot=0, pads=(0, 0, 0, 0),
+                aspect=1.0, spread=1.0):
         """The tuned glyph: enlarged / moved / tilted mark on the carved body.
 
-        pads = [left, right, top, bottom] widen the carved halo per side, in
-        font units, applied to the un-rotated halo whose bbox is analytically
-        mb×K — the tuner's SVG preview repeats the same closed-form transforms,
-        so both always agree. Rotation comes last, about the mark centre."""
+        aspect multiplies the vertical enlargement only (sy = scale × aspect) so
+        a mark can grow longer without growing wider — Bold dots widen by design
+        and read squat otherwise. pads = [left, right, top, bottom] widen the
+        carved halo per side, in font units, applied to the un-rotated halo
+        whose bbox is analytically mb×K — the tuner's SVG preview repeats the
+        same closed-form transforms, so both always agree. Rotation comes last,
+        about the mark centre, and carries the stretch with it. spread slides
+        the two dakuten dots apart (>1) or together (<1) along the line through
+        the mark centre — each dot only translates, its shape stays."""
         mark, body, mb = d["mark"], d["body"], d["mb"]
+        if spread != 1 and not d["is_semi"]:
+            cts = path_contours(mark)
+            if len(cts) == 2:
+                ccx, ccy = (mb[0] + mb[2]) / 2, (mb[1] + mb[3]) / 2
+                parts = []
+                for v, b in cts:
+                    px, py = (b[0] + b[2]) / 2, (b[1] + b[3]) / 2
+                    parts.append(xform(to_path([v]), Transform().translate(
+                        (spread - 1) * (px - ccx), (spread - 1) * (py - ccy))))
+                mark = op("union", parts[0], parts[1])
         if dx or dy:
             mark = xform(mark, Transform().translate(dx, dy))
         mcx, mcy = (mb[0] + mb[2]) / 2 + dx, (mb[1] + mb[3]) / 2 + dy
-        mark_big = scaled_about(mark, scale, mcx, mcy)
+        sy = scale * aspect
+        mark_big = xform(mark, Transform().translate(mcx, mcy)
+                         .scale(scale, sy).translate(-mcx, -mcy))
         halo = None
         if skip_ink:
-            K = scale * (1 + halo_frac)
-            halo = scaled_about(mark, K, mcx, mcy)
+            kx, ky = scale * (1 + halo_frac), sy * (1 + halo_frac)
+            halo = xform(mark, Transform().translate(mcx, mcy)
+                         .scale(kx, ky).translate(-mcx, -mcy))
             l, r, t, b = pads
             if l or r or t or b:
-                w, h = (mb[2] - mb[0]) * K, (mb[3] - mb[1]) * K
+                w, h = (mb[2] - mb[0]) * kx, (mb[3] - mb[1]) * ky
                 halo = xform(halo, Transform()
                              .translate(mcx + (r - l) / 2, mcy + (t - b) / 2)
                              .scale((w + l + r) / w, (h + t + b) / h)
@@ -482,6 +579,7 @@ def main():
             o.get("skip_ink", SKIP_INK),
             o.get("dx", 0), o.get("dy", 0),
             o.get("rot", 0), o.get("halo_pad", (0, 0, 0, 0)),
+            o.get("aspect", 1), o.get("spread", 1),
         )
         font.write_glyph(d["gname"], final)
         done += 1
