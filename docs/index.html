@@ -201,7 +201,7 @@ body.menu-open .menu { display: block; }
 .craft-card { margin-top: 14px; padding: 28px 32px; display: grid; grid-template-columns: 300px 1fr; gap: 32px; align-items: center; }
 .craft-card h3 { font-size: 18px; font-weight: 700; margin: 0; }
 .craft-card p { color: #a6adc8; font-size: 13px; margin: 10px 0 0; }
-.craft-card img { border: 1px solid #45475a; border-radius: 10px; }
+.craft-card img, .craft-card video { display: block; width: 100%; height: auto; border: 1px solid #45475a; border-radius: 10px; }
 
 .shot { margin-top: 12px; }
 .shot.mw { max-width: 720px; }
@@ -470,7 +470,7 @@ brew install --cask font-kusunoki-mono">コピー</button>
           <h3>かな、1文字ずつ</h3>
           <p>一括処理では決まらないので、専用ツールを作って濁点かな52字を目視で調整。破線が元のマーク位置。倍率・回転・彫り幅をかなごとに上書きできます。</p>
         </div>
-        <img src="images/lp/tuner.png" alt="濁点チューナー" width="2720" height="1620" loading="lazy">
+        <video src="images/lp/tuner.mp4" poster="images/lp/tuner-poster.png" width="1360" height="918" autoplay muted loop playsinline preload="metadata" aria-label="濁点チューナーの操作画面"></video>
       </div>
     </section>
 
@@ -825,7 +825,7 @@ brew install --cask font-kusunoki-mono">コピー</button>
     } else if (w === 'jp-sizes' || w === 'sizes') {
       push(outImg(echo, { src: 'images/lp/sizes.png', w: 1240, h: 560, cap: '和文は小サイズの視認性に優れた LINE Seed JP。エディタで現実的な 11–14px でもくっきり読めます。' }));
     } else if (w === 'craft') {
-      push(outImg(echo, { src: 'images/lp/tuner.png', w: 2720, h: 1620, cap: '一括処理では決まらないので、専用ツールを作って濁点かな52字を目視で調整。破線が元のマーク位置。倍率・回転・彫り幅をかなごとに上書きできます。' }));
+      push(outImg(echo, { src: 'images/lp/tuner-poster.png', w: 1360, h: 918, cap: '一括処理では決まらないので、専用ツールを作って濁点かな52字を目視で調整。破線が元のマーク位置。倍率・回転・彫り幅をかなごとに上書きできます。' }));
     } else if (w === 'specimen') {
       push(outImg(echo, { src: 'images/specimen.png', w: 1694, h: 1724 }));
     } else if (w === 'screenshots') {
