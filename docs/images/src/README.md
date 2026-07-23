@@ -46,6 +46,10 @@ shot 1240,420 nerd.png           "file://$PWD/nerd.html"
 shot 1240,560 sizes.png          "file://$PWD/sizes.html"
 ```
 
-`../lp/tuner.png` is a live screenshot, not a page: run
-`uv run scripts/dakuten_tuner.py`, open the editor for ぎ, and capture the
-window at 1360×900 (2x), cropping the empty bottom band.
+`../lp/tuner.mp4` is a live screen recording, not a page: run
+`uv run scripts/dakuten_tuner.py`, then screen-record the editor interaction.
+From the repository root, encode the recording with:
+
+```sh
+ffmpeg -hide_banner -y -i tuner-raw.mp4 -vf 'fps=24,scale=1360:-2' -c:v libx264 -preset veryslow -crf 28 -pix_fmt yuv420p -an -movflags +faststart docs/images/lp/tuner.mp4
+```
