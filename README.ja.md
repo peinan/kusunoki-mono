@@ -36,6 +36,9 @@ brew tap peinan/kusunoki-mono
 brew install --cask font-kusunoki-mono
 ```
 
+初回はその場でフォントをビルドするため 7 分前後かかります。
+素の `brew install` は完了まで何も表示しないので、経過を見たい場合は `--verbose` を付けてください。
+
 フォントは `~/Library/Fonts` に配置され、`brew upgrade` にも追従します。
 
 Homebrew 6.0 以降では、サードパーティ tap を初回に信頼する必要があります: `brew trust peinan/kusunoki-mono`
