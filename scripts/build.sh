@@ -40,6 +40,23 @@ KM_SFMS_DIR="${KM_SFMS_DIR:-$HOME/Library/Fonts}"   # SFMS ref for P2.5 (optiona
 SFMS_REF="$KM_SFMS_DIR/SFMonoSquare-Regular.otf"    # one ref reused for all weights
 ICONPLAN="$B/iconscale.json"                        # built once from Regular, reused
 
+tick() {  # $1=pid — live elapsed seconds on stderr while $1 runs (TTY only, so
+          # brew/CI logs stay clean); returns the job's exit status
+  local pid=$1 t0=$SECONDS
+  if [ -t 2 ]; then
+    while kill -0 "$pid" 2>/dev/null; do
+      printf '\r   %4ds ' $((SECONDS - t0)) >&2
+      sleep 2
+    done
+    printf '\r         \r' >&2
+  fi
+  wait "$pid"
+}
+
+T0=$SECONDS
+STYLE_N=0
+echo "==> full build: 4 styles x P1-P5, roughly 2 min per style"
+
 JB_VF="$ROOT/$SRC/jetbrains-mono/JetBrainsMono[wght].ttf"
 JB_R="$LIGDIR/JetBrainsMono-Regular.ttf"
 JB_B="$LIGDIR/JetBrainsMono-Bold.ttf"
@@ -55,8 +72,8 @@ echo "==> P2.8 enlarging kana dakuten/handakuten (LINE Seed, MigMix-style)"
 for st in Regular Bold Italic BoldItalic; do
   case $st in Regular|Italic) w=Regular;; *) w=Bold;; esac
   uv run scripts/enlarge_dakuten.py "$ROOT/$SRC/lineseed-jp/LINESeedJP-$w.ttf" \
-    "$LSDIR/LINESeedJP-$st.ttf" "$st" >"$B/dakuten.$st.log" 2>&1 \
-    && grep -E '^\[enlarge_dakuten\]' "$B/dakuten.$st.log" | cut -c1-110 \
+    "$LSDIR/LINESeedJP-$st.ttf" "$st" >"$B/dakuten.$st.log" 2>&1 &
+  tick $! && grep -E '^\[enlarge_dakuten\]' "$B/dakuten.$st.log" | cut -c1-110 \
     || { echo "  !! P2.8 $st FAILED"; tail -3 "$B/dakuten.$st.log"; exit 1; }
 done
 
@@ -69,7 +86,8 @@ nerd_patch() {  # $1=style; logs to $B/$1.p2.log; echoes patched .otf path on st
   # (too small — issue #9). Existing Latin/CJK advances are untouched either way.
   ( cd "$PATCHER_DIR" && fontforge -script ./font-patcher \
       --complete --variable-width-glyphs --careful --quiet \
-      --outputdir "$ROOT/$NERDDIR" "$ROOT/$BASE/KusunokiMono-$st.otf" ) >"$B/$st.p2.log" 2>&1
+      --outputdir "$ROOT/$NERDDIR" "$ROOT/$BASE/KusunokiMono-$st.otf" ) >"$B/$st.p2.log" 2>&1 &
+  tick $!   # ticker goes to stderr, so the captured stdout stays just the path
   ls "$NERDDIR"/*.otf 2>/dev/null | head -1
 }
 
@@ -87,11 +105,13 @@ icon_scale() {  # $1=style $2=patched.otf ; echoes path to use downstream (scale
 
 buildone() {  # 1=style 2=sf 3=migu 4=lineseed(P2.8 output name) 5=jb_instance 6=gsc_wght(optional, italics)
   local st=$1 sf=$2 migu=$3 ls=$4 jb=$5 gscw=${6:-}
-  echo "==== $st ===="
+  local t_style=$SECONDS
+  STYLE_N=$((STYLE_N + 1))
+  echo "==== $st ($STYLE_N/4) ===="
   echo "-- P1 base (SF Mono + Migu)"
   fontforge -quiet -script scripts/build_base.py \
-    "$ROOT/$SRC/$sf" "$ROOT/$SRC/$migu" "$ROOT/$BASE/KusunokiMono-$st.otf" "$st" >"$B/$st.p1.log" 2>&1 \
-    && grep -E '^\[build_base\]' "$B/$st.p1.log" | tail -1 || { echo "  !! P1 $st FAILED"; tail -3 "$B/$st.p1.log"; return 1; }
+    "$ROOT/$SRC/$sf" "$ROOT/$SRC/$migu" "$ROOT/$BASE/KusunokiMono-$st.otf" "$st" >"$B/$st.p1.log" 2>&1 &
+  tick $! && grep -E '^\[build_base\]' "$B/$st.p1.log" | tail -1 || { echo "  !! P1 $st FAILED"; tail -3 "$B/$st.p1.log"; return 1; }
   echo "-- P2 nerd (--variable-width-glyphs / Propo, official v3.4.0)"
   local patched; patched=$(nerd_patch "$st")
   [ -s "$patched" ] || { echo "  !! P2 $st FAILED"; tail -3 "$B/$st.p2.log"; return 1; }
@@ -101,11 +121,11 @@ buildone() {  # 1=style 2=sf 3=migu 4=lineseed(P2.8 output name) 5=jb_instance 6
   grep -E '\[plan_icon_scale\]|\[apply_icon_scale\]' "$B/iconscale.log" 2>/dev/null | tail -2 \
     || echo "   (skipped: no SFMS ref at $SFMS_REF)"
   echo "-- P2.6 ligatures (JetBrains, sy=LIG_YSCALE)"
-  fontforge -quiet -script scripts/add_ligatures.py "$patched" "$jb" "$LIGDIR/KusunokiMono-$st.otf" >"$B/$st.plig.log" 2>&1 \
-    && grep -E '^\[add_ligatures\]' "$B/$st.plig.log" | tail -1 || { echo "  !! ligatures $st FAILED"; tail -3 "$B/$st.plig.log"; return 1; }
+  fontforge -quiet -script scripts/add_ligatures.py "$patched" "$jb" "$LIGDIR/KusunokiMono-$st.otf" >"$B/$st.plig.log" 2>&1 &
+  tick $! && grep -E '^\[add_ligatures\]' "$B/$st.plig.log" | tail -1 || { echo "  !! ligatures $st FAILED"; tail -3 "$B/$st.plig.log"; return 1; }
   echo "-- P3 LINE Seed swap (P2.8-enlarged dakuten)"
-  uv run scripts/swap_lineseed.py "$LIGDIR/KusunokiMono-$st.otf" "$STAGE/KusunokiMono-$st.otf" "$ROOT/$LSDIR/$ls" "$st" >"$B/$st.p3.log" 2>&1 \
-    && grep -E 'replaced' "$B/$st.p3.log" | tail -1 || { echo "  !! P3 $st FAILED"; tail -3 "$B/$st.p3.log"; return 1; }
+  uv run scripts/swap_lineseed.py "$LIGDIR/KusunokiMono-$st.otf" "$STAGE/KusunokiMono-$st.otf" "$ROOT/$LSDIR/$ls" "$st" >"$B/$st.p3.log" 2>&1 &
+  tick $! && grep -E 'replaced' "$B/$st.p3.log" | tail -1 || { echo "  !! P3 $st FAILED"; tail -3 "$B/$st.p3.log"; return 1; }
   if [ -n "$gscw" ]; then
     echo "-- P4 GSC italic graft + centre"
     uv run scripts/graft_italic.py "$STAGE/KusunokiMono-$st.otf" "$GSC_IT" "$B/$st.graft.otf" "$gscw" >"$B/$st.p4.log" 2>&1 \
@@ -115,6 +135,7 @@ buildone() {  # 1=style 2=sf 3=migu 4=lineseed(P2.8 output name) 5=jb_instance 6
   echo "-- P5 finalize"
   uv run scripts/finalize.py "$STAGE/KusunokiMono-$st.otf" "$DIST/KusunokiMono-$st.otf" "$st" >"$B/$st.p5.log" 2>&1 \
     && grep -E '\[finalize\]' "$B/$st.p5.log" | tail -1 || { echo "  !! P5 $st FAILED"; tail -3 "$B/$st.p5.log"; return 1; }
+  echo "   $st done in $((SECONDS - t_style))s"
 }
 
 buildone Regular    sf-mono/SF-Mono-Regular.otf       migu-1m/migu-1m-regular.ttf  LINESeedJP-Regular.ttf    "$JB_R"
@@ -122,5 +143,5 @@ buildone Bold       sf-mono/SF-Mono-Bold.otf          migu-1m/migu-1m-bold.ttf  
 buildone Italic     sf-mono/SF-Mono-RegularItalic.otf migu-1m/migu-1m-regular.ttf  LINESeedJP-Italic.ttf     "$JB_R" "$GSC_R"
 buildone BoldItalic sf-mono/SF-Mono-BoldItalic.otf    migu-1m/migu-1m-bold.ttf     LINESeedJP-BoldItalic.ttf "$JB_B" "$GSC_B"
 
-echo "==== built ===="
+echo "==== built in $((SECONDS - T0))s ===="
 ls -1 "$DIST"/KusunokiMono-*.otf
