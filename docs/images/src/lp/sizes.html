@@ -6,21 +6,22 @@
 body {
   width:1240px; height:560px; background:#181825; color:#cdd6f4;
   padding:48px 56px; font-family:"KM", monospace; overflow:hidden;
-  display:flex; flex-direction:column; justify-content:center; gap:24px;
+  display:grid; grid-template-columns:max-content minmax(0, 1fr);
+  align-content:center; align-items:center; column-gap:26px; row-gap:24px;
 }
-.row { display:flex; align-items:center; gap:26px; }
-pre { font-family:inherit; white-space:pre; line-height:1.4; }
+.row { display:contents; }
+pre { font-family:inherit; font-size:var(--size); white-space:pre; line-height:1.4; }
 .c { color:#6c7086; }
 .badge {
-  font-family:-apple-system,sans-serif; font-size:17px; font-weight:600;
-  letter-spacing:1px; width:64px; text-align:center; padding:6px 0;
+  font-family:-apple-system,sans-serif; font-size:var(--size); font-weight:600;
+  letter-spacing:1px; text-align:center; padding:.3em .55em; justify-self:center;
   border-radius:999px; border:1px solid #45475a; color:#7f849c; flex:none;
 }
 </style>
 <body>
-<div class="row"><div class="badge">11</div><pre style="font-size:22px">検索結果を並べ替える <span class="c">// 小さくても潰れない</span></pre></div>
-<div class="row"><div class="badge">12</div><pre style="font-size:24px">検索結果を並べ替える <span class="c">// 小さくても潰れない</span></pre></div>
-<div class="row"><div class="badge">14</div><pre style="font-size:28px">検索結果を並べ替える <span class="c">// 小さくても潰れない</span></pre></div>
-<div class="row"><div class="badge">16</div><pre style="font-size:32px">検索結果を並べ替える <span class="c">// 小さくても潰れない</span></pre></div>
-<div class="row"><div class="badge">20</div><pre style="font-size:40px">検索結果を並べ替える <span class="c">// 小さくても潰れない</span></pre></div>
+<div class="row" style="--size:22px"><div class="badge">11</div><pre>検索結果を並べ替える <span class="c">// 小さくても潰れない</span></pre></div>
+<div class="row" style="--size:24px"><div class="badge">12</div><pre>検索結果を並べ替える <span class="c">// 小さくても潰れない</span></pre></div>
+<div class="row" style="--size:28px"><div class="badge">14</div><pre>検索結果を並べ替える <span class="c">// 小さくても潰れない</span></pre></div>
+<div class="row" style="--size:32px"><div class="badge">16</div><pre>検索結果を並べ替える <span class="c">// 小さくても潰れない</span></pre></div>
+<div class="row" style="--size:40px"><div class="badge">20</div><pre>検索結果を並べ替える <span class="c">// 小さくても潰れない</span></pre></div>
 </body>
