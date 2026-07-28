@@ -30,7 +30,7 @@ uv run scripts/finalize.py build/lp-before/stage.otf \
 ```
 
 It stays under `build/` and must not be committed (it embeds SF Mono).
-The `nerd-tuning` shot also needs the raw P2 font before P2.5 size tuning.
+The Nerd Fonts comparison shots also need the raw P2 font before P2.5 size tuning.
 Generate it once into `tmp-nerd/` from the repo root:
 
 ```sh
@@ -54,8 +54,9 @@ shot 1240,420 italic-km.png      "file://$PWD/italic.html"
 shot 1240,420 italic-sf.png      "file://$PWD/italic.html?sf"
 shot 1240,560 dakuten-after.png  "file://$PWD/dakuten.html"
 shot 1240,560 dakuten-before.png "file://$PWD/dakuten.html?before"
-shot 1240,420 nerd.png           "file://$PWD/nerd.html"
-shot 1240,560 nerd-tuning.png    "file://$PWD/nerd-tuning.html"
+shot 1240,680 nerd.png           "file://$PWD/nerd.html"
+shot 1240,560 nerd-after.png     "file://$PWD/nerd-compare.html"
+shot 1240,560 nerd-before.png    "file://$PWD/nerd-compare.html?before"
 shot 1240,560 sizes.png          "file://$PWD/sizes.html"
 ```
 

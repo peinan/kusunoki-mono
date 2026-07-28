@@ -1,0 +1,35 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+@font-face { font-family:"KM"; src:url("../../../../dist/KusunokiMono-Regular.otf"); }
+@font-face { font-family:"KMRAW"; src:url("../../../../tmp-nerd/KusunokiMonoNerdFontPropo-Regular.otf"); }
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  width:1240px; height:560px; background:#181825; color:#cdd6f4;
+  font-family:"KM", monospace; overflow:hidden; display:grid; place-items:center;
+}
+.grid {
+  display:grid; grid-template-columns:repeat(12, 84px); grid-template-rows:repeat(5, 80px);
+  gap:12px; font-size:50px; line-height:1;
+}
+body.before .grid { font-family:"KMRAW", monospace; }
+.grid span { width:84px; height:80px; display:grid; place-items:center; }
+.pl { color:#cba6f7; }
+.dev { color:#89b4fa; }
+.seti { color:#a6e3a1; }
+.oct { color:#f9e2af; }
+.fa { color:#fab387; }
+.weather { color:#74c7ec; }
+.cod { color:#f38ba8; }
+.material { color:#94e2d5; }
+</style>
+<body>
+<script>document.body.className = location.search.slice(1)</script>
+<div class="grid">
+  <span class="pl">&#xE0B0;</span><span class="dev">&#xE7A5;</span><span class="dev">&#xE7A9;</span><span class="dev">&#xE7A8;</span><span class="dev">&#xE76D;</span><span class="dev">&#xE772;</span><span class="dev">&#xE784;</span><span class="dev">&#xE704;</span><span class="dev">&#xE798;</span><span class="dev">&#xE716;</span><span class="dev">&#xE769;</span><span class="dev">&#xE768;</span>
+  <span class="dev">&#xE711;</span><span class="seti">&#xE686;</span><span class="seti">&#xE695;</span><span class="seti">&#xE660;</span><span class="seti">&#xE6A4;</span><span class="seti">&#xE69B;</span><span class="seti">&#xE646;</span><span class="seti">&#xE68A;</span><span class="seti">&#xE675;</span><span class="seti">&#xE67B;</span><span class="seti">&#xE655;</span><span class="seti">&#xE609;</span>
+  <span class="oct">&#xF4E7;</span><span class="oct">&#xF421;</span><span class="oct">&#xF40C;</span><span class="oct">&#xF4E6;</span><span class="oct">&#xF4D7;</span><span class="oct">&#xF433;</span><span class="oct">&#xF431;</span><span class="oct">&#xF52C;</span><span class="oct">&#xF52B;</span><span class="oct">&#xF506;</span><span class="oct">&#xF470;</span><span class="weather">&#xE30D;</span>
+  <span class="fa">&#xF103;</span><span class="fa">&#xF102;</span><span class="fa">&#xF10B;</span><span class="fa">&#xF0FB;</span><span class="fa">&#xF015;</span><span class="fa">&#xF06B;</span><span class="fa">&#xF06E;</span><span class="fa">&#xF095;</span><span class="fa">&#xF023;</span><span class="fa">&#xF0E4;</span><span class="fa">&#xF004;</span><span class="material">&#xF0009;</span>
+  <span class="cod">&#xEAE9;</span><span class="cod">&#xEAFC;</span><span class="cod">&#xEB9A;</span><span class="cod">&#xEB90;</span><span class="cod">&#xEBE6;</span><span class="cod">&#xEBE5;</span><span class="cod">&#xEA77;</span><span class="cod">&#xEA7E;</span><span class="cod">&#xEBD4;</span><span class="cod">&#xEBD7;</span><span class="cod">&#xEB10;</span><span class="cod">&#xEA70;</span>
+</div>
+</body>
