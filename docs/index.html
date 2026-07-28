@@ -700,7 +700,7 @@ brew install --cask font-kusunoki-mono">コピー</button>
     [TXT, '  italic       [--kusunoki|--sf-mono]      真のイタリック vs オブリーク'],
     [TXT, '  ligatures    [--on|--off]                リガチャの切り替え'],
     [TXT, '  grid                                     半角1:全角2 グリッド'],
-    [TXT, '  nerd-fonts                               Nerd Fonts アイコン'],
+    [TXT, '  nerd-fonts   [--compare]                 Nerd Fonts アイコンとサイズ調整の比較'],
     [TXT, '  jp-sizes                                 小サイズの日本語'],
     [TXT, '  craft        [--tuner]                   制作の裏側'],
     [TXT, '  screenshots  [--vscode|--keifu|--herdr]  実際の画面'],
@@ -714,6 +714,7 @@ brew install --cask font-kusunoki-mono">コピー</button>
     'craft --tuner', 'screenshots --vscode', 'screenshots --keifu', 'screenshots --herdr',
     'specimen', 'author', 'help', 'clear',
     'dakuten --after', 'dakuten --before', 'italic --kusunoki', 'italic --sf-mono',
+    'nerd-fonts --compare',
     'ligatures --on', 'ligatures --off', 'brew install --cask font-kusunoki-mono', 'brew tap peinan/kusunoki-mono'
   ];
 
@@ -831,7 +832,16 @@ brew install --cask font-kusunoki-mono">コピー</button>
     } else if (w === 'grid') {
       push(outImg(echo, { src: 'images/lp/grid.png', w: 1240, h: 560, cap: '全角はつねに半角ちょうど2文字ぶん。日本語コメントも罫線の表も、ターミナルでもエディタでも崩れません。薄い縞は2桁ごとのセル。' }));
     } else if (w === 'nerd-fonts' || w === 'nerd') {
-      push(outImg(echo, { src: 'images/lp/nerd.png', w: 1240, h: 680, cap: 'Nerd Fonts のアイコンを標準装備。バラつく大小はひとつずつ手で揃えています。' }));
+      if (has('--compare') || has('--before') || has('--after')) {
+        push(outWipe(echo, {
+          bot: 'images/lp/nerd-after.png', top: 'images/lp/nerd-before.png', w: 1240, h: 560,
+          labL: 'before', labR: 'after',
+          cap: '既定のパッチではアイコンの大小がバラつくため、ひとつずつ手で揃えています。',
+          v0: has('--after') ? snapA : has('--before') ? snapB : 50
+        }));
+      } else {
+        push(outImg(echo, { src: 'images/lp/nerd.png', w: 1240, h: 680, cap: 'Nerd Fonts のアイコンを標準装備。バラつく大小はひとつずつ手で揃えています。' }));
+      }
     } else if (w === 'jp-sizes' || w === 'sizes') {
       push(outImg(echo, { src: 'images/lp/sizes.png', w: 1240, h: 560, cap: '和文は小サイズの視認性に優れた LINE Seed JP。エディタで現実的な 11–14px でもくっきり読めます。' }));
     } else if (w === 'craft') {
