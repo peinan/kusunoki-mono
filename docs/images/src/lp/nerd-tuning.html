@@ -1,0 +1,95 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+@font-face { font-family:"KM"; src:url("../../../../dist/KusunokiMono-Regular.otf"); }
+@font-face { font-family:"KMRAW"; src:url("../../../../tmp-nerd/KusunokiMonoNerdFontPropo-Regular.otf"); }
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  width:1240px; height:560px; background:#181825; color:#cdd6f4;
+  padding:30px 40px; font-family:"KM", monospace; overflow:hidden;
+  display:flex; flex-direction:column; gap:18px;
+}
+.panel {
+  background:#11111b; border:1px solid #313244; border-radius:14px;
+  padding:16px 20px;
+}
+.inventory { height:256px; }
+.comparison { height:226px; }
+.head { height:30px; display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+.badge {
+  font-family:-apple-system,sans-serif; font-size:15px; font-weight:600;
+  letter-spacing:1px; width:70px; text-align:center; padding:5px 0;
+  border-radius:999px; border:1px solid #45475a; color:#7f849c; flex:none;
+}
+.caption { color:#a6adc8; font-size:16px; }
+.sets { display:grid; grid-template-columns:repeat(4, 1fr); gap:10px 12px; }
+.set {
+  height:75px; display:grid; grid-template-rows:auto 1fr; align-items:center; row-gap:6px;
+  padding:8px 10px; background:#181825; border:1px solid #313244; border-radius:9px;
+}
+.name {
+  font-family:-apple-system,sans-serif; color:#7f849c; font-size:12px;
+  font-weight:600; letter-spacing:.7px; line-height:1; white-space:nowrap;
+}
+.icons {
+  width:100%; display:flex; align-items:center; justify-content:space-between;
+  font-size:27px; line-height:1;
+}
+.powerline .icons { color:#cba6f7; }
+.devicons .icons { color:#89b4fa; }
+.seti .icons { color:#a6e3a1; }
+.octicons .icons { color:#f9e2af; }
+.awesome .icons { color:#fab387; }
+.weather .icons { color:#74c7ec; }
+.codicons .icons { color:#f38ba8; }
+.material .icons { color:#94e2d5; }
+.rows { display:flex; flex-direction:column; gap:8px; }
+.tune-row {
+  height:64px; display:grid; grid-template-columns:82px 112px 1fr 112px;
+  align-items:center; background:#181825; border:1px solid #313244; border-radius:9px;
+  overflow:hidden;
+}
+.state { width:72px; margin:auto; font-size:14px; }
+.ref {
+  height:100%; display:flex; align-items:center; justify-content:center;
+  color:#a6adc8; font-family:"KM", monospace; font-size:36px; line-height:1;
+  border-left:1px solid #313244; border-right:1px solid #313244;
+}
+.glyphs {
+  display:grid; grid-template-columns:repeat(8, 1fr); align-items:center;
+  color:#fab387; text-align:center; font-size:42px; line-height:1;
+}
+.raw .glyphs { font-family:"KMRAW", monospace; }
+.tuned .glyphs { font-family:"KM", monospace; }
+.glyphs .control { color:#89b4fa; }
+</style>
+<body>
+<section class="panel inventory">
+  <div class="head"><div class="badge">一覧</div><div class="caption">主要8セット・40字</div></div>
+  <div class="sets">
+    <div class="set powerline"><div class="name">POWERLINE</div><div class="icons"><span>&#xE0B0;</span><span>&#xE0B1;</span><span>&#xE0A0;</span><span>&#xE0A2;</span><span>&#xE0C8;</span></div></div>
+    <div class="set devicons"><div class="name">DEVICONS</div><div class="icons"><span>&#xE702;</span><span>&#xE70E;</span><span>&#xE711;</span><span>&#xE712;</span><span>&#xE724;</span></div></div>
+    <div class="set seti"><div class="name">SETI</div><div class="icons"><span>&#xE5FF;</span><span>&#xE606;</span><span>&#xE60C;</span><span>&#xE60E;</span><span>&#xE614;</span></div></div>
+    <div class="set octicons"><div class="name">OCTICONS</div><div class="icons"><span>&#xF408;</span><span>&#xF407;</span><span>&#xF417;</span><span>&#xF418;</span><span>&#xF427;</span></div></div>
+    <div class="set awesome"><div class="name">FONT AWESOME</div><div class="icons"><span>&#xF004;</span><span>&#xF005;</span><span>&#xF013;</span><span>&#xF015;</span><span>&#xF019;</span></div></div>
+    <div class="set weather"><div class="name">WEATHER</div><div class="icons"><span>&#xE30D;</span><span>&#xE312;</span><span>&#xE318;</span><span>&#xE31A;</span><span>&#xE315;</span></div></div>
+    <div class="set codicons"><div class="name">CODICONS</div><div class="icons"><span>&#xEA62;</span><span>&#xEA64;</span><span>&#xEA6D;</span><span>&#xEA84;</span><span>&#xEA85;</span></div></div>
+    <div class="set material"><div class="name">MATERIAL</div><div class="icons"><span>&#xF0001;</span><span>&#xF0009;</span><span>&#xF001D;</span><span>&#xF0020;</span><span>&#xF0026;</span></div></div>
+  </div>
+</section>
+<section class="panel comparison">
+  <div class="head"><div class="badge">サイズ</div><div class="caption">SF Mono Square の背丈に揃える</div></div>
+  <div class="rows">
+    <div class="tune-row raw">
+      <div class="badge state">調整前</div><div class="ref">Ag日</div>
+      <div class="glyphs"><span>&#xF102;</span><span>&#xEAE9;</span><span>&#xF103;</span><span>&#xEAFC;</span><span>&#xF10B;</span><span>&#xE7A5;</span><span>&#xF06B;</span><span class="control">&#xE0B0;</span></div>
+      <div class="ref">Ag日</div>
+    </div>
+    <div class="tune-row tuned">
+      <div class="badge state">調整後</div><div class="ref">Ag日</div>
+      <div class="glyphs"><span>&#xF102;</span><span>&#xEAE9;</span><span>&#xF103;</span><span>&#xEAFC;</span><span>&#xF10B;</span><span>&#xE7A5;</span><span>&#xF06B;</span><span class="control">&#xE0B0;</span></div>
+      <div class="ref">Ag日</div>
+    </div>
+  </div>
+</section>
+</body>
