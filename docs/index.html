@@ -453,13 +453,14 @@ brew install --cask font-kusunoki-mono">コピー</button>
 
     <section class="sec" id="s-nerd">
       <div class="cmdline"><h2 class="c"><span class="pr" aria-hidden="true">❯</span> kusunoki-mono nerd-fonts</h2></div>
+      <p class="cap">Nerd Fonts のアイコンを標準装備。プロンプトやファイラー、ステータスラインをそのまま彩れます。</p>
       <img class="frame" src="images/lp/nerd.png" alt="アイコン一覧" width="1240" height="680" loading="lazy">
-      <p class="cap">Nerd Fonts の主要8セット・80字を一覧にしました。スライダーで、SF Mono Square の背丈に揃える調整の前後を比べられます。</p>
       <div class="cmdline" style="margin-top:36px">
         <h2 class="c"><span class="pr" aria-hidden="true">❯</span> kusunoki-mono nerd-fonts <span class="flag">--compare</span></h2>
         <button class="flagbtn" data-wipe="nerd" data-dir="b">--before</button>
         <button class="flagbtn" data-wipe="nerd" data-dir="a">--after</button>
       </div>
+      <p class="cap">既定のパッチではアイコンの大小がバラつくため、ひとつずつ手で揃えています。スライダーで調整の前後を比較できます。</p>
       <div class="wipe" id="wipe-nerd" data-labl="before" data-labr="after">
         <img src="images/lp/nerd-after.png" alt="Nerd Fonts アイコンのサイズ調整後" width="1240" height="560" loading="lazy">
         <img class="top" src="images/lp/nerd-before.png" alt="Nerd Fonts アイコンのサイズ調整前" width="1240" height="560" loading="lazy">
@@ -830,7 +831,7 @@ brew install --cask font-kusunoki-mono">コピー</button>
     } else if (w === 'grid') {
       push(outImg(echo, { src: 'images/lp/grid.png', w: 1240, h: 560, cap: '全角はつねに半角ちょうど2文字ぶん。日本語コメントも罫線の表も、ターミナルでもエディタでも崩れません。薄い縞は2桁ごとのセル。' }));
     } else if (w === 'nerd-fonts' || w === 'nerd') {
-      push(outImg(echo, { src: 'images/lp/nerd.png', w: 1240, h: 680, cap: 'Nerd Fonts の主要8セット・80字を一覧にしました。サイズは SF Mono Square の背丈に揃えて調整しています。' }));
+      push(outImg(echo, { src: 'images/lp/nerd.png', w: 1240, h: 680, cap: 'Nerd Fonts のアイコンを標準装備。バラつく大小はひとつずつ手で揃えています。' }));
     } else if (w === 'jp-sizes' || w === 'sizes') {
       push(outImg(echo, { src: 'images/lp/sizes.png', w: 1240, h: 560, cap: '和文は小サイズの視認性に優れた LINE Seed JP。エディタで現実的な 11–14px でもくっきり読めます。' }));
     } else if (w === 'craft') {
