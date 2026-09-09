@@ -310,10 +310,10 @@ body.lightbox-open #lightbox { display: block; }
       <div class="slabel">INSTALL</div>
       <div class="installbox">
         <div class="lines">
-          <div><span class="dollar">$ </span>brew tap peinan/kusunoki-mono</div>
+          <div><span class="dollar">$ </span>brew tap peinan/tap</div>
           <div><span class="dollar">$ </span>brew install --cask font-kusunoki-mono</div>
         </div>
-        <button class="copybtn" data-copy="brew tap peinan/kusunoki-mono
+        <button class="copybtn" data-copy="brew tap peinan/tap
 brew install --cask font-kusunoki-mono">コピー</button>
       </div>
     </div>
@@ -353,10 +353,10 @@ brew install --cask font-kusunoki-mono">コピー</button>
         <div class="slabel">INSTALL</div>
         <div class="installbox">
           <div class="lines">
-            <div><span class="dollar">$ </span>brew tap peinan/kusunoki-mono</div>
+            <div><span class="dollar">$ </span>brew tap peinan/tap</div>
             <div><span class="dollar">$ </span>brew install --cask font-kusunoki-mono</div>
           </div>
-          <button class="copybtn" data-copy="brew tap peinan/kusunoki-mono
+          <button class="copybtn" data-copy="brew tap peinan/tap
 brew install --cask font-kusunoki-mono">コピー</button>
         </div>
       </div>
@@ -379,10 +379,10 @@ brew install --cask font-kusunoki-mono">コピー</button>
         </div>
         <p class="desc">SF Mono を半角1:全角2に整え、LINE Seed JP を重ねた日本語プログラミングフォント。真のイタリック、JetBrains Mono リガチャ、Nerd Fonts 内蔵。</p>
         <div class="brewline">
-          <div class="cmd"><span class="dollar">$ </span>brew tap peinan/kusunoki-mono &amp;&amp; brew install --cask font-kusunoki-mono</div>
-          <button class="copybtn" data-copy="brew tap peinan/kusunoki-mono &amp;&amp; brew install --cask font-kusunoki-mono">コピー</button>
+          <div class="cmd"><span class="dollar">$ </span>brew tap peinan/tap &amp;&amp; brew install --cask font-kusunoki-mono</div>
+          <button class="copybtn" data-copy="brew tap peinan/tap &amp;&amp; brew install --cask font-kusunoki-mono">コピー</button>
         </div>
-        <p class="note"># Homebrew 6.0+ 初回のみ: brew trust peinan/kusunoki-mono</p>
+        <p class="note"># Homebrew 6.0+ 初回のみ: brew trust peinan/tap</p>
       </div>
     </section>
 
@@ -530,13 +530,13 @@ brew install --cask font-kusunoki-mono">コピー</button>
 
 <template id="tpl-install">
   <div class="card install-card">
-    <button class="copybtn" data-copy="brew tap peinan/kusunoki-mono
+    <button class="copybtn" data-copy="brew tap peinan/tap
 brew install --cask font-kusunoki-mono">コピー</button>
     <div class="lines">
       <div><span class="cmt"># SF Mono を埋め込むため配布はなし。手元でビルドされます</span></div>
-      <div><span class="dollar">$ </span>brew tap peinan/kusunoki-mono</div>
+      <div><span class="dollar">$ </span>brew tap peinan/tap</div>
       <div><span class="dollar">$ </span>brew install --cask font-kusunoki-mono</div>
-      <div><span class="cmt"># 初回のみ: brew trust peinan/kusunoki-mono / フォントを Kusunoki Mono に設定</span></div>
+      <div><span class="cmt"># 初回のみ: brew trust peinan/tap / フォントを Kusunoki Mono に設定</span></div>
     </div>
   </div>
 </template>
@@ -715,7 +715,7 @@ brew install --cask font-kusunoki-mono">コピー</button>
     'specimen', 'author', 'help', 'clear',
     'dakuten --after', 'dakuten --before', 'italic --kusunoki', 'italic --sf-mono',
     'nerd-fonts --compare',
-    'ligatures --on', 'ligatures --off', 'brew install --cask font-kusunoki-mono', 'brew tap peinan/kusunoki-mono'
+    'ligatures --on', 'ligatures --off', 'brew install --cask font-kusunoki-mono', 'brew tap peinan/tap'
   ];
 
   const entry = cmd => {
@@ -797,10 +797,10 @@ brew install --cask font-kusunoki-mono">コピー</button>
     const snapA = 100 - SNAP, snapB = SNAP;
     if (w === 'brew') {
       push(outText(echo, [
-        [GRN, '==> Tapping peinan/kusunoki-mono'],
+        [GRN, '==> Tapping peinan/tap'],
         [GRN, '==> Installing font-kusunoki-mono — SF Mono を埋め込むため、あなたの Mac 上でビルドします'],
         [SUB, 'make build → dist/KusunokiMono-{Regular,Bold,Italic,BoldItalic}.otf'],
-        [DIM, '# 初回のみ: brew trust peinan/kusunoki-mono / フォントを Kusunoki Mono に設定']
+        [DIM, '# 初回のみ: brew trust peinan/tap / フォントを Kusunoki Mono に設定']
       ]));
     } else if (w === 'help' || w === '--help' || w === '-h') {
       push(outText(echo, HELP));
