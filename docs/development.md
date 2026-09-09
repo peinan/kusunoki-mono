@@ -144,7 +144,7 @@ macOS-only, because Apple's DMG is extracted with hdiutil and pkgutil.
 
 ## Homebrew tap
 
-The formula lives in [peinan/homebrew-kusunoki-mono][tap]: it stages the same
+The formula lives in [peinan/homebrew-tap][tap]: it stages the same
 pinned sources into `sources/` and runs `scripts/build.sh` unchanged, so
 `brew install` and `make build` produce the same fonts. The tap also ships a
 `font-kusunoki-mono` cask that copies the formula's fonts into
@@ -186,6 +186,6 @@ spot checks:
 - [The author's Qiita article][qiita], in Japanese — background on SF Mono
   Square itself
 
-[tap]: https://github.com/peinan/homebrew-kusunoki-mono
+[tap]: https://github.com/peinan/homebrew-tap
 [sfms]: https://github.com/delphinus/homebrew-sfmono-square
 [qiita]: https://qiita.com/delphinus/items/f472eb04ff91daf44274

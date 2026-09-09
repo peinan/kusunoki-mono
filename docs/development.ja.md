@@ -143,7 +143,7 @@ Apple の DMG を hdiutil と pkgutil で展開するため macOS 専用。
 
 ## Homebrew tap
 
-formula は [peinan/homebrew-kusunoki-mono][tap] にある。
+formula は [peinan/homebrew-tap][tap] にある。
 固定した同じソースを `sources/` へ配置して `scripts/build.sh` を無改変で実行するので、`brew install` と `make build` の成果物は同じになる。
 tap には formula のフォントを `~/Library/Fonts` へ配置する `font-kusunoki-mono` cask も同梱している。
 リリースの流れ:
@@ -179,6 +179,6 @@ tap には formula のフォントを `~/Library/Fonts` へ配置する `font-ku
 - [delphinus/homebrew-sfmono-square][sfms]：このビルドが再現している手法。正方メトリクス、Propo アイコン、可視の全角空白、括弧のベアリング。スクリプトは独自の再実装で、コードは取り込んでいない
 - [作者の Qiita 記事][qiita]：SF Mono Square 自体の背景
 
-[tap]: https://github.com/peinan/homebrew-kusunoki-mono
+[tap]: https://github.com/peinan/homebrew-tap
 [sfms]: https://github.com/delphinus/homebrew-sfmono-square
 [qiita]: https://qiita.com/delphinus/items/f472eb04ff91daf44274
