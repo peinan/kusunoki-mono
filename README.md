@@ -6,7 +6,7 @@ English | [日本語](README.ja.md)
 
 ![platform](https://img.badges.sh/platform-macOS-b4befe?labelColor=1e1e2e&logo=apple&font=Space+Grotesk&fontWeight=500&labelFontWeight=700&messageFontWeight=700)
 ![version](https://img.badges.sh/version-v0.7.0-a6e3a1?labelColor=1e1e2e&logo=lucide:Tag&font=Space+Grotesk&fontWeight=500&labelFontWeight=700&messageFontWeight=700)
-[![homebrew](https://img.badges.sh/homebrew-peinan%2Fkusunoki--mono-fab387?labelColor=1e1e2e&logo=lucide:Beer&font=Space+Grotesk&fontWeight=500&labelFontWeight=700&messageFontWeight=700)](https://github.com/peinan/homebrew-kusunoki-mono)
+[![homebrew](https://img.badges.sh/homebrew-peinan%2Ftap-fab387?labelColor=1e1e2e&logo=lucide:Beer&font=Space+Grotesk&fontWeight=500&labelFontWeight=700&messageFontWeight=700)](https://github.com/peinan/homebrew-tap)
 [![web](https://img.badges.sh/web-peinan.github.io-89b4fa?labelColor=1e1e2e&logo=lucide:Globe&font=Space+Grotesk&fontWeight=500&labelFontWeight=700&messageFontWeight=700)](https://peinan.github.io/kusunoki-mono/)
 
 Apple's beautifully crafted SF Mono, squared onto a Japanese-aligned grid and
@@ -32,7 +32,7 @@ with JetBrains Mono ligatures and Nerd Fonts icons built in.
 The output embeds Apple SF Mono, so no binaries are distributed — it builds on your Mac.
 
 ```sh
-brew tap peinan/kusunoki-mono
+brew tap peinan/tap
 brew install --cask font-kusunoki-mono
 ```
 
@@ -43,7 +43,7 @@ the build progress.
 The fonts land in `~/Library/Fonts` and stay in sync across `brew upgrade`.
 
 On Homebrew 6.0+, third-party taps must be trusted once before the first
-install: `brew trust peinan/kusunoki-mono`.
+install: `brew trust peinan/tap`.
 
 Set your terminal or editor font to **Kusunoki Mono**.
 

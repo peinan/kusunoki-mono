@@ -6,7 +6,7 @@
 
 ![platform](https://img.badges.sh/platform-macOS-b4befe?labelColor=1e1e2e&logo=apple&font=Space+Grotesk&fontWeight=500&labelFontWeight=700&messageFontWeight=700)
 ![version](https://img.badges.sh/version-v0.7.0-a6e3a1?labelColor=1e1e2e&logo=lucide:Tag&font=Space+Grotesk&fontWeight=500&labelFontWeight=700&messageFontWeight=700)
-[![homebrew](https://img.badges.sh/homebrew-peinan%2Fkusunoki--mono-fab387?labelColor=1e1e2e&logo=lucide:Beer&font=Space+Grotesk&fontWeight=500&labelFontWeight=700&messageFontWeight=700)](https://github.com/peinan/homebrew-kusunoki-mono)
+[![homebrew](https://img.badges.sh/homebrew-peinan%2Ftap-fab387?labelColor=1e1e2e&logo=lucide:Beer&font=Space+Grotesk&fontWeight=500&labelFontWeight=700&messageFontWeight=700)](https://github.com/peinan/homebrew-tap)
 [![web](https://img.badges.sh/web-peinan.github.io-89b4fa?labelColor=1e1e2e&logo=lucide:Globe&font=Space+Grotesk&fontWeight=500&labelFontWeight=700&messageFontWeight=700)](https://peinan.github.io/kusunoki-mono/)
 
 Apple の美しい等幅フォント SF Mono を日本語と揃う正方グリッドに整え、
@@ -32,7 +32,7 @@ Apple の美しい等幅フォント SF Mono を日本語と揃う正方グリ�
 出力には Apple SF Mono が含まれるため配布せず、手元でビルドします。
 
 ```sh
-brew tap peinan/kusunoki-mono
+brew tap peinan/tap
 brew install --cask font-kusunoki-mono
 ```
 
@@ -41,7 +41,7 @@ brew install --cask font-kusunoki-mono
 
 フォントは `~/Library/Fonts` に配置され、`brew upgrade` にも追従します。
 
-Homebrew 6.0 以降では、サードパーティ tap を初回に信頼する必要があります: `brew trust peinan/kusunoki-mono`
+Homebrew 6.0 以降では、サードパーティ tap を初回に信頼する必要があります: `brew trust peinan/tap`
 
 端末やエディタのフォントを **Kusunoki Mono** に設定すれば完了です。
 

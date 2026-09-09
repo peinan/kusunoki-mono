@@ -4,8 +4,8 @@
 
 Key facts:
 
-- Install: `brew tap peinan/kusunoki-mono && brew install --cask font-kusunoki-mono` — the fonts land in `~/Library/Fonts` and follow `brew upgrade`
-- On Homebrew 6.0+, trust the tap once before the first install: `brew trust peinan/kusunoki-mono`
+- Install: `brew tap peinan/tap && brew install --cask font-kusunoki-mono` — the fonts land in `~/Library/Fonts` and follow `brew upgrade`
+- On Homebrew 6.0+, trust the tap once before the first install: `brew trust peinan/tap`
 - The build embeds Apple SF Mono, so no binaries are distributed anywhere — the Homebrew cask builds the font on the user's own Mac
 - Kana dakuten / handakuten are enlarged MigMix-style with a skip-ink carve and hand-tuned per kana (52 characters) for small-size legibility
 - A full-width CJK glyph is exactly two columns, so Japanese comments, tables, and box-drawing stay aligned in terminals and editors
@@ -21,4 +21,4 @@ Key facts:
 ## Repository
 
 - [peinan/kusunoki-mono](https://github.com/peinan/kusunoki-mono): build scripts and this site
-- [peinan/homebrew-kusunoki-mono](https://github.com/peinan/homebrew-kusunoki-mono): Homebrew tap (formula and cask)
+- [peinan/homebrew-tap](https://github.com/peinan/homebrew-tap): the Homebrew tap that ships the formula and the cask
